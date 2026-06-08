@@ -1,0 +1,3995 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-06-08",
+  "_comment": "Tier-3 community setup guides derived from real GameNative listings on EmuReady (each carries a real sourceUrl backlink). Tier 3 = 'From the community', NOT tier 1 (tier 1 = the user's own device-verified data). No GameNative <Game>_config.json blob is attached: EmuReady listings do not carry the full flat config, and the only public 'snapshot' repo (andreisugu/gamenative-config-tools) ships PLACEHOLDER example data, so fabricating one would be dishonest. dataAsOf: 2026-06-08.",
+  "guides": [
+    {
+      "id": "emuready:win:assassins-creed-2:gamenative:t3:d1371ce4",
+      "gameId": "win:assassins-creed-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/d1371ce4-91ac-4b53-92d6-975b412536bf",
+      "dataAsOf": "2026-06-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Dimensity 7300."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:blasphemous:gamenative:t3:bee8eeac",
+      "gameId": "win:blasphemous",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/bee8eeac-a5ef-488d-8d87-f566b36c90d0",
+      "dataAsOf": "2026-06-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Performance is between 54-60fps even with high performance mode and fan at full speed."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Dimensity 8300."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:kh-1.5:gamenative:t3:70eeb030",
+      "gameId": "win:kh-1.5",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/70eeb030-7a5d-47b1-86e1-bae8bc738d6e",
+      "dataAsOf": "2026-06-06",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Got it to work with gamenative 1.0\n\nMake sure to set executable path to KINGDOM HEARTS HD 1.5+2.5 ReMIX.exe not KINGDOM HEARTS 1.5+2.5 Launcher.exe\n\nSet dx wrapper to vkd3d and vk3d3 version 3.0b"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:slay-the-spire:gamenative:t3:d5d49688",
+      "gameId": "win:slay-the-spire",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/d5d49688-a7c4-465a-a7ef-41e5c6e9ebb8",
+      "dataAsOf": "2026-06-06",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Takes a sec to load and some tinkering, but is playable. Under graphics I set \"Present Modes\" to fifo. In game I set it to fullscreen (try disabling fullscreen all together if the game crashes or anything) and disabled particle effects, and if you're having issues with the controller enable Steam Input. Takes maybe 30 seconds to load but does play fine enough once loaded"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:chained-echoes:gamenative:t3:1c4f04b3",
+      "gameId": "win:chained-echoes",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/1c4f04b3-7172-4e72-bc9f-a0e00d1df74e",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Graphics Driver\nWraper-legacy"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Helio G90T."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:dragon-quest-xi-s:gamenative:t3:a454e9a3",
+      "gameId": "win:dragon-quest-xi-s",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/a454e9a3-d28c-4390-b246-a20b88c733e3",
+      "dataAsOf": "2026-06-04",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): 30fps at max settings, 720p"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:blasphemous-2:gamenative:t3:25ffefdb",
+      "gameId": "win:blasphemous-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/25ffefdb-734d-4116-9f7b-fb159e72f708",
+      "dataAsOf": "2026-06-04",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): No issues."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:axiom-verge-2:gamenative:t3:75492397",
+      "gameId": "win:axiom-verge-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/75492397-591b-474b-b8b5-896b5fb0972a",
+      "dataAsOf": "2026-06-02",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Nothing on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:blasphemous:gamenative:t3:23e56369",
+      "gameId": "win:blasphemous",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/23e56369-ad42-4c67-92a4-8d078f808e72",
+      "dataAsOf": "2026-05-31",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:undertale:gamenative:t3:54330495",
+      "gameId": "win:undertale",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/54330495-9de8-4b87-97a9-a827ab58103d",
+      "dataAsOf": "2026-05-31",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:stardew:gamenative:t3:9a247ac9",
+      "gameId": "win:stardew",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/9a247ac9-0b1a-49b4-a9d3-45f44cfd2cfa",
+      "dataAsOf": "2026-05-31",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:skyrim-se:gamenative:t3:5c39557e",
+      "gameId": "win:skyrim-se",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/5c39557e-544d-4f57-8381-05bf70bb4fd3",
+      "dataAsOf": "2026-05-31",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Capped fps to 45, but with some drops to 30 - for me perferctly playable.\n\nIn game settings 1280x720, preset medium"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:witcher-3:gamenative:t3:a06e2026",
+      "gameId": "win:witcher-3",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/a06e2026-b4ce-46fd-afc0-e8ce56985289",
+      "dataAsOf": "2026-05-31",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Game runs perfectly with stable 45fps(capped on 45fps to increase how long can you play on one battery charge). You can bump it to 60fps if you don't care.\n\nIn game settings all low 1280x720, only textures set to medium.\n\nSteam version 1.32"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:tomb-raider-2013:gamenative:t3:8ede66e3",
+      "gameId": "win:tomb-raider-2013",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/8ede66e3-60dd-4e56-8abf-b47d1cba5def",
+      "dataAsOf": "2026-05-31",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Stable 60 FPS, Medium/High settings."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Elite Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:metro-2033-r:gamenative:t3:6a9f495e",
+      "gameId": "win:metro-2033-r",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/6a9f495e-864e-42b8-9946-1ac9f1479053",
+      "dataAsOf": "2026-05-31",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Avg 45 fps just limit to 35 for a smoother experience"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Dimensity 8300 Ultra."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:wolfenstein-tno:gamenative:t3:7bfdcfea",
+      "gameId": "win:wolfenstein-tno",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/7bfdcfea-d9ac-4a22-863b-581d59ed36ed",
+      "dataAsOf": "2026-05-31",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Big texture issues, very poor performance, menu works fine but text has graphical bugs."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Ingame on Dimensity 8500 Ultra."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:celeste:gamenative:t3:9c734b42",
+      "gameId": "win:celeste",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/9c734b42-656c-4595-be3d-6e29336416f7",
+      "dataAsOf": "2026-05-30",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Game ran great out the box with no issues."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 865."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:ff7-remake:gamenative:t3:a8027197",
+      "gameId": "win:ff7-remake",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/a8027197-270d-475d-ba83-618fcf42aa8d",
+      "dataAsOf": "2026-05-30",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 865."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:tomb-raider-2013:gamenative:t3:824562e2",
+      "gameId": "win:tomb-raider-2013",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/824562e2-50c4-496e-848b-f150e436394a",
+      "dataAsOf": "2026-05-30",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): runs very well, 60fps with frame gen for the most part."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:dishonored:gamenative:t3:114c21bd",
+      "gameId": "win:dishonored",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/114c21bd-b6c4-481b-9b5f-6bdc5c092822",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): RP6 12GB Analog Top, Wonderful performance. 58-60fps\n\nproton 10.0-arm64ec-2, Wrapper-v2, turnip26.0.0_R8, async-1.10.3, FEXCore 2604, Intermediate."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:ff7-remake:gamenative:t3:0a33787e",
+      "gameId": "win:ff7-remake",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/0a33787e-ea40-4f48-94b0-f2ef030b8143",
+      "dataAsOf": "2026-05-28",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:planet-of-lana:gamenative:t3:0dd0fc21",
+      "gameId": "win:planet-of-lana",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/0dd0fc21-e141-4c21-8d18-a9acf5e0d94b",
+      "dataAsOf": "2026-05-28",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:re-4-remake:gamenative:t3:2e0facb0",
+      "gameId": "win:re-4-remake",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/2e0facb0-57a6-4371-8ee3-f893c256ab74",
+      "dataAsOf": "2026-05-28",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Average temps sit around 75 to 78s with the fan set to smart mode.\n\nGame is able to reach 60fps but that's pretty much only during the beginning, the moment 2-3 enemies appear on screen it starts to struggle and falls to 45-50fps.\nThe more enemies the worse it gets, on the village section for example it falls to 30fps and becomes unplayable due to slowdown.\n\nWhen locking the fps to 30 via the in-g"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:bg3:gamenative:t3:9d50febe",
+      "gameId": "win:bg3",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/9d50febe-4905-433b-865a-ab23a7c333b9",
+      "dataAsOf": "2026-05-22",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Using Clustertune Small underclock setting. 40 fps to 60 fps in a few areas with age age temp at 80°C\nTiny bit of frame stuttering but in no way game breaking and fully playable!\nAll in game settings low and AMD 2.0 upscaling set to performance\nFramegen optional for more stable fps"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:subnautica:gamenative:t3:10028a37",
+      "gameId": "win:subnautica",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/10028a37-6f36-4fa0-8f65-8e80ccb94170",
+      "dataAsOf": "2026-05-22",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): I get 40/50 FPS with stutters down to 20. Better to lock it at stable 30 FPS. \nPlus, using Lossless Scaling, you can easily reach a stable 60 FPS."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8+ Gen 1."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:lies-of-p:gamenative:t3:90e11374",
+      "gameId": "win:lies-of-p",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/90e11374-3b3c-4994-8325-e61046c67fee",
+      "dataAsOf": "2026-05-22",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:bayonetta-pc:gamenative:t3:4dae5e42",
+      "gameId": "win:bayonetta-pc",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/4dae5e42-17d6-4b54-a6ff-47008a1942d0",
+      "dataAsOf": "2026-05-21",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Runs at a solid 60fps at 720p on high settings. Will test different resolutions and update this."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Elite Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:kingdom-come:gamenative:t3:88315ad0",
+      "gameId": "win:kingdom-come",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/88315ad0-cfbd-4e4a-8d2c-f2cba91d129f",
+      "dataAsOf": "2026-05-21",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): With low setting possible to get 30FPS, but with Lossless Scaling could get stable 60FPS.\nBut it all used 7/8 W of power."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8+ Gen 1."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:tiny-tinas:gamenative:t3:69bdb4ef",
+      "gameId": "win:tiny-tinas",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/69bdb4ef-26ca-47ce-8731-56e4fa4c02e0",
+      "dataAsOf": "2026-05-20",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Using current drivers (as of 5/20/2026) solid FPS with some dips here and there. Most notable graphical glitching (Foliage/Shadows Loading with black graphical jittering), Resolution Scaling Set to 75% with FSR Sharpness. Running a Small Underclock using ClusterTune. Using Native Android screen record to record (Takes anywhere from 2%-5% away from Native Performance)\n59 FPS Native,  58ish FPS With"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:fortnite:gamenative:t3:c80c4efa",
+      "gameId": "win:fortnite",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/c80c4efa-ba86-4693-8abe-404e07db7366",
+      "dataAsOf": "2026-05-20",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Completey blank screen \n140gb took ages to install"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Nothing on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:ff16:gamenative:t3:57cda507",
+      "gameId": "win:ff16",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/57cda507-c718-4f68-bebd-8cb7eb711c62",
+      "dataAsOf": "2026-05-20",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Crashes upon boot."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Nothing on Snapdragon 8 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:control:gamenative:t3:0246b5a9",
+      "gameId": "win:control",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/0246b5a9-a157-477f-887c-b361f81c5814",
+      "dataAsOf": "2026-05-19",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Lots of frame drops. Playable but may not be enjoyable. Sometimes game would freeze too"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:mgs-v:gamenative:t3:7cf63858",
+      "gameId": "win:mgs-v",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/7cf63858-d062-440b-aff2-9f28732a8b44",
+      "dataAsOf": "2026-05-19",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:slay-the-spire:gamenative:t3:d9a6c181",
+      "gameId": "win:slay-the-spire",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/d9a6c181-3374-48c1-b5be-62683b43bdaa",
+      "dataAsOf": "2026-05-18",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Runs at around 55 fps, but has small issues with touch responsiveness."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Exynos 2200."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hollow-2:gamenative:t3:91309627",
+      "gameId": "win:hollow-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/91309627-9834-4451-881b-cd713be79f23",
+      "dataAsOf": "2026-05-18",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): The game works perfect outside of an initial stutter when you first load the game. I had consistant crashes at the Citadel Gatekeeper fight after trying every 3 times. And Gamenative WILL NOT do any cutscenes. Find for traveling because you can skip the cutscene but anywhere else the game just stalls and a reset is mandatory."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:trails-cold-steel-1:gamenative:t3:3961f623",
+      "gameId": "win:trails-cold-steel-1",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/3961f623-c459-47e4-bbb9-1309c92c1a21",
+      "dataAsOf": "2026-05-18",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): To use SenPatcher and its fixes:\nOpen container and install it first with the .exe (or manually) - the .exe will handily pick up the right place\nThen make sure you set this variable in the \"Environment\" tab of the container settings\nWINEDLLOVERRIDES\nDINPUT8=n,b\n\nNOTE: once this variable is set, the executable path must be ed8.exe - SenLauncher will no longer launch with it set. To change settings,"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:persona-3-reload:gamenative:t3:7d67c124",
+      "gameId": "win:persona-3-reload",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/7d67c124-a235-4ae3-b59b-6365134f3e67",
+      "dataAsOf": "2026-05-17",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 865."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:divinity-os-2:gamenative:t3:99654575",
+      "gameId": "win:divinity-os-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/99654575-b0d4-4865-b889-49e35aac48fc",
+      "dataAsOf": "2026-05-17",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): 1080p 60fps sitting around 75°C\n!ONLY USE 8ELITE-800.51 GRAPHICS DRIVER. OTHER DRIVERS HAVE HEAVY VISUAL GLITCHES!\nBox 64 Preset: Performance\nFEX preset: Performance\nOnly works with proton 10, 9 and 11 will crash on boot"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:nfs-u2:gamenative:t3:ff32bb31",
+      "gameId": "win:nfs-u2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/ff32bb31-7149-49da-a224-c9f7af0541f6",
+      "dataAsOf": "2026-05-15",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): The game requires a widescreen patch\n To run Fullscreen"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:celeste:gamenative:t3:8a4be8d2",
+      "gameId": "win:celeste",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/8a4be8d2-3867-40d2-95d3-662398de9d39",
+      "dataAsOf": "2026-05-15",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Perfect compatibility when on the beta-1.3.3.0 branch. Some lighting issues (especially in the mirror level) when on the default branch."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:persona-3-reload:gamenative:t3:3657056a",
+      "gameId": "win:persona-3-reload",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/3657056a-fb88-48c7-ac20-07e9cfd79e9f",
+      "dataAsOf": "2026-05-15",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Uploading these configs, maybe someone can work on it more (or me when I have time). The game plays for about 1 hour and 10 ish minutes. Tartarus has been the bane of this device, got past a lot of issues, but now freezes after the first fight and hit character dialog. Think it might be a VRAM bottleneck, but not completely sure.\n\nHave to use 0 for Max Device Memory since you have to use everythin"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Ingame on Snapdragon 865."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:slay-the-spire:gamenative:t3:c97b4b3e",
+      "gameId": "win:slay-the-spire",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/c97b4b3e-cb6b-4bac-a3a4-d811963c86af",
+      "dataAsOf": "2026-05-15",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): When starting the game wait through the black screen don't close! should only be a minute.\n\nOnly works with Fexcore 2601, anything higher will cause crashes. Box64 only works with version 0.4.0 or lower."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 865."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:fallout-4:gamenative:t3:f293eb69",
+      "gameId": "win:fallout-4",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/f293eb69-0d0e-4f54-8d65-55d914090e5f",
+      "dataAsOf": "2026-05-15",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Using lossless scaling multiplier 2x with a force scale of .25 with FSR upscale using 3x sharpness.\n\nWill have to open container and set the display to windowed boderless to fix the window look in the game."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 865."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:slay-the-spire:gamenative:t3:d13be6ee",
+      "gameId": "win:slay-the-spire",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/d13be6ee-1285-447c-8c71-e139a95d79cb",
+      "dataAsOf": "2026-05-15",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): When starting the game wait through the black screen don't close! should only be a minute.\n\nOnly works with Fexcore 2601, anything higher will cause crashes. Box64 only works with version 0.4.0 or lower."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:fallout-4:gamenative:t3:ca60f0a8",
+      "gameId": "win:fallout-4",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/ca60f0a8-f5d4-4dc4-9be2-5c3e94eec086",
+      "dataAsOf": "2026-05-15",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:persona-3-reload:gamenative:t3:86a25530",
+      "gameId": "win:persona-3-reload",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/86a25530-28b0-47c5-8fc0-e013a70ff374",
+      "dataAsOf": "2026-05-15",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:l4d2:gamenative:t3:0c4bc8bb",
+      "gameId": "win:l4d2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/0c4bc8bb-a18a-4085-be50-3a21d664b221",
+      "dataAsOf": "2026-05-14",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Runs at around 20-40 fps  \non low settings. Maybe better results are possible with better config."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Poor on Helio G99 Ultra."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:balatro:gamenative:t3:db16851c",
+      "gameId": "win:balatro",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/db16851c-6f69-4f1f-b77c-30f759d21203",
+      "dataAsOf": "2026-05-14",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Dimensity 1100."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:persona-4-golden:gamenative:t3:288aaa4d",
+      "gameId": "win:persona-4-golden",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/288aaa4d-568d-4882-ad3c-fa00c73d8b40",
+      "dataAsOf": "2026-05-14",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Works great on high settings in full hd 120 fps, but only things that bothers me is occasional stutters when loading something, it may occur in cutscene, or when entering the fight, but its short and doesnt affect gameplay much so i can easily get along with it. Im using \"known config\" in gamenative and i didnt tinkered with any settings cuz i dont know  what to change. it seems like its not gpu i"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hyper-light-drifter:gamenative:t3:43c9efcd",
+      "gameId": "win:hyper-light-drifter",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/43c9efcd-2710-40c1-9de3-b71be0390340",
+      "dataAsOf": "2026-05-14",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): RP6 12G Analog Top, wonderful performance. Between 58-60fps."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hades:gamenative:t3:98f973f3",
+      "gameId": "win:hades",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/98f973f3-0bf8-4abe-8847-cd92db403d60",
+      "dataAsOf": "2026-05-13",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Dimensity 9500."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:l4d2:gamenative:t3:8393dff5",
+      "gameId": "win:l4d2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/8393dff5-37bb-41a8-b36d-3e7a5a46a733",
+      "dataAsOf": "2026-05-13",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): When starting the game make sure to go into settings to turn on the controller otherwise your not moving anywhere.\n\nAlso change the resolution too to widescreen as it will be 4:3 by default.\n\nEnable Launch Steam Client (Beta) in the container settings, to get multiplayer to work."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:metaphor:gamenative:t3:46fe97e3",
+      "gameId": "win:metaphor",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/46fe97e3-4915-4135-9c39-d132d53344c2",
+      "dataAsOf": "2026-05-13",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Runs pretty solid with some frame drops at 720p."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:portal-2:gamenative:t3:39629657",
+      "gameId": "win:portal-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/39629657-af53-44df-9144-39f6b02ca125",
+      "dataAsOf": "2026-05-12",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): First you will need to go into the game then Options then Video then Widescreen 16:9. Then Advanced, set Shader, Model/Texture Detail and Effect Detail to Medium. Helps reduce stuttering and makes it run 120FPS no problem. Perfectly playable and looks great. This also works for Portal Reloaded."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 865."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:disco-elysium:gamenative:t3:3a67d23a",
+      "gameId": "win:disco-elysium",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/3a67d23a-ac79-4703-8f47-914cfee454b9",
+      "dataAsOf": "2026-05-11",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Device: KONKR Pocket Fit G3 Gen 3 (12gb Variant)\nNOTE: If not specified, use default. Graphics - Low.\n\nEmulator Version\n0.9.2\n\n**General**\nContainer Variant: bionic\nWine Version: proton-9.0-arm64ec\nForce DLC: Off/Disabled\nUse Legacy DRM: Off/Disabled\nUnpack Files: Off/Disabled\nLaunch Steam Client (Beta): Off/Disabled\nSteam Type: Normal\n\n**Graphics**\nGraphics Driver: Wrapper\nGraphics Driver Version"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:dont-starve:gamenative:t3:54260b50",
+      "gameId": "win:dont-starve",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/54260b50-289a-4d54-8c25-21ab7a926ca1",
+      "dataAsOf": "2026-05-10",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hades:gamenative:t3:875459b0",
+      "gameId": "win:hades",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/875459b0-f41a-4759-b639-b0be0a0ccd93",
+      "dataAsOf": "2026-05-10",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Usei este driver: [A8XX MR v25.1 ](https://github.com/whitebelyash/freedreno_turnip-CI/releases/tag/tu_v25.1)"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8s Gen 4."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:skyrim-se:gamenative:t3:237a7b68",
+      "gameId": "win:skyrim-se",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/237a7b68-c4e5-42fb-968c-65acb6d365b3",
+      "dataAsOf": "2026-05-10",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:crysis-2-classic:gamenative:t3:86ca9cb9",
+      "gameId": "win:crysis-2-classic",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/86ca9cb9-1e34-4ee6-b2a3-6cf94fe32abc",
+      "dataAsOf": "2026-05-10",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Game may look frozen when loading into a save, just ignore it and wait."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 865."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:re-3-remake:gamenative:t3:17ebd303",
+      "gameId": "win:re-3-remake",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/17ebd303-4b7d-46ca-a9d4-381a2adc426d",
+      "dataAsOf": "2026-05-09",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:dead-space-3-pc:gamenative:t3:ec700862",
+      "gameId": "win:dead-space-3-pc",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/ec700862-441d-4fdd-80d1-99776dc9e923",
+      "dataAsOf": "2026-05-09",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): The game run even with mid underclock. Minor hiccups and frame drops on scene changing. Went through the prologue and the first chapter without any issues."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:ff7-remake:gamenative:t3:66169626",
+      "gameId": "win:ff7-remake",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/66169626-706b-4606-8917-d2b84d2ebcfa",
+      "dataAsOf": "2026-05-09",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): This game runs like dog-water, but that isn't any fault of the tablet or the emulator. This game is doing its best to be faithful to the PS1 release, but that means it has a bunch of limitations that are hard to deal with in modern times, such as a 15 FPS cap while in combat. \n\nWhen playing this game most people use the 7th Heaven Mod set to fix a lot of the games issues. It is possible to add the"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:celeste:gamenative:t3:aef17e19",
+      "gameId": "win:celeste",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/aef17e19-92cf-4a20-b65c-7f472a29826c",
+      "dataAsOf": "2026-05-09",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Minor graphical issues (horizontal lines/artifacts)\nDoes not boot with default config (needs manual switch to wined3d)\n\nUsing proton-11.0-arm64-ec (emuready doesnt have it as an option yet)"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Tensor G5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:dead-cells:gamenative:t3:8eebe03f",
+      "gameId": "win:dead-cells",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/8eebe03f-bf27-4ef4-90f4-9fa3e4114a98",
+      "dataAsOf": "2026-05-09",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Dimensity 8300."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:slay-the-spire:gamenative:t3:c0a32a7a",
+      "gameId": "win:slay-the-spire",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/c0a32a7a-200c-4d4d-bff3-6b37b55cae18",
+      "dataAsOf": "2026-05-08",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Boot takes a while but seems fine otherwise"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hollow-knight:gamenative:t3:9c085e25",
+      "gameId": "win:hollow-knight",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/9c085e25-9720-4aaa-a36f-a8d1e6cd326d",
+      "dataAsOf": "2026-05-08",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hotline-miami:gamenative:t3:5614f485",
+      "gameId": "win:hotline-miami",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/5614f485-9f8a-4db6-a885-35b837d9524a",
+      "dataAsOf": "2026-05-08",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Black screen using GameNative known config, but setting:\n\nWINEDLLOVERRIDES\nsoft_oal=native\n\nin \"Environment\" works perfectly on both classic and updated versions."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:gta-v:gamenative:t3:dbcf51f4",
+      "gameId": "win:gta-v",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/dbcf51f4-9b11-41c0-9f6e-92e5e1cbfcdb",
+      "dataAsOf": "2026-05-08",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Locked 60fps\nHigh setting\nUse legacy version"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:blasphemous:gamenative:t3:58ef40f8",
+      "gameId": "win:blasphemous",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/58ef40f8-e1f7-4c2b-9759-a63329ee9cb7",
+      "dataAsOf": "2026-05-08",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): RP5 High Performance = 55-60 fps. Performance =50-60fps."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 865."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:titanfall-2:gamenative:t3:77980126",
+      "gameId": "win:titanfall-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/77980126-24b4-447b-b3d8-bdbe9ae9ceba",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Enable Steam offline mode and disable wifi on device."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:dredge:gamenative:t3:dfa85be5",
+      "gameId": "win:dredge",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/dfa85be5-e9d7-4eb5-b61a-fff59856aec5",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Device: KONKR Pocket Fit G3 Gen 3 (12gb Variant)\nNOTE: If not specified, use default. No image on startup. Use Steam/GOG version instead.\n\nEmulator Version\n0.9.1\n\n**General**\nContainer Variant: bionic\nWine Version: proton-10.0-arm64ec-2\nForce DLC: Off/Disabled\nUse Legacy DRM: Off/Disabled\nUnpack Files: Off/Disabled\nLaunch Steam Client (Beta): Off/Disabled\nSteam Type: Normal\n\n**Graphics**\nGraphics "
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Loadable on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:amnesia-bunker:gamenative:t3:bf8231b3",
+      "gameId": "win:amnesia-bunker",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/bf8231b3-c92a-4140-b719-020111ff9acf",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Device: KONKR Pocket Fit G3 Gen 3 (12gb Variant)\nNOTE: If not specified, use default. All Graphics Low ~15FPS. SLOW.\n\nEmulator Version\n0.9.1\n\n**General**\nContainer Variant: bionic\nWine Version: proton-10.0-arm64ec-2\nForce DLC: Off/Disabled\nUse Legacy DRM: Off/Disabled\nUnpack Files: Off/Disabled\nLaunch Steam Client (Beta): Off/Disabled\nSteam Type: Normal\n\n**Graphics**\nGraphics Driver: Wrapper\nGraph"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Poor on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:persona-3-reload:gamenative:t3:6dae914d",
+      "gameId": "win:persona-3-reload",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/6dae914d-84f3-43dd-a33c-5c1c04888288",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): It is playable, however the framerate is pretty low sometimes (around 30 fps but drops to 20-15 sometimes)\nUsed proton 11 arm, proton 9 wouldnt boot the game. Otherwise default GameNative config."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hollow-knight:gamenative:t3:5195c5b2",
+      "gameId": "win:hollow-knight",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/5195c5b2-7755-4614-9118-9fe1a1f25d86",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Proton-10.0-4-arm64ec-1"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:undertale:gamenative:t3:38fa0f0b",
+      "gameId": "win:undertale",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/38fa0f0b-7ac3-436d-9efa-185d852344fd",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Copied from rain4cat's report:\n\"**IMPORTANT:**\nOn the first boot, you must change a setting, otherwise you literally can't move UP in the menu and in-game you will constantly move up.\nTo fix this, open Undertale and do the following while on the main menu:\nSettings > Joystick Config > Change DIR CHOICE to ANALOG ONLY\"\nThanks to them for helping get the game to work!"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:stardew:gamenative:t3:f41511c5",
+      "gameId": "win:stardew",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/f41511c5-d1fd-4b97-b223-0051a2e3b49f",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:slay-the-spire:gamenative:t3:66f5dac3",
+      "gameId": "win:slay-the-spire",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/66f5dac3-33a5-444a-ab6a-0f5e3515782c",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Did not work on proton 11."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:pentiment:gamenative:t3:c7c83a42",
+      "gameId": "win:pentiment",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/c7c83a42-ee3d-44bd-9dae-cb86fabe1d48",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Texture glitch on the start screen. The rest of the game loaded well."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:octopath-traveler:gamenative:t3:f3686e9b",
+      "gameId": "win:octopath-traveler",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/f3686e9b-d8c7-4d1f-8b70-2af9551b1ff6",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:inscryption:gamenative:t3:ca778316",
+      "gameId": "win:inscryption",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/ca778316-f543-4886-911d-9e7d01211db4",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Make sure to map controls to keyboard and mouse."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hollow-2:gamenative:t3:14c700ab",
+      "gameId": "win:hollow-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/14c700ab-b747-4cdf-8132-da95f52d056e",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hollow-knight:gamenative:t3:f156f2e2",
+      "gameId": "win:hollow-knight",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/f156f2e2-85af-452b-8414-a02b44408f1e",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Had major texture issues when trying to use proton 10 and 11. Works perfectly on proton 9."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hades-2:gamenative:t3:3eaf703a",
+      "gameId": "win:hades-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/3eaf703a-b57f-43b9-a8a0-405d0fe444f2",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hades:gamenative:t3:25f98748",
+      "gameId": "win:hades",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/25f98748-08b9-4694-a3b6-013c8f078a70",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Make sure Use Legacy DRM is on."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:ff7-remake:gamenative:t3:50c5009d",
+      "gameId": "win:ff7-remake",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/50c5009d-1401-4d1c-8d45-a8121ddcd7eb",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Change executable path to FF7_Launcher.exe. Turn on Unpack Files. Remap all controls to presets in the launcher (substitute Switch and Target for any of your choice). Cloud saves do not work, just like the regular Steam version."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:dead-cells:gamenative:t3:feaa9684",
+      "gameId": "win:dead-cells",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/feaa9684-93ab-4994-b5c3-f4c7344352c4",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Ran using proton 11."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:balatro:gamenative:t3:68abde30",
+      "gameId": "win:balatro",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/68abde30-5472-421b-bfea-bf7ddb5de562",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Ran well in proton 11."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:blue-prince:gamenative:t3:35ac72fd",
+      "gameId": "win:blue-prince",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/35ac72fd-5aa6-491b-a507-bf93d4672c96",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:forza-horizon-4:gamenative:t3:bbeb0ed3",
+      "gameId": "win:forza-horizon-4",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/bbeb0ed3-e9f1-4356-8095-1d11c3527b5c",
+      "dataAsOf": "2026-05-07",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Enters Game and able to play through interactive opening. Crashes as soon as you are given control of your first vehicle."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Ingame on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:subnautica:gamenative:t3:3f7a5e06",
+      "gameId": "win:subnautica",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/3f7a5e06-e99e-42fb-8768-b18b83bf08d3",
+      "dataAsOf": "2026-05-06",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Device: KONKR Pocket Fit G3 Gen 3 (12gb Variant)\nNOTE: If not specified, use default.\n\nIn-Game Settings: \nScreen Resolution - 960 x 540\nVSync - Enabled (60 Cap)\nGraphics - Low\nAnti Aliasing - TAA\n\nEmulator Version\n0.9.1\n\n**General**\nContainer Variant: bionic\nWine Version: proton-10.0-arm64ec-2\nForce DLC: Off/Disabled\nUse Legacy DRM: Off/Disabled\nUnpack Files: Off/Disabled\nLaunch Steam Client (Beta"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:fallout-nv:gamenative:t3:739d40eb",
+      "gameId": "win:fallout-nv",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/739d40eb-cdd2-46df-b2b1-00b6f18e885b",
+      "dataAsOf": "2026-05-06",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): I wanted to play on game native. Finally got it with a few tweaks."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:animal-well:gamenative:t3:775ae896",
+      "gameId": "win:animal-well",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/775ae896-5cfb-42ac-87a2-7f6952ae4046",
+      "dataAsOf": "2026-05-06",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Runs at a constant 58 fps with dips to 38 fps at random locations of the map. This is not frequent tho.I personally capped the fps to 40 for a 100% stable and smooth experience. Absolutely zero problems if you play this way and I highly recommend it. Also played without phone cooler and the battery stayed well. Also I used proton 10.0-4 arm64 and Box64 version was 0.4.2 (these werent options in em"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8s Gen 4."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:portal-2:gamenative:t3:72632801",
+      "gameId": "win:portal-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/72632801-6c60-4291-993c-5358f98be1e4",
+      "dataAsOf": "2026-05-06",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): its just already so optimized and its a valve game from 2012 of course it runs perfectly"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:enter-the-gungeon:gamenative:t3:ceb45f12",
+      "gameId": "win:enter-the-gungeon",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/ceb45f12-6d52-4296-a2e1-543357d49303",
+      "dataAsOf": "2026-05-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): In order for it to run great I had to do a couple things, I turned resolution to 960x540, put scaling mode to pixel perfect, turning off V-Sync, putting shader quality to medium along with debris quantity. The game stays between 30-60fps though the stutter caused by that felt weird so i limited it to 30 fps"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:smt-v-vengeance-pc:gamenative:t3:c6a9cb70",
+      "gameId": "win:smt-v-vengeance-pc",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/c6a9cb70-2439-4c46-9df3-8871d9264685",
+      "dataAsOf": "2026-05-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Runs 30fps on gamenative 9.1. Lowered resolution with fsr1.0. Proton 11 not 10. Box 4.2. \n\nNote: using exynos tools 2.0. Could also run with default."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Exynos 2400."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:portal-2:gamenative:t3:c938ea30",
+      "gameId": "win:portal-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/c938ea30-66f5-4d0b-b05d-3fa33c607a74",
+      "dataAsOf": "2026-05-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:enter-the-gungeon:gamenative:t3:0563b2c9",
+      "gameId": "win:enter-the-gungeon",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/0563b2c9-3711-4e40-96de-585fb819133e",
+      "dataAsOf": "2026-05-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:street-fighter-6:gamenative:t3:d3a25911",
+      "gameId": "win:street-fighter-6",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/d3a25911-2f5a-497f-870d-8211f3c5a740",
+      "dataAsOf": "2026-05-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): used Proton 11 arm64 in GameNative."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:trails-cold-steel-1:gamenative:t3:4c3ef850",
+      "gameId": "win:trails-cold-steel-1",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/4c3ef850-fd25-42f2-892d-011d7a679b96",
+      "dataAsOf": "2026-05-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Works well with current config, no noticeable issues. If game doesn't launch with \"ed6_win2_DX9.exe\" try \"Config2_DX9.exe\"\n\nThis is the GOG version of the game. Cloud sync seems to work nicely for the saves. I have seen people report that they are sometimes spotty. GameNative 0.91 pre-release implemented GOG Force Sync Cloud saves which may help.\n\nDriver in GameNative is called 25.1.0"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hades:gamenative:t3:b5f4d6aa",
+      "gameId": "win:hades",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/b5f4d6aa-9762-4a03-b8df-81b95ba1ecea",
+      "dataAsOf": "2026-05-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:celeste:gamenative:t3:3f377ac6",
+      "gameId": "win:celeste",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/3f377ac6-c5d2-452f-acc5-c8de5a3e40be",
+      "dataAsOf": "2026-05-04",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): 60 FPS with default configuration."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Tensor G1."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:stardew:gamenative:t3:6b7c4551",
+      "gameId": "win:stardew",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/6b7c4551-a346-4bd9-99a8-0c1ee6b94355",
+      "dataAsOf": "2026-05-04",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Starts and runs perfectly.\n\nGraphics Driver Version: turnip26.0.0_R8.\nDXVK Version: 2.7.1-1-gplasync-0."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon G2 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:re-3-remake:gamenative:t3:672f9c8d",
+      "gameId": "win:re-3-remake",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/672f9c8d-e300-47dc-82a6-2d3e8efd734b",
+      "dataAsOf": "2026-05-04",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Game:\n🕹️ Resident Evil 3 \n🔒 DRM: Steam \n\nEmulator:\n🎮 GameNative v0.9.0\n🧩 Driver: \n     • MTR v3.2.2-p\n🖼️ Resolution:  \n     • 1280x720\n🍷 Wine Version:\n    • Proton-10.0-arm64ec-2\n⚓ VKD3D Version:\n    •  2.14.1\n📐 FEXCore Version:\n    • 2603\n🧰 Box64 Version:\n    • 0.4.0\n📦 Box64 Preset:\n    • Compatibility"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:fallout-4:gamenative:t3:30a9c1f6",
+      "gameId": "win:fallout-4",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/30a9c1f6-4e6e-4438-86f2-0a1c18504590",
+      "dataAsOf": "2026-05-04",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Game:\n🕹️ Fallout 4 \n🔒 DRM: Steam \n\nEmulator:\n🎮 GameNative v0.9.0\n🧩 Driver: \n     • MTR v3.2.2-p Axxx\n🖼️ Resolution:  \n     • 1280x720\n🍷 Wine Version:\n    • Proton-10.0-arm64ec-2\n⚓ DXVK Version:\n    •  2.4.1-gplasync\n📐 FEXCore Version:\n    • 2512\n🧰 Box64 Version:\n    • 0.3.6\n📦 Box64 Preset:\n    • Performance"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:dishonored:gamenative:t3:a5aab967",
+      "gameId": "win:dishonored",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/a5aab967-920d-40f9-9bbc-7f698d0c857a",
+      "dataAsOf": "2026-05-04",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Solid 60fps no graphical glitches or slowdowns"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:vampire-survivors:gamenative:t3:daef4e5b",
+      "gameId": "win:vampire-survivors",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/daef4e5b-e36c-43ed-b618-d5e0a7d90b8e",
+      "dataAsOf": "2026-05-04",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): **{Important Notice}** I ran into a couple of problems while testing this game, but they seem to be quirks of the game rather than being issues with the emulator.\n+ The Steam Cloud saves don't seem to be working so I had to create an account in the game to use their multi-platform saving system.\n+ When you open the game the cursor is messed up and will constantly go to the bottom of the screen. I'"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:darkest-dungeon:gamenative:t3:7352955e",
+      "gameId": "win:darkest-dungeon",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/7352955e-ed25-49cf-9cc4-012cb5d6e806",
+      "dataAsOf": "2026-05-03",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): I had to launch from inside the container on first run, exe is located in A:>_windows>win64. After that the game ran fine via shortcut. Played through the tutorial without issues at full speed. Cinematic videos are stuttery though."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:a-short-hike:gamenative:t3:73c96c76",
+      "gameId": "win:a-short-hike",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/73c96c76-08d1-439e-ab4a-918a7ae26629",
+      "dataAsOf": "2026-05-03",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:stardew:gamenative:t3:56d09a02",
+      "gameId": "win:stardew",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/56d09a02-7b57-420e-9927-e66fc32bc1ef",
+      "dataAsOf": "2026-05-03",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): - DXVK 1.10.3 Async on Proton 9 x86_64, \n- set icu to native and \n- memory to 4096 (or use WRAPPER_VMEM_MAX_SIZE to set custom size like 8192 [8GB RAM]).\n- [Took settings from here](https://www.emuready.com/listings/5e86b13a-9fdc-45ab-8da5-a7bc9f640c1b)"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Dimensity 8300."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hollow-knight:gamenative:t3:0d918bce",
+      "gameId": "win:hollow-knight",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/0d918bce-222d-4502-8dd4-13af0d22743e",
+      "dataAsOf": "2026-05-01",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Exynos 1580."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:street-fighter-v:gamenative:t3:b551829e",
+      "gameId": "win:street-fighter-v",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/b551829e-dd62-4b5a-b156-d4896d48b465",
+      "dataAsOf": "2026-05-01",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Ingame on Tiger T606."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:enter-the-gungeon:gamenative:t3:d5fbe6f0",
+      "gameId": "win:enter-the-gungeon",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/d5fbe6f0-8d13-4234-811a-6407960b74f5",
+      "dataAsOf": "2026-05-01",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): ranging fps from 25-35 fps"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Exynos 1380."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:street-fighter-v:gamenative:t3:97ac3c05",
+      "gameId": "win:street-fighter-v",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/97ac3c05-968e-492b-a3f9-931492f958e1",
+      "dataAsOf": "2026-05-01",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Ingame on Tiger T606."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:chained-echoes:gamenative:t3:d1392527",
+      "gameId": "win:chained-echoes",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/d1392527-9db4-48d1-b295-a07da9f8dd7e",
+      "dataAsOf": "2026-04-30",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:risk-of-rain:gamenative:t3:b795ffb1",
+      "gameId": "win:risk-of-rain",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/b795ffb1-9a35-4cd7-9894-a759ecaef3cf",
+      "dataAsOf": "2026-04-30",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Plays, and even plays around 30fps, but even with frameskip on, the engine can't keep the framerate and frame time in lock step, so you get slow downs where a 6 second cooldown can take as much as 12 seconds. The game remains responsive and playable during this slowdown, just events take longer. The further you get in the game the worse it is. The first map is almost completely playable.\n\nGamepad "
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Poor on A133."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:subnautica-bz:gamenative:t3:f0e991ca",
+      "gameId": "win:subnautica-bz",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/f0e991ca-6908-44a6-8a18-43560b3c12f3",
+      "dataAsOf": "2026-04-30",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): 📱\t\tRedMagic 11 Pro in **Balanced Mode** \n📺\t\tYouTube Video **available**. / 🖼️\tScreenshots **available**.\n\n⚠️\t\tGameNative 0.9.1 used!\n⚠️\t\tGameNative preset: Performance & Compatibility\n⚠️\t\tUnless otherwise specified, assume that the default settings apply.\n\n🖥️\t\tDXVK Version: 2.7.1-1-gplasync-0\n\n🖥️\t\tTested in resolution: (1280x720 ✔️) (1600x900 ✔️) (1920x1080 ❌)\n♨️\t\tSteam Version! 100% Legit!\n🎮\t\tPla"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:portal-2:gamenative:t3:c736b5c4",
+      "gameId": "win:portal-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/c736b5c4-5ac4-45ec-abf6-f8eddb0cfdc5",
+      "dataAsOf": "2026-04-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Solid 60fps on low at 720p (didn't check unlocked fps)\n3-5W power draw\n\nProton Wine 11.0-1 (SDK 28, build-20260428-1-sdk28)\nPULSE_LATENCY_MSEC 50"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Dimensity 8300 Ultra."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:ac-odyssey:gamenative:t3:c905b37d",
+      "gameId": "win:ac-odyssey",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/c905b37d-bece-4089-bfe7-d33927e8da6a",
+      "dataAsOf": "2026-04-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Game:\n🕹️ Assassin's Creed Odyssey \n🔒 DRM: pre-installed (DRM Free)\n\nEmulator:\n🎮 GameNative v0.9.0\n🧩 Driver: \n     • Turnip Gen8 V28\n🖼️ Resolution:  \n     • 1280x720\n🍷 Wine Version:\n    • Proton-10.0-arm64ec-2\n⚓ DXVK Version:\n    •  2.4.1-gplasync\n📐 FEXCore Version:\n    • 2603\n🧰 Box64 Version:\n    • 0.3.6\n📦 Box64 Preset:\n    • Compatibility"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:metaphor:gamenative:t3:f1858169",
+      "gameId": "win:metaphor",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/f1858169-4a79-4548-a38f-47538a76ff53",
+      "dataAsOf": "2026-04-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): FPS meter is not giving me readings but it feels like a pretty stable 27-30 FPS and the load times are surprisingly quick."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:ff10-hd:gamenative:t3:a2124547",
+      "gameId": "win:ff10-hd",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/a2124547-9c08-41c4-80bd-a5ed60d4a87c",
+      "dataAsOf": "2026-04-28",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Great experience on Medium Settings. 30fps."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:kingdom-come:gamenative:t3:97f5158b",
+      "gameId": "win:kingdom-come",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/97f5158b-2f55-48f2-84ff-bff9e65e52dc",
+      "dataAsOf": "2026-04-28",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Game:\n🕹️ Kingdomcome Deliverance \n🔒 DRM: Steam \n\nEmulator:\n🎮 GameNative v0.9.0\n🧩 Driver: \n     • 8eGen5-842.8\n🖼️ Resolution:  \n     • 1280x720\n🍷 Wine Version:\n    • Proton-9.0-arm64ec\n⚓ DXVK Version:\n    •  2.4.1-gplasync\n📐 FEXCore Version:\n    • 2512\n🧰 Box64 Version:\n    • 0.3.6\n📦 Box64 Preset:\n    • Compatibility"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:gow:gamenative:t3:1980310c",
+      "gameId": "win:gow",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/1980310c-f8bc-40f9-b9e8-7293f667718f",
+      "dataAsOf": "2026-04-28",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Game:\n🕹️ God of War 2018\n🔒 DRM: Steam \n\nEmulator:\n🎮 GameNative v0.8.1\n🧩 Driver: \n     • qcom-849\n🖼️ Resolution:  \n     • 1280x720\n🍷 Wine Version:\n    • Proton-9.0-arm64ec\n⚓ DXVK Version:\n    •  2.7.1\n📐 FEXCore Version:\n    • 2512\n🧰 Box64 Version:\n    • 0.3.6\n📦 Box64 Preset:\n    • Compatibility"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:civilization-vi:gamenative:t3:42c2d566",
+      "gameId": "win:civilization-vi",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/42c2d566-dec7-4613-936f-d6156ffa2dd3",
+      "dataAsOf": "2026-04-28",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Game launched using applied known config. Runs similar performance to when using a laptop, with progressive latency as the game plays out as is typical with Civilization games. Ran the game with animation skip on travel, but left combat animations.\n\nNo crashes or bugs found."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:nfs-mw-2005:gamenative:t3:2336060f",
+      "gameId": "win:nfs-mw-2005",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/2336060f-49b6-4935-995c-e3ca38e9b1d4",
+      "dataAsOf": "2026-04-28",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): The game I used was purchased on Steam, HOWEVER plain steam version couldn't be launched because of the EA Origin launcher error. I ended up installing the game through Steam, but then I used fixed files from gamecopyworld.com \"NFS: Rivals v1.2 (v1.3.0.0) [M7] Fixed Files #2\" to skip the requirement for stupid EA launcher. Then my legally aquired game ran without any issues with steam saves workin"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:helldivers-2:gamenative:t3:f3ae670c",
+      "gameId": "win:helldivers-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/f3ae670c-72dc-410f-a813-ab0d13c339c9",
+      "dataAsOf": "2026-04-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): This game fails to load due to a DRM or Anti-Cheat conflict. I attempted to use the Steam Client (Beta) and was unable to get passed the update window. \n\nRegardless I very much doubt that this game could run properly even without DRM due to it being graphically intensive."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Nothing on Snapdragon 8 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:borderlands-2:gamenative:t3:3c95db83",
+      "gameId": "win:borderlands-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/3c95db83-0c0f-4569-ab5f-c4ee348ff4c6",
+      "dataAsOf": "2026-04-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Device: KONKR Pocket Fit G3 Gen 3 (12gb Variant)\nNOTE: If not specified, use default.\n\nEmulator Version\n0.9.0\n\n**General**\nContainer Variant: bionic\nWine Version: proton-9.0-arm64ec\nForce DLC: Off/Disabled\nUse Legacy DRM: Off/Disabled\nUnpack Filed: Off/Disabled\nLaunch Steam Client (Beta): Off/Disabled\nSteam Type: Normal\n\n**Graphics**\nGraphics Driver: Wrapper\nGraphics Driver Version: turnip25.3.0_R"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:mgs-v:gamenative:t3:5cb2a349",
+      "gameId": "win:mgs-v",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/5cb2a349-9323-4531-a175-044e05895340",
+      "dataAsOf": "2026-04-26",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): For full controller compatibility, you must download game version 1.4.1. Official support for XInput controllers was disabled starting with version 1.5. To download the correct build, use SteamDepotDownloaderGUI with the following parameters:\n\nApp ID: 2131652\nDepot ID: 2131652\nManifest ID: 6342968037014189641\n(https://steamdb.info/depot/2131652/manifests/)\n\nCurrently, I am testing an incomplete tr"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:mgs-v:gamenative:t3:2b4a5ac5",
+      "gameId": "win:mgs-v",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/2b4a5ac5-1335-4def-8127-471356473fd6",
+      "dataAsOf": "2026-04-26",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): To ensure full controller compatibility, you must downgrade to game version 1.4.1. Official support for XInput controllers was disabled starting with version 1.5.\n\nYou can use SteamDepotDownloaderGUI with the following parameters to download the correct build:\n\nApp ID: 2131652\nDepot ID: 2131652\nManifest ID: 6342968037014189641\n\n(you can look it up here: https://steamdb.info/depot/2131652/manifests"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:mass-effect-a:gamenative:t3:63de908f",
+      "gameId": "win:mass-effect-a",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/63de908f-b8ce-4e63-9cd9-f3023b81647b",
+      "dataAsOf": "2026-04-25",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): RP6 12G Stick top. (Quiet Performance) Works pretty well. Due to the EA app needing to be accessed, you need to ensure that Use Legacy DRM is selected, Steam Offline Mode is activated, and Launch Steam Client (Beta) is active. \n\nAlso, for some reason, the controls do not work if you have Use DR13 active. Since this version is not setup for a controller, you will also need to modify the Physical Co"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:celeste:gamenative:t3:eba48e26",
+      "gameId": "win:celeste",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/eba48e26-bb2f-4f16-8837-b6296c188a1c",
+      "dataAsOf": "2026-04-25",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Startup was a bit slow, but in played flawless..."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Tiger T618."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:bioshock-2:gamenative:t3:1392ef5b",
+      "gameId": "win:bioshock-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/1392ef5b-9b61-4fed-a597-ce3deb1e31eb",
+      "dataAsOf": "2026-04-24",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): ⚠️\t\tGFX Bugs!\n⚠️\t\tHigh textures takes age to load! that's why i use \"low\" settings\n⚠️\t\tUse \"Builtin (Wine)\" for DirectSound & DirectMusic options, otherwise: there's no sound.\n\n📱\t\tRedMagic 11 Pro in **Balanced Mode** \n📺\t\tYouTube Video **available**. / 🖼️\tScreenshots **available**.\n\n⚠️\t\tGameNative 0.9.0 used!\n⚠️\t\tGameNative preset: Performance\n⚠️\t\tUnless otherwise specified, assume that the default"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:bioshock:gamenative:t3:928c02cb",
+      "gameId": "win:bioshock",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/928c02cb-b813-493e-b874-fbb3139c2284",
+      "dataAsOf": "2026-04-24",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): ⚠️\t\tHigh textures takes age to load! that's why i use \"low\" settings\n⚠️\t\tUse \"Builtin (Wine)\" for DirectSound & DirectMusic options, otherwise: there's no sound.\n\n📱\t\tRedMagic 11 Pro in **Balanced Mode** \n📺\t\tYouTube Video **available**. / 🖼️\tScreenshots **available**.\n\n⚠️\t\tGameNative 0.9.0 used!\n⚠️\t\tGameNative preset: Performance\n⚠️\t\tUnless otherwise specified, assume that the default settings appl"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:mafia-2:gamenative:t3:ba88fbfa",
+      "gameId": "win:mafia-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/ba88fbfa-535a-4871-960a-cccdb9d83f2f",
+      "dataAsOf": "2026-04-23",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Im may not using the right driver but with turnip adreno driver T26 you can get up to 35-50 fps"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:stardew:gamenative:t3:28492521",
+      "gameId": "win:stardew",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/28492521-d193-477c-b533-d57d4ce45661",
+      "dataAsOf": "2026-04-23",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Takes a while to boot up and find saves.\nFPS is stable with minimal hiccups.\nNo further issues detected as of yet."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Exynos 1380."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:mafia:gamenative:t3:e8f60ced",
+      "gameId": "win:mafia",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/e8f60ced-1e1f-408a-82b2-f91aa3572ce1",
+      "dataAsOf": "2026-04-23",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Fps between 19-30"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 5."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:ori-blind-forest:gamenative:t3:389a2ec0",
+      "gameId": "win:ori-blind-forest",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/389a2ec0-dbe9-4133-8838-08d78e9940a8",
+      "dataAsOf": "2026-04-23",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Small artifact in the bottom right and controller acts a little weird"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:trails-cold-steel-2:gamenative:t3:2648f2f4",
+      "gameId": "win:trails-cold-steel-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/2648f2f4-552b-46cb-bda8-91097acf74ab",
+      "dataAsOf": "2026-04-23",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): My graphic driver is wrapper, can't be selected from the choice \nIf you need to launch sen2launcher or get launcher error while starting game you needed to\n-first you need to change wine version to proton-9.0-x86_64 \n-open container and open sen2launcher to adjust the setting \n-back to edit container  and change wine version back to proton-10.0-arm64ec-2 and launch the game \nwhen you need to adjus"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:l4d2:gamenative:t3:623bec9d",
+      "gameId": "win:l4d2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/623bec9d-2acd-45ff-9db6-6760062d81ed",
+      "dataAsOf": "2026-04-23",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Had some resolution related issues, that I think stemmed from my cloud saved settings. I had to change the resolution in game, which for some reason killed the graphical settings. You have to change the resolution then exit out of the game blind for it to save properly.\n\nGraphical settings on several runs reset to all highest, which surprisingly still runs mostly okay. The launch arguments only cr"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on A133."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:celeste:gamenative:t3:e6d24f1e",
+      "gameId": "win:celeste",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/e6d24f1e-ffae-4b4d-9731-c707bb3b87ae",
+      "dataAsOf": "2026-04-23",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Default settings, runs perfectly basically locked at 60fps"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Exynos 2200."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:silent-hill-2-r:gamenative:t3:7fbc8743",
+      "gameId": "win:silent-hill-2-r",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/7fbc8743-ef89-41df-a686-ab40edc223e5",
+      "dataAsOf": "2026-04-22",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Device: KONKR Pocket Fit G3 Gen 3 (12gb Variant)\nNOTE: If not specified, use default. MUST use Exec Argument = -dx11\nFPS: ~13\nIn-Game Settings:\nGraphics - Low\nFSR - Performance\n\nEmulator Version\n0.9.0\n\n**General**\nContainer Variant: bionic\nWine Version: proton-10.0-4-arm64ec-1 or proton-10.0-arm64ec-2\nExec Arguments: -dx11\nForce DLC: Off/Disabled\nUse Legacy DRM: Off/Disabled\nUnpack Filed: Off/Disa"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:bioshock:gamenative:t3:aa6f7ae6",
+      "gameId": "win:bioshock",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/aa6f7ae6-ec4a-4ed4-aa31-94e19a96bef7",
+      "dataAsOf": "2026-04-22",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Device: KONKR Pocket Fit G3 Gen 3 (12gb Variant)\nNOTE: If not specified, use default.\n\nEmulator Version\n0.9.0\n\n**General**\nContainer Variant: bionic\nWine Version: proton-10.0-arm64ec-2\nForce DLC: Off/Disabled\nUse Legacy DRM: Off/Disabled\nUnpack Filed: Off/Disabled\nLaunch Steam Client (Beta): Off/Disabled\nSteam Type: Normal\n\n**Graphics**\nGraphics Driver: Wrapper\nGraphics Driver Version: turnip26.0."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:nfs-u2:gamenative:t3:33f394e3",
+      "gameId": "win:nfs-u2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/33f394e3-3795-4250-b544-ee8a5a5d6156",
+      "dataAsOf": "2026-04-22",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Game screen got stuck to the left side"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Exynos 1580."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:hollow-knight:gamenative:t3:8091d45f",
+      "gameId": "win:hollow-knight",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/8091d45f-8acc-47ae-a530-9429d891bfc2",
+      "dataAsOf": "2026-04-21",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): With these setting, although it took between 2-5 minutes to load up, the game manage to be playable. At the beginning when going through a loading screen to slows down but as you play, the loading screen time reduces."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:a-short-hike:gamenative:t3:a24ae42c",
+      "gameId": "win:a-short-hike",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/a24ae42c-1021-451b-9c09-00caeadcc1cc",
+      "dataAsOf": "2026-04-21",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): A great experience (60 FPS), considering this\n- low resolution-quality effects \n- medium resolution-great effects\n- high resolution-low effects"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Dimensity 1080."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:celeste:gamenative:t3:541edac4",
+      "gameId": "win:celeste",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/541edac4-cee3-406e-923f-c5fcbe1551f3",
+      "dataAsOf": "2026-04-21",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Known config worked *mostly* perfectly, including onboard controller support. First launch had a stutter, disabling vsync fixed it. I also disabled CPU7 and it seemed rock stable after that. \n\nIt did take a while to boot, almost two minutes. Just wait it out."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on A133."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:rocket-league:gamenative:t3:717f0c5b",
+      "gameId": "win:rocket-league",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/717f0c5b-77d3-4579-8cb8-d5cac11400e3",
+      "dataAsOf": "2026-04-21",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): texture details on high quality,\nrender quality: Quality\nrest on performance.\n\nslight stutters when starting an online game, and whenever a player leaves or joins\n\nEpic games"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:eastward:gamenative:t3:58dec846",
+      "gameId": "win:eastward",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/58dec846-7639-4e01-b595-dc5a8256fc5d",
+      "dataAsOf": "2026-04-21",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Takes a bit to boot. Happy I got this to run in the first place. Stutters when loading, interacting, or when there are a lot of enemies. When it’s happy, floats around 60fps when you turn the in-game render mode to low."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Poor on Snapdragon G1 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:bulletstorm:gamenative:t3:621cb023",
+      "gameId": "win:bulletstorm",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/621cb023-190e-4df4-a758-118d89729775",
+      "dataAsOf": "2026-04-20",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Device: KONKR Pocket Fit G3 Gen 3 (12gb Variant)\nNOTE: If not specified, use default. MUST turn ON Unpack Files under General. \n\nEmulator Version\n0.9.0\n\n**General**\nContainer Variant: bionic\nWine Version: proton-9.0-arm64ec\nForce DLC: Off/Disabled\nUse Legacy DRM: Off/Disabled\nUnpack Files: On/Enabled\nLaunch Steam Client (Beta): Off/Disabled\nSteam Type: Normal\n\n**Graphics**\nGraphics Driver: Wrapper"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:sleeping-dogs:gamenative:t3:0d5f33ce",
+      "gameId": "win:sleeping-dogs",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/0d5f33ce-4b83-4189-99d3-21623d46657a",
+      "dataAsOf": "2026-04-19",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Dimensity 8350."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:street-fighter-v:gamenative:t3:4cf2d33f",
+      "gameId": "win:street-fighter-v",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/4cf2d33f-268e-4290-86eb-becbe1c774d7",
+      "dataAsOf": "2026-04-18",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Plays well without adjusting anything but I cannot figure out how to get it to load my dlc characters since it won't let me login to cfn"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:animal-well:gamenative:t3:fe6a45d0",
+      "gameId": "win:animal-well",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/fe6a45d0-2d2d-449c-bb92-be48f4073143",
+      "dataAsOf": "2026-04-18",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Did not launch on known config"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Nothing on Snapdragon G1 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:balatro:gamenative:t3:126f020d",
+      "gameId": "win:balatro",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/126f020d-8fc6-4a14-856d-d47749f62f0b",
+      "dataAsOf": "2026-04-18",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Does not load.\n\nUsed \"known config\""
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Nothing on Snapdragon G1 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:bioshock-2:gamenative:t3:94887d2f",
+      "gameId": "win:bioshock-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/94887d2f-f63c-4748-ab5f-81b7ee71dabc",
+      "dataAsOf": "2026-04-18",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Disable winesync under Environment to fix broken textures"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:re-3-remake:gamenative:t3:a4b2b17c",
+      "gameId": "win:re-3-remake",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/a4b2b17c-7f6b-4252-8b97-992291eb64eb",
+      "dataAsOf": "2026-04-17",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 7+ Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:bioshock-2:gamenative:t3:b613a1b9",
+      "gameId": "win:bioshock-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/b613a1b9-b6a3-4b06-b4a0-ce363ac27a84",
+      "dataAsOf": "2026-04-17",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Run perfectly without issue at 50-60"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:gta-v:gamenative:t3:250b8401",
+      "gameId": "win:gta-v",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/250b8401-9923-4d45-a55d-2e618a03bfe5",
+      "dataAsOf": "2026-04-16",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): \"Path not found\""
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Nothing on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:bayonetta-pc:gamenative:t3:0f805e08",
+      "gameId": "win:bayonetta-pc",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/0f805e08-e6f4-44b0-b56b-1f7a0862000e",
+      "dataAsOf": "2026-04-15",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): The game is going quite perfectly, I would say. There are subtle drawdowns of up to 55 frames, but this is not felt in the gameplay. FPS is locked at 60 frames btw. \nThe graphics settings didn't make much difference, so I'd play on medium, just to keep the device warm. \nI do not recommend setting a resolution other than 720, the picture stretches strangely and an attempt to change it hangs the gam"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:oblivion-remastered:gamenative:t3:1c7fb563",
+      "gameId": "win:oblivion-remastered",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/1c7fb563-6128-4c0c-b695-1defdb89550d",
+      "dataAsOf": "2026-04-15",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Retroid Pocket 6 8gb/128gb\n\nIt runs perfectly at 1920 x 1080 with medium settings cap to 60fps, you can play with settings and resolution to your liking. To ensure the controls work properly, download OBSE, Northern UI (NorthernUIAway if you prefer vanilla menus) and SkyBSA from Nexus Mods and add them to the game folder. \nTo do this:\n1. Extract the three mods into the Downloads folder, preferably"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:helldivers-2:gamenative:t3:a1d21e7c",
+      "gameId": "win:helldivers-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/a1d21e7c-57cf-4cd9-9933-e616186b9293",
+      "dataAsOf": "2026-04-15",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Error notification on launch.\n>Fatal error\n>Gameguard: Initialize error. Try rebooting or closing all programs that might interfere and try again. Please contact support at Http:/arrowhead.zendesk.com for further assistance. Error code: 114"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Nothing on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:darktide:gamenative:t3:11962f69",
+      "gameId": "win:darktide",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/11962f69-b2e5-4670-8504-72480f5e80ee",
+      "dataAsOf": "2026-04-14",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Default settings runs the game but is a little slow and the intro logos and cutscenes are broken. The game will stay on a black screen until you hit Start or A, because the cutscenes aren't playing properly. \n\nThe main game will still run. If you don't care about the cinematics, you can skip the fixes below.\n\nPerformance: \n- GameNative: Switch to VKD3D renderer\n- Lower the in-game graphics setting"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:blasphemous-2:gamenative:t3:b4ee9150",
+      "gameId": "win:blasphemous-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/b4ee9150-9901-42bd-bc73-34c610f197e4",
+      "dataAsOf": "2026-04-14",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): FPS said 120, no dips, ran great"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:balatro:gamenative:t3:c8093da2",
+      "gameId": "win:balatro",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/c8093da2-5ed4-497f-9e31-12035cb2df26",
+      "dataAsOf": "2026-04-14",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): FPS didnt show, but zero issues and worked great"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:cult-of-the-lamb:gamenative:t3:df00ccc8",
+      "gameId": "win:cult-of-the-lamb",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/df00ccc8-f813-4ae0-9ffc-ee70188dc6d3",
+      "dataAsOf": "2026-04-13",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Limited testing, four about 15 minutes. Took a little while to load shaders and such, but was able to get a fairly consistent 30 in the combat, with about 20 or so in the town with all the NPCs. I would imagine the FPS will drop if there are a lot of combat animations and enemies.\n\nAll settings were set to low in game, I also had to set it to windowed fullscreen to be able to set to 720\n\nDid get s"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:witcher-2:gamenative:t3:1bad5863",
+      "gameId": "win:witcher-2",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/1bad5863-482d-44da-a3c6-fb26202c2055",
+      "dataAsOf": "2026-04-13",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Steam version of the game, bought on steam and downloaded on GameNative after logging into my Steam account.\n\nAdditional info:\nDXVK Version 2.7.1-1-gplasync-0\n\nIn game resolution: 1280x720 with Antialiasing enabled. I haven't found a way to start launcher in GameNative so it would be possible to change the graphical configuration. As a workaround I have edited the user.ini file, which is easy to f"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:re-3-remake:gamenative:t3:f5f1905d",
+      "gameId": "win:re-3-remake",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/f5f1905d-8462-4fbc-b985-8d47d9a116eb",
+      "dataAsOf": "2026-04-13",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): On GameNative,select branch dx11_non_rt and fix to 30fps in game options; it runs at 30 fps totally solid"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:super-meat-boy:gamenative:t3:3d832e6b",
+      "gameId": "win:super-meat-boy",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/3d832e6b-b14a-42db-b215-f343aabb5712",
+      "dataAsOf": "2026-04-13",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Run at 45-60 fps :\n medium settings \nresolution 1280x720\nDynamic resolution :YES"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 8 Elite."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:xcom-eu:gamenative:t3:d25699a1",
+      "gameId": "win:xcom-eu",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/d25699a1-2b39-40be-90d5-850ba4663049",
+      "dataAsOf": "2026-04-13",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): OK this was a pain but have it working\n\n**Win Components**\n\n- Direct3D - Native Windows\n- Direct Sound - Native Windows\n- DirectMusic - Native Windows\n- DirectShow - Native Windows\n- DirectPlay - Builtin Wine\n- Visual C++ 2010 Native Windows\n- Windows Media Decoder Native Windows\n- OpenGL builtin Wine\n\n**Open the container**\n\nNavigate to documents - My Games - XCOM - Enemy Unknown - XCOMGame - Con"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Snapdragon 8 Gen 2."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:dark-souls-3:gamenative:t3:c222a945",
+      "gameId": "win:dark-souls-3",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/c222a945-2910-48b7-b12c-8b1cf9095e22",
+      "dataAsOf": "2026-04-12",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Ensure the RG406V CPU 'High Mode' is switched on. In GameNative app under 'Emulation' tab, set the DXVK_FRAME_RATE to 30 to lock it at 30fps for performance. Once in game set all video settings to lowest settings available. Definitely playable but does have a slight drop in frames when loading into new areas etc."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Great on Tiger T820."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:dead-cells:gamenative:t3:c7d5498d",
+      "gameId": "win:dead-cells",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/c7d5498d-fb69-40fa-991e-00759a065adc",
+      "dataAsOf": "2026-04-12",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Solid 60fps.\n1280x720\n\nturnip26.0.0_R8"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 865."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:re-3-remake:gamenative:t3:f2bb1cfb",
+      "gameId": "win:re-3-remake",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/f2bb1cfb-8d74-4b45-8c89-d990c3ec4aad",
+      "dataAsOf": "2026-04-12",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Steam version, no Repack.\nI am running it at around 20-30fps, some dips, but I feel it totally playable."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Playable on Snapdragon G3 Gen 3."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:sea-of-stars:gamenative:t3:20a17fbf",
+      "gameId": "win:sea-of-stars",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/20a17fbf-b849-4652-a476-8422af3c53c2",
+      "dataAsOf": "2026-04-12",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Runs great at 60fps most of the time.\n1280x720\n\nturnip26.0.0_R8"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 865."
+        }
+      ]
+    },
+    {
+      "id": "emuready:win:stardew:gamenative:t3:917b24cb",
+      "gameId": "win:stardew",
+      "emulatorId": "gamenative",
+      "tier": 3,
+      "sourceLabel": "From the community (EmuReady / GameNative)",
+      "sourceUrl": "https://www.emuready.com/listings/917b24cb-97c1-4b87-816e-35db6aa3939d",
+      "dataAsOf": "2026-04-12",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://gamenative.app"
+        },
+        {
+          "kind": "TIP",
+          "text": "Community note (via EmuReady): Runs perfect, 60fps.\n1280x720\n\nturnip25.3.0_R3_Auto"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Community report: Perfect on Snapdragon 865."
+        }
+      ]
+    }
+  ]
+}
