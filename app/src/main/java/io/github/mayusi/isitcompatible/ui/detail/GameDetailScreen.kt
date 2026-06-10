@@ -759,7 +759,10 @@ private fun VerdictCard(
                             fontWeight = FontWeight.SemiBold,
                             color = onContainer,
                         )
-                        StabilityPill(rec.stability)
+                        // PART 2 honesty fix: estimated entries show a grey "Est. <label>"
+                        // pill; the confident full-color pill is only for real report data.
+                        if (isGenOnly) EstimatedStabilityPill(rec.stability)
+                        else StabilityPill(rec.stability)
                     }
                 }
                 Spacer(Modifier.height(12.dp))
@@ -915,6 +918,30 @@ private fun StabilityPill(stability: String) {
     }
 }
 
+/**
+ * PART 2 honesty fix: for estimated-only entries the stability is a heuristic,
+ * not a real user report. Show a neutral grey "Est. <label>" pill so it is never
+ * mistaken for a confirmed result. The full-saturation confident pill is reserved
+ * for data backed by real reports.
+ */
+@Composable
+private fun EstimatedStabilityPill(stability: String) {
+    val neutralColor = MaterialTheme.colorScheme.onSurfaceVariant
+    Box(
+        Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(neutralColor.copy(alpha = 0.14f))
+            .padding(horizontal = 6.dp, vertical = 1.dp),
+    ) {
+        Text(
+            "Est. ${PlatformColors.stabilityLabel(stability)}",
+            style = MaterialTheme.typography.labelSmall,
+            color = neutralColor,
+            fontWeight = FontWeight.SemiBold,
+        )
+    }
+}
+
 private fun friendlyConfidenceLabel(b: Bucket): String = when (b) {
     Bucket.SAME_SOC_AND_RAM -> "Reports are from the same chip and RAM as yours — high accuracy."
     Bucket.SAME_SOC_FAMILY -> "Same chip family, different RAM — result may vary."
@@ -924,11 +951,15 @@ private fun friendlyConfidenceLabel(b: Bucket): String = when (b) {
 
 @Composable
 private fun ConfidenceBadge(c: Confidence) {
+    // Colors derived from the theme: tertiary=green for STRONG, error=red for VERY_WEAK.
+    // MODERATE and WEAK keep their semantic amber shades (no theme token maps well).
+    val tertiaryColor = MaterialTheme.colorScheme.tertiary
+    val errorColor = MaterialTheme.colorScheme.error
     val (label, color) = when (c) {
-        Confidence.STRONG -> "STRONG" to Color(0xFF4CAF50)
-        Confidence.MODERATE -> "MODERATE" to Color(0xFFAED581)
-        Confidence.WEAK -> "WEAK" to Color(0xFFFFC107)
-        Confidence.VERY_WEAK -> "VERY WEAK" to Color(0xFFEF5350)
+        Confidence.STRONG    -> "STRONG"    to tertiaryColor
+        Confidence.MODERATE  -> "MODERATE"  to Color(0xFFAED581)
+        Confidence.WEAK      -> "WEAK"      to Color(0xFFFFC107)
+        Confidence.VERY_WEAK -> "VERY WEAK" to errorColor
     }
     Box(
         Modifier
@@ -1467,10 +1498,12 @@ private fun PerformanceOverviewBody(reports: List<ReportEntity>) {
     val worst = fpsList.minOrNull()
     val avg = if (fpsList.isNotEmpty()) fpsList.average().toInt() else null
 
+    val perfBestColor = MaterialTheme.colorScheme.tertiary
+    val perfWorstColor = MaterialTheme.colorScheme.error
     Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-        Stat("Best", best?.let { "$it fps" } ?: "—", Color(0xFF4CAF50))
+        Stat("Best", best?.let { "$it fps" } ?: "—", perfBestColor)
         Stat("Avg",  avg?.let { "$it fps" } ?: "—", MaterialTheme.colorScheme.onSurface)
-        Stat("Worst", worst?.let { "$it fps" } ?: "—", Color(0xFFEF5350))
+        Stat("Worst", worst?.let { "$it fps" } ?: "—", perfWorstColor)
     }
     Spacer(Modifier.height(14.dp))
     Text("Stability breakdown",
@@ -1479,11 +1512,12 @@ private fun PerformanceOverviewBody(reports: List<ReportEntity>) {
         letterSpacing = 0.8.sp)
     Spacer(Modifier.height(6.dp))
     val total = reports.size.toFloat()
+    // Use PlatformColors.stability for consistent cross-app semantic colors.
     val tallies = listOf(
-        Triple("Perfect", reports.count { it.stability.equals("PERFECT", true) }, Color(0xFF4CAF50)),
-        Triple("Playable", reports.count { it.stability.equals("PLAYABLE", true) }, Color(0xFFAED581)),
-        Triple("Glitchy", reports.count { it.stability.equals("GLITCHY", true) }, Color(0xFFFFC107)),
-        Triple("Crashes", reports.count { it.stability.equals("CRASHES", true) }, Color(0xFFEF5350)),
+        Triple("Perfect", reports.count { it.stability.equals("PERFECT", true) }, PlatformColors.stability("PERFECT")),
+        Triple("Playable", reports.count { it.stability.equals("PLAYABLE", true) }, PlatformColors.stability("PLAYABLE")),
+        Triple("Glitchy", reports.count { it.stability.equals("GLITCHY", true) }, PlatformColors.stability("GLITCHY")),
+        Triple("Crashes", reports.count { it.stability.equals("CRASHES", true) }, PlatformColors.stability("CRASHES")),
     ).filter { it.second > 0 }
     tallies.forEach { (label, count, color) ->
         Row(Modifier.fillMaxWidth().padding(vertical = 3.dp),

@@ -399,16 +399,31 @@ private fun GameCard(s: GameSummary, tried: Boolean = false, onClick: () -> Unit
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             if (s.bestEmulatorName != null) {
-                Text("Best: ${s.bestEmulatorName}",
+                // PART 2 honesty fix: at WEAK/VERY_WEAK confidence the "best" emulator
+                // is a heuristic extrapolation — not confirmed on this device.
+                val emuLabelIsEstimated =
+                    s.bestConfidence == io.github.mayusi.isitcompatible.recommend.Confidence.WEAK ||
+                    s.bestConfidence == io.github.mayusi.isitcompatible.recommend.Confidence.VERY_WEAK
+                val emuLabel = if (emuLabelIsEstimated)
+                    "Best: ${s.bestEmulatorName} (estimated)"
+                else
+                    "Best: ${s.bestEmulatorName}"
+                Text(emuLabel,
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    color = if (emuLabelIsEstimated)
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f)
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        // FPS pill (right) — dims when match confidence is WEAK / VERY_WEAK
+        // FPS pill (right) — dims when match confidence is WEAK / VERY_WEAK.
+        // VERY_WEAK shows "est." (no real same-device data at all — a heuristic).
+        // WEAK shows "fps?" (some real data but from a wider hardware bucket).
         if (s.bestFps != null) {
             val baseColor = PlatformColors.stability(s.bestStability)
-            val isLowConfidence = s.bestConfidence == io.github.mayusi.isitcompatible.recommend.Confidence.WEAK ||
-                                  s.bestConfidence == io.github.mayusi.isitcompatible.recommend.Confidence.VERY_WEAK
+            val isVeryWeak = s.bestConfidence == io.github.mayusi.isitcompatible.recommend.Confidence.VERY_WEAK
+            val isLowConfidence = isVeryWeak ||
+                                  s.bestConfidence == io.github.mayusi.isitcompatible.recommend.Confidence.WEAK
             val pillTextColor = if (isLowConfidence) baseColor.copy(alpha = 0.55f) else baseColor
             val pillBg = if (isLowConfidence) baseColor.copy(alpha = 0.09f) else baseColor.copy(alpha = 0.18f)
             Box(
@@ -424,7 +439,12 @@ private fun GameCard(s: GameSummary, tried: Boolean = false, onClick: () -> Unit
                         fontWeight = FontWeight.Bold,
                         color = pillTextColor)
                     Text(
-                        text = if (isLowConfidence) "fps?" else "fps",
+                        // "est." = no real same-device data; "fps?" = extrapolated from wider bucket
+                        text = when {
+                            isVeryWeak     -> "est."
+                            isLowConfidence -> "fps?"
+                            else            -> "fps"
+                        },
                         style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
                         color = pillTextColor)
                 }
