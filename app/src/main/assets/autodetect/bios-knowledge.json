@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "systems": [
+    {
+      "system": "ps2",
+      "display": "PlayStation 2",
+      "usedBy": "NetherSX2 / ARMSX2",
+      "targetDir": "Emulation/bios/ps2",
+      "required": true,
+      "files": [
+        { "filename": "scph-70012.bin", "region": "USA", "notes": "USA PS2 BIOS — works for US/NTSC games and most international titles." },
+        { "filename": "scph70012.bin", "region": "USA", "notes": "USA PS2 BIOS (alternate naming without dash)." },
+        { "filename": "scph-70004.bin", "region": "Europe", "notes": "European/PAL PS2 BIOS — required for PAL region games." },
+        { "filename": "scph70004.bin", "region": "Europe", "notes": "European PS2 BIOS (alternate naming without dash)." },
+        { "filename": "scph-70000.bin", "region": "Japan", "notes": "Japanese PS2 BIOS — needed for JP-exclusive titles and optimal compatibility." },
+        { "filename": "scph70000.bin", "region": "Japan", "notes": "Japanese PS2 BIOS (alternate naming without dash)." },
+        { "filename": "scph-39001.bin", "region": "USA", "notes": "Earlier fat-PS2 model BIOS (v1-v2) — compatible with most games, less common." },
+        { "filename": "scph39001.bin", "region": "USA", "notes": "Earlier PS2 BIOS variant (alternate naming without dash)." },
+        { "filename": "scph-50000.bin", "region": "Japan", "notes": "Japanese PS2 network adapter BIOS variant — rarely needed." },
+        { "filename": "scph50000.bin", "region": "Japan", "notes": "Japanese PS2 variant (alternate naming without dash)." }
+      ]
+    },
+    {
+      "system": "ps1",
+      "display": "PlayStation 1",
+      "usedBy": "DuckStation",
+      "targetDir": "Emulation/bios/ps1",
+      "required": false,
+      "files": [
+        { "filename": "scph1001.bin", "region": "USA", "notes": "USA PS1 BIOS — works for North American games." },
+        { "filename": "scph-1001.bin", "region": "USA", "notes": "USA PS1 BIOS (alternate naming with dash)." },
+        { "filename": "scph5501.bin", "region": "USA", "notes": "USA PS1 BIOS variant (revision 5.0)." },
+        { "filename": "scph-5501.bin", "region": "USA", "notes": "USA PS1 variant with dash." },
+        { "filename": "scph7001.bin", "region": "USA", "notes": "USA PS1 BIOS variant (later release)." },
+        { "filename": "scph-7001.bin", "region": "USA", "notes": "USA PS1 variant with dash." },
+        { "filename": "scph1002.bin", "region": "Europe", "notes": "European PS1 BIOS — needed for PAL region games." },
+        { "filename": "scph-1002.bin", "region": "Europe", "notes": "European PS1 BIOS with dash." },
+        { "filename": "scph7502.bin", "region": "Europe", "notes": "European PS1 BIOS variant (revision 5.0)." },
+        { "filename": "scph-7502.bin", "region": "Europe", "notes": "European PS1 variant with dash." },
+        { "filename": "scph1000.bin", "region": "Japan", "notes": "Japanese PS1 BIOS — required for Japanese region games." },
+        { "filename": "scph-1000.bin", "region": "Japan", "notes": "Japanese PS1 BIOS with dash." },
+        { "filename": "scph5500.bin", "region": "Japan", "notes": "Japanese PS1 BIOS variant (revision 5.0)." },
+        { "filename": "scph-5500.bin", "region": "Japan", "notes": "Japanese PS1 variant with dash." }
+      ]
+    },
+    {
+      "system": "dc",
+      "display": "Dreamcast",
+      "usedBy": "Flycast",
+      "targetDir": "Emulation/bios/dreamcast",
+      "required": true,
+      "files": [
+        { "filename": "dc_boot.bin", "region": "Worldwide", "notes": "Dreamcast bootrom — essential for system initialization." },
+        { "filename": "dc-boot.bin", "region": "Worldwide", "notes": "Dreamcast bootrom (alternate naming with dash)." },
+        { "filename": "dc_flash.bin", "region": "Worldwide", "notes": "Dreamcast flash memory BIOS — contains firmware and IP.BIN data." },
+        { "filename": "dc-flash.bin", "region": "Worldwide", "notes": "Dreamcast flash memory (alternate naming with dash)." }
+      ]
+    },
+    {
+      "system": "saturn",
+      "display": "Sega Saturn",
+      "usedBy": "Beetle Saturn / RetroArch",
+      "targetDir": "Emulation/bios/saturn",
+      "required": true,
+      "files": [
+        { "filename": "saturn_bios.bin", "region": "Worldwide", "notes": "Sega Saturn main BIOS ROM — universal for all regions." },
+        { "filename": "saturn-bios.bin", "region": "Worldwide", "notes": "Saturn BIOS (alternate naming with dash)." },
+        { "filename": "sega_101.bin", "region": "Japan", "notes": "Japanese Saturn v1.01 BIOS — region-specific, older hardware revision." },
+        { "filename": "sega-101.bin", "region": "Japan", "notes": "Japanese Saturn v1.01 (alternate naming with dash)." },
+        { "filename": "mpr-17933.bin", "region": "USA/Europe", "notes": "North American/PAL Saturn BIOS — regional variant with language support." },
+        { "filename": "mpr17933.bin", "region": "USA/Europe", "notes": "USA/Europe Saturn BIOS (alternate naming without dash)." }
+      ]
+    },
+    {
+      "system": "ds",
+      "display": "Nintendo DS",
+      "usedBy": "MelonDS",
+      "targetDir": "Emulation/bios/ds",
+      "required": true,
+      "files": [
+        { "filename": "bios7.bin", "region": "Worldwide", "notes": "ARM7 coprocessor BIOS — essential for DS emulation, needed for game audio and peripherals." },
+        { "filename": "bios9.bin", "region": "Worldwide", "notes": "ARM9 main processor BIOS — essential for system boot and core functionality." },
+        { "filename": "firmware.bin", "region": "Worldwide", "notes": "System firmware — enables WiFi, touchscreen calibration, and other features (optional but recommended)." }
+      ]
+    },
+    {
+      "system": "3ds",
+      "display": "Nintendo 3DS",
+      "usedBy": "Azahar",
+      "targetDir": "Emulation/bios/3ds",
+      "required": false,
+      "files": [
+        { "filename": "boot9.bin", "region": "Worldwide", "notes": "3DS boot9 firmware — required for encrypted content and some games." },
+        { "filename": "boot11.bin", "region": "Worldwide", "notes": "3DS boot11 firmware — decryption key component, used with boot9." },
+        { "filename": "aes_keys.txt", "region": "Worldwide", "notes": "AES encryption keys — needed to decrypt 3DS game ROMs and content." },
+        { "filename": "aes-keys.txt", "region": "Worldwide", "notes": "AES encryption keys (alternate naming with dash)." }
+      ]
+    },
+    {
+      "system": "gba",
+      "display": "Game Boy Advance",
+      "usedBy": "mGBA / RetroArch",
+      "targetDir": "Emulation/bios/gba",
+      "required": false,
+      "files": [
+        { "filename": "gba_bios.bin", "region": "Worldwide", "notes": "GBA system BIOS — improves game compatibility and startup sequence accuracy." },
+        { "filename": "gba-bios.bin", "region": "Worldwide", "notes": "GBA BIOS (alternate naming with dash)." },
+        { "filename": "bios.bin", "region": "Worldwide", "notes": "Generic BIOS filename — often used by users." }
+      ]
+    },
+    {
+      "system": "switch",
+      "display": "Nintendo Switch",
+      "usedBy": "Eden / Citron",
+      "targetDir": "Emulation/bios/switch",
+      "required": true,
+      "files": [
+        { "filename": "prod.keys", "region": "Worldwide", "notes": "Production encryption keys — essential for decrypting game content on console." },
+        { "filename": "prod-keys.txt", "region": "Worldwide", "notes": "Production keys (alternate naming with dash/txt)." },
+        { "filename": "title.keys", "region": "Worldwide", "notes": "Title-specific decryption keys — needed for individual game ROM encryption." },
+        { "filename": "title-keys.txt", "region": "Worldwide", "notes": "Title keys (alternate naming with dash/txt)." }
+      ]
+    },
+    {
+      "system": "psp",
+      "display": "PlayStation Portable",
+      "usedBy": "PPSSPP",
+      "targetDir": "Emulation/bios/psp",
+      "required": false,
+      "files": []
+    },
+    {
+      "system": "psvita",
+      "display": "PS Vita",
+      "usedBy": "Vita3K",
+      "targetDir": "Emulation/bios/psvita",
+      "required": false,
+      "files": []
+    },
+    {
+      "system": "wiiu",
+      "display": "Wii U",
+      "usedBy": "Cemu",
+      "targetDir": "Emulation/bios/wiiu",
+      "required": false,
+      "files": []
+    },
+    {
+      "system": "gc",
+      "display": "GameCube",
+      "usedBy": "Dolphin",
+      "targetDir": "Emulation/bios/gc",
+      "required": false,
+      "files": []
+    },
+    {
+      "system": "wii",
+      "display": "Nintendo Wii",
+      "usedBy": "Dolphin",
+      "targetDir": "Emulation/bios/wii",
+      "required": false,
+      "files": []
+    }
+  ]
+}

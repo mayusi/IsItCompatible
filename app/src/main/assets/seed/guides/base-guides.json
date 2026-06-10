@@ -1,0 +1,975 @@
+{
+  "schema": 1,
+  "_comment": "v0.8 Tier-4 per-emulator base guides. gameId=null means 'standard setup for this emulator, accurate for any game'. The GuideResolver falls back to these when no game-specific (Tier 1-3) guide exists. Download URLs point at official source/release pages — never direct-to-APK mirrors, so links stay valid as projects publish new releases. dataAsOf is honest; the v0.6 'may be outdated' chip fires after 60 days.",
+  "guides": [
+    {
+      "id": "base:winlator-cmod:t4",
+      "gameId": null,
+      "emulatorId": "winlator-cmod",
+      "tier": 4,
+      "sourceLabel": "Standard Winlator Cmod setup",
+      "sourceUrl": "https://github.com/coffincolors/winlator/releases",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download the latest Winlator Cmod APK and install it.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "GPU driver: on a Snapdragon 8 Elite / Adreno 830, try the built-in Vortek (Universal) driver — Turnip 24.3.0 does not reliably support Adreno 830. On older Adreno 7xx, Turnip 24.3.0 is recommended instead. Install/select the driver in Settings → Graphics Drivers.",
+          "driverId": "vortek"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Create a new container (Containers tab → + ). These are recommended defaults for a high-end Adreno 830 / Snapdragon 8 Elite device — adjust to taste.",
+          "settings": {
+            "Runner / Wine version": "Wine 9.x (bundled)",
+            "DX wrapper + version": "DXVK 2.4-async (DXVK = DX9/10/11 → Vulkan)",
+            "DX level / mode": "Auto / D3D11 (force D3D9 only for old games)",
+            "Box64 / FEX preset": "Performance (switch to Compatibility if a game won't start)",
+            "GPU driver": "Vortek (Universal) on Adreno 830; Turnip on Adreno 7xx",
+            "CPU cores": "All cores (e.g. 0-7)",
+            "Video memory": "8192 MB (try 12288 for heavy texture mods)",
+            "Dependencies": "d3dcompiler_47, vcrun2022, corefonts (install via Components)",
+            "Env vars": "DXVK_ASYNC=1 (add MESA_EXTENSION_MAX_YEAR=2003 for pre-2003 games)",
+            "Screen size / FPS": "1280x720 first; raise resolution only if it holds up"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy the game's folder (the one with the .exe) into the container's drive_c, e.g. Downloads, then point Winlator at the .exe.",
+          "path": "/storage/emulated/0/Download/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Long-press the container → Run, browse to the game's .exe, and launch."
+        },
+        {
+          "kind": "TIP",
+          "text": "First launch is slow — DXVK compiles shaders. Let it sit a minute or two before deciding it froze."
+        },
+        {
+          "kind": "TIP",
+          "text": "GPU driver glossary: on Snapdragon 8 Elite / Adreno 830, use Vortek (Universal) — Turnip 24.3.0 is not reliable on Adreno 830. Turnip is the go-to on older Adreno 7xx. Vortek is built into Winlator 9+/GameNative; pick it from the Graphics Driver dropdown, no .zip needed."
+        },
+        {
+          "kind": "TIP",
+          "text": "DX wrapper glossary: DXVK translates DirectX 9/10/11 to Vulkan (fastest for most games); VKD3D handles DirectX 12; WineD3D maps DirectX to OpenGL (slower, but a useful fallback for stubborn old DX9 titles)."
+        },
+        {
+          "kind": "TIP",
+          "text": "Box64 preset glossary: Performance runs games faster but can be less stable; Compatibility is slower but boots more games. Start on Performance and only drop to Compatibility if a game won't launch."
+        },
+        {
+          "kind": "TIP",
+          "text": "Env var glossary: DXVK_ASYNC=1 reduces shader-compile stutter. For very old games (pre-2003) that crash on modern GL/Vulkan extensions, try MESA_EXTENSION_MAX_YEAR=2003."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Black screen on Adreno 830 / Snapdragon 8 Elite",
+          "fix": "Switch the GPU driver to Vortek (Universal) in the container settings — Turnip 24.3.0 does not reliably support Adreno 830 and is a common cause of black screens on this chip."
+        },
+        {
+          "symptom": "Black screen but audio plays",
+          "fix": "Switch DX wrapper to an older DXVK (2.3) or to WineD3D in the container's settings, then relaunch."
+        },
+        {
+          "symptom": "Game won't start / instantly closes",
+          "fix": "Set Box64 preset to Compatibility, and confirm the .exe is the actual game launcher, not a redistributable installer."
+        },
+        {
+          "symptom": "Very low FPS",
+          "fix": "Lower the container screen size to 960x540, and make sure you selected the Turnip driver (not the system/llvmpipe one)."
+        },
+        {
+          "symptom": "Missing fonts / squares for text",
+          "fix": "Install corefonts: container settings → Components → corefonts → install, then relaunch."
+        }
+      ]
+    },
+    {
+      "id": "base:winlator:t4",
+      "gameId": null,
+      "emulatorId": "winlator",
+      "tier": 4,
+      "sourceLabel": "Standard Winlator setup",
+      "sourceUrl": "https://github.com/brunodev85/winlator/releases",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download the latest Winlator APK (brunodev85 build) and install it.",
+          "url": "https://github.com/brunodev85/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "GPU driver: on a Snapdragon 8 Elite / Adreno 830, try Vortek (Universal) — Turnip is not reliable on Adreno 830. On older Adreno 7xx, install Turnip via Settings → Graphics Drivers.",
+          "driverId": "vortek"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Create a container tuned for older/indie titles. Recommended defaults for a high-end Adreno 830 device — adjust to taste.",
+          "settings": {
+            "Runner / Wine version": "Wine 9.x (bundled)",
+            "DX wrapper + version": "DXVK 2.x (try WineD3D for old DX9 games)",
+            "DX level / mode": "Auto / D3D9 for 2000s-era titles",
+            "Box64 / FEX preset": "Performance",
+            "GPU driver": "Vortek (Universal) on Adreno 830; Turnip on Adreno 7xx",
+            "CPU cores": "All cores",
+            "Video memory": "4096 MB (raise for heavier games)",
+            "Dependencies": "d3dcompiler_47, corefonts (install via Components)",
+            "Env vars": "DXVK_ASYNC=1; MESA_EXTENSION_MAX_YEAR=2003 for pre-2003 games",
+            "Screen size / FPS": "1280x720 first"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Put the game folder somewhere reachable and point the container at the .exe.",
+          "path": "/storage/emulated/0/Download/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Run the container and browse to the game .exe."
+        },
+        {
+          "kind": "TIP",
+          "text": "GPU driver glossary: in GameNative, long-press the game → Container Settings → Graphics Driver → select Wrapper and turn ON 'Use Adrenotools Turnip', then pick a recent Turnip version (e.g. turnip25.3.0_R11 or turnip26.0.0_R8). If that's unstable, try Vortek (Universal) or SD 8 Elite from the same dropdown. To add a newer Turnip: app Settings → Driver Manager → Import ZIP from device."
+        },
+        {
+          "kind": "TIP",
+          "text": "DX wrapper glossary: DXVK = DirectX 9/10/11 → Vulkan (usually fastest); VKD3D = DirectX 12; WineD3D = DirectX → OpenGL (slower fallback, sometimes smoother for old DX9 games)."
+        },
+        {
+          "kind": "TIP",
+          "text": "Box64 glossary: Performance = faster, Compatibility = boots more games. Env var MESA_EXTENSION_MAX_YEAR=2003 helps very old games run on modern drivers."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Black screen on Adreno 830 / Snapdragon 8 Elite",
+          "fix": "Switch the GPU driver to Vortek (Universal) — Turnip does not reliably support Adreno 830."
+        },
+        {
+          "symptom": "Stutter on older DX9 games",
+          "fix": "Try WineD3D instead of DXVK — DX9 titles sometimes run smoother on it."
+        },
+        {
+          "symptom": "Crash on launch",
+          "fix": "Switch Box64 preset to Stability/Compatibility and retry."
+        }
+      ]
+    },
+    {
+      "id": "base:gamenative:t4",
+      "gameId": null,
+      "emulatorId": "gamenative",
+      "tier": 4,
+      "sourceLabel": "Standard GameNative setup",
+      "sourceUrl": "https://github.com/utkarshdalal/GameNative/releases",
+      "dataAsOf": "2026-06-06",
+      "sourceUrls": [
+        "https://github.com/utkarshdalal/GameNative/releases/tag/v1.0.0-prerelease",
+        "https://www.androidauthority.com/winlator-v11-stable-release-android-pc-emulator-3657643/",
+        "https://github.com/andreisugu/gamenative-config-tools"
+      ],
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install a CURRENT GameNative build from the official releases page — the latest is v1.0.0-prerelease (~May 30, 2026). Pick the Modern APK on Android 11+ (the Legacy APK covers Android 8–14). A recent build matters: the per-game Import Config feature only exists on newer builds, so don't run an old APK.",
+          "url": "https://github.com/utkarshdalal/GameNative/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "GPU driver on Snapdragon 8 Elite / Adreno 830 is NOT a settled single winner as of 2026-06 — treat it as two options to TEST per game. Option A: a patched AdrenoTools Turnip from the Mesa 26.1.x line (the Winlator v11 stable / ~Apr 2026 build shipped Mesa Turnip 26.1.0 with whitebelyash Adreno-8-series patches) — load it via graphics driver = wrapper with the AdrenoTools Turnip flag. Option B: Vortek as a fallback when a game won't render on Turnip. Older guidance pinning 'Turnip 24.3.0' or saying 'never Turnip on 830, always Vortek' is outdated; test both and keep whichever boots and runs the game.",
+          "driverId": "turnip-adreno8xx-current"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Create a container. The values below reflect a real current GameNative stack exported from an Adreno 830 / Snapdragon 8 Elite device (as of 2026-06). 'recommended' = sane starting point; 'try' = test per game, no single value wins everywhere.",
+          "settings": {
+            "Wine / Proton version": "proton-9.0-arm64ec (recommended; ARM64EC Proton 9.0)",
+            "Container variant": "bionic (recommended)",
+            "WoW64 mode": "On (recommended; runs 32-bit without a separate WoW64 prefix)",
+            "Emulator (x86 translation)": "FEXCore, current build (recommended) — try Box64 0.3.7 as an alternative, especially for DX9-era titles",
+            "Graphics driver": "wrapper with the AdrenoTools Turnip flag (patched Mesa Turnip 26.1.x); try Vortek if a game won't render",
+            "DX wrapper": "DXVK for DX9/10/11; VKD3D for DX12 (try WineD3D / renderer=gl for stubborn DX9-era games)",
+            "CPU cores": "All cores",
+            "Video memory": "8192 MB (raise for heavy texture mods)",
+            "Dependencies": "d3dcompiler_47, vcrun2022 (install via Components if a game asks)",
+            "Resolution / FPS": "Native; lower the in-game scale if it stutters"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your game files into GameNative's storage, then add the game. Each game also gets a .gamenative JSON config written into its own root folder, which is what the Import Config flow reads/writes.",
+          "path": "/storage/emulated/0/GameNative/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Import a per-game config (current builds): press and hold the game in your library → 3-dots menu → Import Config, then point it at a .gamenative file. This is the config-import/export feature added in PR #232; if you don't see the Import button, your build is too old — update from the releases page. The imported settings land in that game's .gamenative file in its root folder.",
+          "url": "https://github.com/andreisugu/gamenative-config-tools"
+        },
+        {
+          "kind": "TIP",
+          "text": "GameNative is a strong pick for Unreal Engine 4/5 and DX12 titles via Proton + VKD3D. Modern AAA still won't reliably hit 60 — 'playable' is the realistic target."
+        },
+        {
+          "kind": "TIP",
+          "text": "DX-era nuance: FEXCore is the recommended translator for most modern titles, but some DX9-era games run better on Box64 0.3.7 + WineD3D with renderer=gl. Treat this as a per-game thing to TRY, not a rule."
+        },
+        {
+          "kind": "TIP",
+          "text": "Driver glossary (2026-06): on Adreno 830 there are two real options to test — (A) patched AdrenoTools Turnip from the Mesa 26.1.x line (graphics driver = wrapper + Turnip flag), or (B) Vortek as a fallback. Neither is a guaranteed winner; pick per game. DXVK = DX9/10/11 → Vulkan, VKD3D = DX12 → Vulkan, WineD3D = DX → OpenGL fallback."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Game won't launch / black screen",
+          "fix": "Swap the driver and re-test: if you were on the patched Turnip (Mesa 26.1.x wrapper) try Vortek, or vice-versa. Then try Box64 0.3.7 instead of FEXCore (helps some DX9-era titles). Finally confirm the game's install path/drive is correct."
+        },
+        {
+          "symptom": "DX12 game crashes at boot",
+          "fix": "Confirm VKD3D is on; if it still crashes, try a DX11 launch option if the game offers one, and re-test on the other GPU driver (Turnip patched ↔ Vortek)."
+        },
+        {
+          "symptom": "Import Config button is missing",
+          "fix": "Your build predates the config import/export feature (PR #232). Update to a current GameNative build from the releases page, then retry press-and-hold game → 3 dots → Import Config."
+        },
+        {
+          "symptom": "Steam overlay / DRM hang",
+          "fix": "Disable the Steam overlay in the game's launch options; some DRM needs an initial online activation before offline play works."
+        },
+        {
+          "symptom": "Stutter during gameplay",
+          "fix": "Keep DXVK async on, lower the in-game resolution scale, and close background apps to free RAM."
+        }
+      ]
+    },
+    {
+      "id": "base:gamehub:t4",
+      "gameId": null,
+      "emulatorId": "gamehub",
+      "tier": 4,
+      "sourceLabel": "Standard GameHub setup",
+      "sourceUrl": "https://github.com/MrSnake01/GameHub/releases",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download the latest GameHub APK and install it.",
+          "url": "https://github.com/MrSnake01/GameHub/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "GPU driver: on a Snapdragon 8 Elite / Adreno 830, try Vortek (Universal) — Turnip is not reliable on Adreno 830. On older Adreno 7xx, install Turnip via GameHub's driver section.",
+          "driverId": "vortek"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Create a container. GameHub simplifies container management vs vanilla Winlator — defaults are sensible. Recommended values for a high-end Adreno 830 device.",
+          "settings": {
+            "Runner / Wine version": "Wine 9.0",
+            "DX wrapper + version": "DXVK 2.4-async",
+            "DX level / mode": "Auto / D3D11",
+            "Box64 / FEX preset": "Box64 On (Performance)",
+            "GPU driver": "Vortek (Universal) on Adreno 830; Turnip on Adreno 7xx",
+            "CPU cores": "All cores",
+            "Video memory": "8192 MB",
+            "Dependencies": "d3dcompiler_47, corefonts",
+            "Env vars": "DXVK_ASYNC=1",
+            "Screen size / FPS": "1280x720 first"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy the game folder in, then point GameHub at the .exe.",
+          "path": "/storage/emulated/0/Download/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Run the container and select the game .exe."
+        },
+        {
+          "kind": "TIP",
+          "text": "GPU driver glossary: in GameNative, Graphics Driver → Wrapper + 'Use Adrenotools Turnip' (recent version) is the primary pick for Adreno 830; Vortek (Universal) or SD 8 Elite are fallbacks in the same dropdown."
+        },
+        {
+          "kind": "TIP",
+          "text": "DX wrapper glossary: DXVK = DX9/10/11 → Vulkan; VKD3D = DX12; WineD3D = DX → OpenGL fallback. Box64 Performance = faster, Compatibility = boots more games."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Black screen on Adreno 830 / Snapdragon 8 Elite",
+          "fix": "Switch the GPU driver to Vortek (Universal) — Turnip does not reliably support Adreno 830."
+        },
+        {
+          "symptom": "Black screen",
+          "fix": "Switch DX wrapper to DXVK 2.3 or WineD3D, then relaunch."
+        },
+        {
+          "symptom": "Won't launch",
+          "fix": "Verify the GPU driver is selected (Vortek on Adreno 830, Turnip on Adreno 7xx), not the system driver, and try the Compatibility Box64 preset."
+        }
+      ]
+    },
+    {
+      "id": "base:mobox:t4",
+      "gameId": null,
+      "emulatorId": "mobox",
+      "tier": 4,
+      "sourceLabel": "Standard Mobox setup",
+      "sourceUrl": "https://mobox.org",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download Mobox (micewine) and install it.",
+          "url": "https://mobox.org"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Mobox uses Box86/Box64 + Wine. For older/OpenGL games, leave DXVK off — Box64 + WineD3D is lighter. Recommended values for a high-end Adreno 830 device.",
+          "settings": {
+            "Runner / Wine version": "Wine 8.21 (bundled)",
+            "DX wrapper + version": "WineD3D (no DXVK) for old games; DXVK if available for DX11",
+            "DX level / mode": "D3D9 / OpenGL path for old titles",
+            "Box64 / FEX preset": "Box64 dynarec On (Performance)",
+            "GPU driver": "Stock Adreno; on Adreno 830 use Vortek (Universal) if your Mobox build offers it — avoid Turnip on Adreno 830",
+            "CPU cores": "All cores",
+            "Video memory": "4096 MB",
+            "Dependencies": "corefonts (install if text is missing)",
+            "Env vars": "MESA_EXTENSION_MAX_YEAR=2003 for pre-2003 games"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your game into Mobox's working directory and point it at the .exe.",
+          "path": "/storage/emulated/0/Mobox/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch the game from Mobox."
+        },
+        {
+          "kind": "TIP",
+          "text": "Mobox shines on older DX9 / OpenGL / 2D games where Cmod's DXVK overhead is wasted. For modern DX11/12 AAA, use GameNative or Cmod instead."
+        },
+        {
+          "kind": "TIP",
+          "text": "GPU driver glossary: on Adreno 830, Wrapper + 'Use Adrenotools Turnip' (a recent Turnip build) is the primary choice; Vortek (Universal) and SD 8 Elite are fallbacks in the Graphics Driver dropdown."
+        },
+        {
+          "kind": "TIP",
+          "text": "DX wrapper glossary: WineD3D = DirectX → OpenGL (lightest, good for old games); DXVK = DX9/10/11 → Vulkan; VKD3D = DX12. Box64 Performance = faster, Compatibility = boots more games."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Black screen on Adreno 830 / Snapdragon 8 Elite",
+          "fix": "Switch the GPU driver to Vortek (Universal) if your Mobox build provides it — Turnip does not reliably support Adreno 830."
+        },
+        {
+          "symptom": "DX11 game won't render",
+          "fix": "Mobox is weakest on modern DirectX — enable DXVK if available, or switch to Winlator Cmod / GameNative for that title."
+        },
+        {
+          "symptom": "Slow / choppy",
+          "fix": "Confirm Box64 dynarec is on; lower the resolution; close other apps."
+        }
+      ]
+    },
+    {
+      "id": "base:nethersx2-patch:t4",
+      "gameId": null,
+      "emulatorId": "nethersx2-patch",
+      "tier": 4,
+      "sourceLabel": "Standard NetherSX2 (patched) setup",
+      "sourceUrl": "https://github.com/Trixarian/NetherSX2-patch/releases",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download the patched NetherSX2 APK and install it.",
+          "url": "https://github.com/Trixarian/NetherSX2-patch/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS2 BIOS required (e.g. SCPH-70012.bin or your regional equivalent). Place it in the bios folder. This comes from a PS2 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/NetherSX2/bios/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "On first launch, point NetherSX2 at your BIOS folder when prompted, then at your games folder."
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Recommended settings for Snapdragon 8-class devices.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x (3x if it holds 60)",
+            "EE cyclerate": "Default (0)",
+            "Speed hacks": "Default / enabled (MTVU on)",
+            "Anisotropic filtering": "Off or 2x"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Put your PS2 games (.iso / .chd) in a folder and add it as a game directory.",
+          "path": "/storage/emulated/0/PS2/"
+        },
+        {
+          "kind": "TIP",
+          "text": ".chd is smaller than .iso and runs identically — convert large ISOs to save space."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Boots to a black screen",
+          "fix": "Wrong/missing BIOS, or the ISO is bad. Re-dump the BIOS and verify the game dump."
+        },
+        {
+          "symptom": "Slowdown in heavy scenes",
+          "fix": "Drop internal resolution to 1x-2x, ensure Vulkan renderer, and keep speed hacks enabled."
+        },
+        {
+          "symptom": "Graphical glitches on a specific game",
+          "fix": "Check the per-game guide (some PS2 titles need a specific blending/half-pixel-offset setting)."
+        }
+      ]
+    },
+    {
+      "id": "base:armsx2:t4",
+      "gameId": null,
+      "emulatorId": "armsx2",
+      "tier": 4,
+      "sourceLabel": "Standard ARMSX2 setup",
+      "sourceUrl": "https://github.com/ARMSX2/ARMSX2/releases",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download ARMSX2 and install it.",
+          "url": "https://github.com/ARMSX2/ARMSX2/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS2 BIOS required. Place it in the bios folder. This comes from a PS2 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/ARMSX2/bios/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Use the Vulkan renderer at a conservative resolution first.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x",
+            "Speed hacks": "Enabled"
+          }
+        },
+        {
+          "kind": "ACTION",
+          "text": "Point the emulator at your BIOS and games folder, then launch a title."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Crashes or won't boot",
+          "fix": "ARMSX2 is newer/less mature than NetherSX2 — if a game misbehaves, try NetherSX2-patch for that title."
+        }
+      ]
+    },
+    {
+      "id": "base:duckstation:t4",
+      "gameId": null,
+      "emulatorId": "duckstation",
+      "tier": 4,
+      "sourceLabel": "Standard DuckStation setup",
+      "sourceUrl": "https://duckstation.org",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install DuckStation from the Play Store or its official site.",
+          "url": "https://duckstation.org"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS1 BIOS recommended (scph5501.bin / scph1001.bin). Place it in the bios folder. DuckStation can run without it but BIOS improves accuracy.",
+          "path": "/storage/emulated/0/DuckStation/bios/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "PS1 is trivial for modern hardware — crank it.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "Up to 9x",
+            "Texture filtering": "Optional",
+            "PGXP geometry correction": "On (kills PS1 polygon wobble)"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your PS1 games (.chd / .bin+.cue / .pbp).",
+          "path": "/storage/emulated/0/PS1/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Pick the game from the list and play."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Wobbly textures / jittery polygons",
+          "fix": "Enable PGXP (geometry correction) in settings — it's the PS1 signature fix."
+        },
+        {
+          "symptom": "Multi-disc game",
+          "fix": "Use an .m3u playlist file listing each disc so in-game disc swaps work."
+        }
+      ]
+    },
+    {
+      "id": "base:ppsspp:t4",
+      "gameId": null,
+      "emulatorId": "ppsspp",
+      "tier": 4,
+      "sourceLabel": "Standard PPSSPP setup",
+      "sourceUrl": "https://www.ppsspp.org/download",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install PPSSPP (free) or PPSSPP Gold from the Play Store or official site.",
+          "url": "https://www.ppsspp.org/download"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "No BIOS needed. Recommended settings for high-end devices.",
+          "settings": {
+            "Backend": "Vulkan",
+            "Rendering resolution": "3x-5x",
+            "Frameskipping": "Off",
+            "Texture scaling": "Optional (xBRZ for 2D-heavy games)"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Put your PSP games (.iso / .cso) anywhere and browse to them in PPSSPP.",
+          "path": "/storage/emulated/0/PSP/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Select the game and play."
+        },
+        {
+          "kind": "TIP",
+          "text": "PSP runs essentially perfectly on Snapdragon 8-class hardware. If a game stutters, switch backend to Vulkan and disable frameskip."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Black screen on a specific game",
+          "fix": "Try the OpenGL backend for that title — a few PSP games render better on GL than Vulkan."
+        },
+        {
+          "symptom": "Audio crackle",
+          "fix": "Raise the audio latency setting slightly in System settings."
+        }
+      ]
+    },
+    {
+      "id": "base:eden:t4",
+      "gameId": null,
+      "emulatorId": "eden",
+      "tier": 4,
+      "sourceLabel": "Standard Eden (Switch) setup",
+      "sourceUrl": "https://git.eden-emu.dev/eden-emu/eden/releases",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download the latest Eden APK from its official release page and install it.",
+          "url": "https://git.eden-emu.dev/eden-emu/eden/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "Switch keys (prod.keys) and firmware are required. These come from a Nintendo Switch you own — there's no download for them. Import them via Eden's key/firmware installer once you have them.",
+          "path": "/storage/emulated/0/eden/keys/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install the recommended Turnip driver — Switch emulation is very GPU-driver-sensitive.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Recommended settings for a high-end Snapdragon / Gen 2.",
+          "settings": {
+            "Graphics API": "Vulkan",
+            "GPU driver": "Turnip (installed above)",
+            "Resolution": "1x (docked) — raise only if it holds up",
+            "Async shaders": "On",
+            "Use disk pipeline cache": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your dumped games (.nsp / .xci) to a folder and set it as the games directory.",
+          "path": "/storage/emulated/0/Switch/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Install firmware + keys, add your game, and launch."
+        },
+        {
+          "kind": "TIP",
+          "text": "First launch of any Switch game stutters while shaders build. It smooths out on the second run from the disk cache. 30-40 fps is a good result for demanding first-party titles."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Game won't boot / 'missing keys'",
+          "fix": "Re-dump prod.keys from your console and reinstall current firmware — mismatched/old keys are the #1 cause."
+        },
+        {
+          "symptom": "Constant stutter",
+          "fix": "Enable async shaders + disk pipeline cache, play the same area twice to build the cache, and make sure Turnip (not the system driver) is selected."
+        },
+        {
+          "symptom": "Crash mid-game",
+          "fix": "Lower resolution to 1x, disable any speed hacks, and confirm you have enough free RAM."
+        }
+      ]
+    },
+    {
+      "id": "base:aps3e:t4",
+      "gameId": null,
+      "emulatorId": "aps3e",
+      "tier": 4,
+      "sourceLabel": "Standard aPS3e setup",
+      "sourceUrl": "https://github.com/aenu1/aps3e/releases",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download aPS3e and install it.",
+          "url": "https://github.com/aenu1/aps3e/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS3 firmware required (PS3UPDAT.PUP). Install via the emulator's firmware installer. This comes from official Sony firmware — there's no download here; install it once you have it.",
+          "path": "/storage/emulated/0/aps3e/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install the recommended Turnip driver — PS3 emulation is extremely GPU-heavy.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Set expectations low — PS3 on mobile is bleeding-edge.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Resolution scale": "1x",
+            "SPU decoder": "Recompiler",
+            "Write color buffers": "Only if a game needs it"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Install your PS3 game (decrypted, from a console you own) into the emulator's game folder.",
+          "path": "/storage/emulated/0/aps3e/games/"
+        },
+        {
+          "kind": "TIP",
+          "text": "PS3 is the hardest console to emulate on Android. Even on a high-end Snapdragon, most games are 15-30 fps and many don't boot. Treat any playable result as a bonus."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Won't boot at all",
+          "fix": "Many PS3 games simply don't run yet. Check the per-game guide / community reports before assuming your setup is wrong."
+        },
+        {
+          "symptom": "Very low FPS",
+          "fix": "Keep resolution at 1x, use the SPU recompiler, and accept that demanding titles are not yet viable."
+        }
+      ]
+    },
+    {
+      "id": "base:dolphin:t4",
+      "gameId": null,
+      "emulatorId": "dolphin",
+      "tier": 4,
+      "sourceLabel": "Standard Dolphin (GC/Wii) setup",
+      "sourceUrl": "https://dolphin-emu.org/download/",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Dolphin from its official site (or the Play Store beta).",
+          "url": "https://dolphin-emu.org/download/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "No BIOS needed. Recommended settings for high-end devices.",
+          "settings": {
+            "Backend": "Vulkan",
+            "Internal resolution": "2x-3x (720p-1080p)",
+            "Dual-core": "On",
+            "Shader compilation": "Hybrid Ubershaders (stops stutter)"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your GameCube/Wii games (.rvz / .iso). RVZ is the compressed modern format.",
+          "path": "/storage/emulated/0/Dolphin/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Pick the game and play. For Wii motion games, configure motion/IR controls first."
+        },
+        {
+          "kind": "TIP",
+          "text": "Enable Hybrid Ubershaders to avoid the classic Dolphin shader-compilation stutter on first play."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Stutter when new effects appear",
+          "fix": "Set Shader Compilation to Hybrid Ubershaders in Graphics → Advanced."
+        },
+        {
+          "symptom": "Wii game needs motion controls",
+          "fix": "Map the Wii Remote to touch/gyro in the controller settings before launching."
+        }
+      ]
+    },
+    {
+      "id": "base:azahar:t4",
+      "gameId": null,
+      "emulatorId": "azahar",
+      "tier": 4,
+      "sourceLabel": "Standard Azahar (3DS) setup",
+      "sourceUrl": "https://github.com/azahar-emu/azahar/releases",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download Azahar (the maintained Citra successor) and install it.",
+          "url": "https://github.com/azahar-emu/azahar/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "No BIOS strictly required. Recommended settings.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x-4x",
+            "Async shader compilation": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your 3DS dumps (.3ds / .cia / .cxi).",
+          "path": "/storage/emulated/0/3DS/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Select the game and play. Configure the dual-screen layout to taste."
+        },
+        {
+          "kind": "TIP",
+          "text": "3DS runs great on modern hardware. Pick a screen layout (top/bottom, side-by-side) that suits the game."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Game needs a system file",
+          "fix": "Some 3DS titles want shared-system-data dumped from a real 3DS — see the per-game guide."
+        }
+      ]
+    },
+    {
+      "id": "base:mupen64plus:t4",
+      "gameId": null,
+      "emulatorId": "mupen64plus",
+      "tier": 4,
+      "sourceLabel": "Standard Mupen64Plus FZ setup",
+      "sourceUrl": "https://github.com/mupen64plus-ae/mupen64plus-ae/releases",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Mupen64Plus FZ from the Play Store or its release page.",
+          "url": "https://github.com/mupen64plus-ae/mupen64plus-ae/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "No BIOS needed. Recommended settings.",
+          "settings": {
+            "Video plugin": "GLideN64",
+            "Resolution": "2x-4x native",
+            "Per-game profiles": "Leave on auto"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your N64 ROMs (.z64 / .n64 / .v64).",
+          "path": "/storage/emulated/0/N64/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Select the game and play."
+        },
+        {
+          "kind": "TIP",
+          "text": "GLideN64 is the most accurate plugin. A few N64 games need a specific per-game profile, which Mupen usually applies automatically."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Graphical glitches in a specific game",
+          "fix": "Open that game's profile and try toggling the 'native res factor' or a game-specific GLideN64 hack."
+        }
+      ]
+    },
+    {
+      "id": "base:vita3k:t4",
+      "gameId": null,
+      "emulatorId": "vita3k",
+      "tier": 4,
+      "sourceLabel": "Standard Vita3K setup",
+      "sourceUrl": "https://vita3k.org",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download Vita3K for Android and install it.",
+          "url": "https://vita3k.org"
+        },
+        {
+          "kind": "BIOS",
+          "text": "No BIOS, but you need your own dumped games. Install the PSVita firmware components Vita3K asks for on first run.",
+          "path": "/storage/emulated/0/Vita3K/"
+        },
+        {
+          "kind": "FILES",
+          "text": "Install your dumped Vita games (.vpk or extracted) via Vita3K's installer.",
+          "path": "/storage/emulated/0/Vita3K/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch the title from the Vita3K library."
+        },
+        {
+          "kind": "TIP",
+          "text": "Vita emulation is still maturing — compatibility varies a lot by game. Check community reports before expecting a given title to be playable."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Game won't install or boot",
+          "fix": "Confirm the dump is complete and from a console you own; many Vita titles are still partially supported."
+        }
+      ]
+    },
+    {
+      "id": "base:cemu:t4",
+      "gameId": null,
+      "emulatorId": "cemu",
+      "tier": 4,
+      "sourceLabel": "Standard Cemu (Wii U) setup",
+      "sourceUrl": "https://github.com/SSimco/Cemu/releases",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download the Android Cemu build and install it.",
+          "url": "https://github.com/SSimco/Cemu/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "No BIOS, but games must be your own dumps. Keys (from your console) are needed to decrypt some formats.",
+          "path": "/storage/emulated/0/Cemu/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install the recommended Turnip driver.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Recommended settings.",
+          "settings": {
+            "Graphics API": "Vulkan",
+            "GPU driver": "Turnip",
+            "Async shader compile": "On",
+            "Resolution": "Native first"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your dumped Wii U games and point Cemu at the folder.",
+          "path": "/storage/emulated/0/WiiU/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Android Cemu is experimental. Big first-party titles may run at 30-50 fps on a high-end Snapdragon; expect rough edges."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Shader stutter",
+          "fix": "Enable async shader compile and replay areas to build the cache."
+        }
+      ]
+    },
+    {
+      "id": "base:retroarch:t4",
+      "gameId": null,
+      "emulatorId": "retroarch",
+      "tier": 4,
+      "sourceLabel": "Standard RetroArch setup",
+      "sourceUrl": "https://retroarch.com",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install RetroArch from the Play Store or retroarch.com.",
+          "url": "https://retroarch.com"
+        },
+        {
+          "kind": "ACTION",
+          "text": "In RetroArch, go to Online Updater → Core Downloader and install the core for your system (e.g. Snes9x for SNES, mGBA for GBA, Beetle PSX for PS1)."
+        },
+        {
+          "kind": "BIOS",
+          "text": "Some cores need BIOS files (PS1, Saturn, etc.). Place them in the System folder. These come from hardware you own — there's no download here; place them once you have them.",
+          "path": "/storage/emulated/0/RetroArch/system/"
+        },
+        {
+          "kind": "FILES",
+          "text": "Put your ROMs in a folder and Load Content to play, or scan the folder to build a playlist.",
+          "path": "/storage/emulated/0/ROMs/"
+        },
+        {
+          "kind": "TIP",
+          "text": "RetroArch is a multi-system front-end. Pick the recommended core per system — the default isn't always the most accurate."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Core won't load content",
+          "fix": "You probably installed the wrong core for the ROM type, or a required BIOS is missing from the System folder."
+        },
+        {
+          "symptom": "Input lag",
+          "fix": "Enable Run-Ahead (1 frame) in Latency settings for a snappier feel."
+        }
+      ]
+    }
+  ]
+}

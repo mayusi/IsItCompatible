@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      Network: we pull the compatibility DB from GitHub + EmuReady, drivers
+      from K11MCH1/AdrenoToolsDrivers, and (v0.9) emulator APKs from their
+      official release pages.
+      Staging-folder writes go through SAF (persistable URI). The Auto-Detect
+      tab additionally uses MANAGE_EXTERNAL_STORAGE — but only when the user
+      opts in by entering that tab and granting it; nothing else touches it.
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Notification permission (Android 13+) for sync/download progress. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!--
+      QUERY_ALL_PACKAGES lets us show "you already have Winlator installed"
+      hints + power the Auto-Detect tab's installed-emulator detection.
+    -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+
+    <!-- v0.9: getit emulator downloader requests APK installation. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <!--
+      v0.9 Auto-Detect: opt-in all-files-access to scan the Emulation/ tree for
+      games + BIOS the user already dumped. SAF tree-grants are refused on the
+      AYN Odin 3 (vendor build), same reason EmuTran uses this. Requested ONLY
+      when the user enters the Auto-Detect tab and taps Grant. API 29 falls back
+      to legacy read storage.
+    -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <application
+        android:name=".IsItCompatibleApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.IsItCompatible"
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="34">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.IsItCompatible">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- FileProvider for exposing APKs to the package installer. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!--
+          IIC round-trip: receives GAME_SESSION_ENDED broadcast from the
+          GameNative IIC fork (app.gamenative.iic) when a game session ends.
+          exported=true is required because the broadcast comes from a different
+          package (different signing key, no shared UID). We mitigate the
+          exposure by validating the action and extras in the receiver, and by
+          noting that the worst a malicious sender achieves is a stale pref
+          entry the DB lookup then discards.
+        -->
+        <receiver
+            android:name=".SessionResultReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="io.github.mayusi.isitcompatible.GAME_SESSION_ENDED" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

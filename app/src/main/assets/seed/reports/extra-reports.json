@@ -1,0 +1,492 @@
+{
+    "schema":  1,
+    "_comment":  "Supplementary reports added in v0.3 â€” fixes emulator-pick bias (Cmod was over-represented in v0.2) and adds Sudachi/Citron/Eden tradeoff coverage on Switch. All Snapdragon 8 Elite reports correctly paired with Adreno 830 (not 750 â€” that was a v0.2 bug). HONESTY (v0.8): these entries are HAND-AUTHORED ESTIMATES, not real device-tested GitHub submissions â€” they were previously mistagged \u0027OUR_GITHUB\u0027 which dishonestly implied real tested data. Retagged to \u0027GENERATED_HEURISTIC\u0027 (the honest estimate bucket) so the UI treats them as \u0027no tested data yet\u0027. FPS/stability figures are authored guesses, not measurements.",
+    "reports":  [
+                    {
+                        "id":  "r-x-1",
+                        "gameId":  "win:hl2",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "mobox-box64-light",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  60,
+                        "stability":  "PERFECT",
+                        "notes":  "Mobox wins for Source engine â€” lighter than Winlator.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-2",
+                        "gameId":  "win:portal-2",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "mobox-box64-light",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  60,
+                        "stability":  "PERFECT",
+                        "notes":  "Locked 60 in Mobox, no DXVK needed.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-3",
+                        "gameId":  "win:l4d2",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "mobox-box64-light",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  60,
+                        "stability":  "PERFECT",
+                        "notes":  "Source engine on Mobox is the way.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-4",
+                        "gameId":  "win:portal",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "mobox-box64-light",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  60,
+                        "stability":  "PERFECT",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-5",
+                        "gameId":  "win:lies-of-p",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "gamenative-proton-modern",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  42,
+                        "stability":  "PLAYABLE",
+                        "notes":  "UE4 â€” Proton beats Wine here.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-6",
+                        "gameId":  "win:lies-of-p",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "winlator-cmod-ue4",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  35,
+                        "stability":  "PLAYABLE",
+                        "notes":  "Forced D3D11 helps but GameNative is smoother.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-7",
+                        "gameId":  "win:scarlet-nexus",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "gamenative-proton-modern",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  50,
+                        "stability":  "PLAYABLE",
+                        "notes":  "UE4 â€” Proton path wins.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-8",
+                        "gameId":  "win:tales-of-arise",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "gamenative-proton-modern",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  42,
+                        "stability":  "PLAYABLE",
+                        "notes":  "UE4.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-9",
+                        "gameId":  "win:returnal-pc",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "gamenative-proton-modern",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  38,
+                        "stability":  "PLAYABLE",
+                        "notes":  "UE4 procedural.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-10",
+                        "gameId":  "win:control",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "gamenative-proton-modern",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  32,
+                        "stability":  "PLAYABLE",
+                        "notes":  "Northlight engine, RT off.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-11",
+                        "gameId":  "win:skyrim-se",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "winlator-cmod-bethesda",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  48,
+                        "stability":  "PLAYABLE",
+                        "notes":  "Frost build, similar to Cmod.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-12",
+                        "gameId":  "win:fallout-4",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "winlator-cmod-bethesda",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  42,
+                        "stability":  "PLAYABLE",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-13",
+                        "gameId":  "win:re-2-remake",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "gamenative-proton-modern",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  45,
+                        "stability":  "PLAYABLE",
+                        "notes":  "Proton handles RE Engine slightly better.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-14",
+                        "gameId":  "win:re-village",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "gamenative-proton-modern",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  38,
+                        "stability":  "PLAYABLE",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-15",
+                        "gameId":  "win:re-4-remake",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "gamenative-proton-modern",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  32,
+                        "stability":  "GLITCHY",
+                        "notes":  "Same dynamic_rendering issue as Cmod.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-16",
+                        "gameId":  "win:elden-ring",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "gamenative-proton-eac",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Gen 3",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 750",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  32,
+                        "stability":  "PLAYABLE",
+                        "notes":  "Snapdragon 8 Gen 3 / Adreno 750 â€” separate device class from 8 Elite.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-17",
+                        "gameId":  "win:skyrim-se",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "winlator-cmod-bethesda",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Gen 3",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 750",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  47,
+                        "stability":  "PLAYABLE",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-18",
+                        "gameId":  "win:dark-souls-3",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "winlator-cmod-fromsoft",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Gen 3",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 750",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  55,
+                        "stability":  "PERFECT",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-19",
+                        "gameId":  "switch:totk",
+                        "emulatorId":  "sudachi",
+                        "presetId":  "eden-perf",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  30,
+                        "stability":  "PLAYABLE",
+                        "notes":  "Sudachi handles TOTK shader compilation more consistently than Eden.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-20",
+                        "gameId":  "switch:smo",
+                        "emulatorId":  "sudachi",
+                        "presetId":  "eden-balanced",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  58,
+                        "stability":  "PLAYABLE",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-21",
+                        "gameId":  "switch:botw-switch",
+                        "emulatorId":  "sudachi",
+                        "presetId":  "eden-balanced",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  32,
+                        "stability":  "PLAYABLE",
+                        "notes":  "Sudachi slightly more consistent than Eden here.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-22",
+                        "gameId":  "switch:pokemon-sv",
+                        "emulatorId":  "sudachi",
+                        "presetId":  "eden-perf",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  26,
+                        "stability":  "PLAYABLE",
+                        "notes":  "Sudachi+disk shader cache helps SV\u0027s stutter.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-23",
+                        "gameId":  "switch:metroid-dread",
+                        "emulatorId":  "citron",
+                        "presetId":  "citron-balanced",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  60,
+                        "stability":  "PERFECT",
+                        "notes":  "Citron handles Dread great too.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-24",
+                        "gameId":  "switch:smash-ultimate",
+                        "emulatorId":  "citron",
+                        "presetId":  "citron-balanced",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  45,
+                        "stability":  "PLAYABLE",
+                        "notes":  "Citron edges Eden on Smash stage variety.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-25",
+                        "gameId":  "switch:xenoblade-3",
+                        "emulatorId":  "citron",
+                        "presetId":  "citron-balanced",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  30,
+                        "stability":  "PLAYABLE",
+                        "notes":  "Citron edges Eden in open-world Aionios.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-26",
+                        "gameId":  "switch:xenoblade-3",
+                        "emulatorId":  "sudachi",
+                        "presetId":  "eden-perf",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  28,
+                        "stability":  "PLAYABLE",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-27",
+                        "gameId":  "win:doom-eternal",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "gamenative-proton-modern",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  40,
+                        "stability":  "PLAYABLE",
+                        "notes":  "Proton id Tech 7 path.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-28",
+                        "gameId":  "win:bg3",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "winlator-cmod-modern-aaa",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  22,
+                        "stability":  "GLITCHY",
+                        "notes":  "Vulkan path â€” GameNative was smoother.",
+                        "source":  "GENERATED_HEURISTIC"
+                    },
+                    {
+                        "id":  "r-x-29",
+                        "gameId":  "win:cyberpunk-2077",
+                        "emulatorId":  "gamenative",
+                        "presetId":  "winlator-cmod-modern-aaa",
+                        "device":  {
+                                       "socFamily":  "Snapdragon 8 Elite",
+                                       "gpuVendor":  "ADRENO",
+                                       "gpuModel":  "Adreno 830",
+                                       "ramMb":  16384,
+                                       "androidApi":  34
+                                   },
+                        "avgFps":  18,
+                        "stability":  "GLITCHY",
+                        "notes":  "GameNative is the better path here.",
+                        "source":  "GENERATED_HEURISTIC"
+                    }
+                ]
+}

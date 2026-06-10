@@ -1,0 +1,679 @@
+{
+  "schema": 1,
+  "_comment": "v0.8 Tier-2 AUTHORED game-specific guides. These override the per-emulator base guide for these games (resolver picks lowest tier number). Each one adds game-specific knowledge — required mods, the exact preset, the per-title gotchas — on top of the generic emulator setup. Written against known-good community configs as of dataAsOf. emulatorId must match the game's recommended emulator so the resolver surfaces it.",
+  "guides": [
+    {
+      "id": "win:skyrim-se:winlator-cmod:t2",
+      "gameId": "win:skyrim-se",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod (latest).",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0 — Skyrim's DX11 path is stable on it.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Create a 'Bethesda' container with these exact settings.",
+          "settings": {
+            "Screen size": "1280x720",
+            "Graphics driver": "Turnip 24.3.0",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64 preset": "Performance",
+            "Wine": "9.4-staging-tkg",
+            "esync/fsync": "Both ON",
+            "Video memory": "Set to ~12 GB so HD texture mods don't crash"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Skyrim SE folder (the one with SkyrimSE.exe) into the container.",
+          "path": "/storage/emulated/0/Download/SkyrimSE/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Launch via SkyrimSELauncher.exe ONCE to let it detect settings, then launch SkyrimSE.exe directly afterwards for faster boots."
+        },
+        {
+          "kind": "TIP",
+          "text": "If you mod: install SKSE matching your exact Skyrim build number, and add '-windowed -borderless' to the launch arguments for stability on mobile."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Run SkyrimSE.exe from the container. Expect a near-locked 50-60 fps at 720p on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Crash to desktop on the Bethesda logo",
+          "fix": "SKSE version mismatch — reinstall the SKSE build that matches your Skyrim version exactly, or remove SKSE to test vanilla."
+        },
+        {
+          "symptom": "Stutter entering cities (Solitude/Whiterun)",
+          "fix": "Lower shadow distance in-game and cap FPS to 60 — uncapped physics break above 60 fps in this engine."
+        },
+        {
+          "symptom": "Black screen with audio",
+          "fix": "Drop DX wrapper to DXVK 2.3 and relaunch."
+        }
+      ]
+    },
+    {
+      "id": "win:elden-ring:gamenative:t2",
+      "gameId": "win:elden-ring",
+      "emulatorId": "gamenative",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative — its Proton support handles Elden Ring's EAC better than vanilla Winlator.",
+          "url": "https://github.com/utkarshdalal/GameNative/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Container settings for Elden Ring.",
+          "settings": {
+            "Proton": "GE-Proton 9.x",
+            "Graphics driver": "Turnip 24.3.0",
+            "DXVK": "On (2.4-async)",
+            "VKD3D": "On (DX12 title)",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "BIOS",
+          "text": "No BIOS. But Elden Ring uses EasyAntiCheat — you must launch in OFFLINE/seamless-coop mode. Online play with EAC will not work and risks a ban.",
+          "path": null
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Elden Ring folder in. Use the offline launcher (start_protected_game bypass or the Seamless Co-op mod's launcher).",
+          "path": "/storage/emulated/0/GameNative/EldenRing/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Cap to 30 fps in the config — Elden Ring is hard-locked to 60 and runs ~25-30 on a high-end Snapdragon. A stable 30 feels far better than a fluctuating 30-45."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch offline. Lower settings to Low/Medium, 720p."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "'EasyAntiCheat failed to start'",
+          "fix": "You're launching the online exe. Use the offline/seamless-coop launcher — never the EAC online path on emulation."
+        },
+        {
+          "symptom": "Crash after the opening cutscene",
+          "fix": "Confirm VKD3D is on (DX12 game) and lower texture quality; the GPU runs out of memory at high textures."
+        },
+        {
+          "symptom": "Sub-20 fps in open areas",
+          "fix": "Expected on demanding scenes. Drop to 720p Low and cap 30 fps. This title is borderline even on flagship mobile."
+        }
+      ]
+    },
+    {
+      "id": "win:witcher-3:gamenative:t2",
+      "gameId": "win:witcher-3",
+      "emulatorId": "gamenative",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://github.com/utkarshdalal/GameNative/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Witcher 3 settings.",
+          "settings": {
+            "Proton": "GE-Proton 9.x",
+            "Graphics driver": "Turnip 24.3.0",
+            "DXVK": "On (use the DX11 'Classic' build, not Next-Gen DX12)",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your install. Prefer the 1.32 'Classic' (DX11) build — the Next-Gen 4.0 (DX12) update is much heavier on mobile.",
+          "path": "/storage/emulated/0/GameNative/Witcher3/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch witcher3.exe at 720p Medium. ~35-45 fps on the Classic build."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Very low FPS / heavy stutter",
+          "fix": "You're probably on the Next-Gen DX12 build. Roll back to the 1.32 Classic DX11 build for far better mobile performance."
+        }
+      ]
+    },
+    {
+      "id": "win:hollow-knight:winlator-cmod:t2",
+      "gameId": "win:hollow-knight",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Hollow Knight is a light Unity game — it runs great.",
+          "settings": {
+            "Screen size": "1920x1080",
+            "Graphics driver": "Turnip",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Hollow Knight folder in.",
+          "path": "/storage/emulated/0/Download/HollowKnight/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch hollow_knight.exe. Locked 60 fps at 1080p is easily achievable."
+        },
+        {
+          "kind": "TIP",
+          "text": "This is a great first game to test your Winlator setup — if Hollow Knight doesn't run, something's wrong with your container, not the game."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Unity 'mono' error on launch",
+          "fix": "Install the dotnet/mono component in the container settings, then relaunch."
+        }
+      ]
+    },
+    {
+      "id": "ps2:god-of-war:nethersx2-patch:t2",
+      "gameId": "ps2:god-of-war",
+      "emulatorId": "nethersx2-patch",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install patched NetherSX2.",
+          "url": "https://github.com/Trixarian/NetherSX2-patch/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS2 BIOS required. Place it in the bios folder. This comes from a PS2 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/NetherSX2/bios/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "God of War runs near-perfect with these settings.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "3x",
+            "Speed hacks": "Enabled (MTVU on)",
+            "Blending": "Basic (High if you see transparency issues)"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your God of War .iso/.chd.",
+          "path": "/storage/emulated/0/PS2/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — expect a locked 60 fps at 3x on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Bloom/shadow rendering glitches",
+          "fix": "Raise the blending accuracy to High in the renderer settings — God of War uses heavy blend effects."
+        }
+      ]
+    },
+    {
+      "id": "ps2:shadow-colossus:nethersx2-patch:t2",
+      "gameId": "ps2:shadow-colossus",
+      "emulatorId": "nethersx2-patch",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install patched NetherSX2.",
+          "url": "https://github.com/Trixarian/NetherSX2-patch/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS2 BIOS required. Place it in the bios folder. This comes from a PS2 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/NetherSX2/bios/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "SotC is demanding for PS2; tune carefully.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x (3x drops below 60 in fights)",
+            "Speed hacks": "Enabled",
+            "Half-pixel offset": "Special (Texture) — fixes the signature bloom haze"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your SotC .iso/.chd.",
+          "path": "/storage/emulated/0/PS2/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch. 40-60 fps at 2x; the original game itself dipped on real PS2, so some slowdown is authentic."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Heavy bloom / washed-out screen",
+          "fix": "Set half-pixel offset to Special (Texture) — this is the classic SotC fix."
+        }
+      ]
+    },
+    {
+      "id": "switch:smash-ultimate:eden:t2",
+      "gameId": "switch:smash-ultimate",
+      "emulatorId": "eden",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Eden.",
+          "url": "https://git.eden-emu.dev/eden-emu/eden/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "Switch keys (prod.keys) and firmware are required. These come from a Nintendo Switch you own — there's no download for them. Import them via Eden's key/firmware installer once you have them.",
+          "path": "/storage/emulated/0/eden/keys/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0 — Smash is very driver-sensitive.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Smash Ultimate settings.",
+          "settings": {
+            "Graphics API": "Vulkan",
+            "GPU driver": "Turnip 24.3.0",
+            "Resolution": "1x docked",
+            "Async shaders": "On",
+            "Disk pipeline cache": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your dumped Smash .nsp/.xci + update.",
+          "path": "/storage/emulated/0/Switch/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Play training mode for 2-3 minutes first to build the shader cache, then real matches run smooth. ~50-60 fps after caching on a high-end Snapdragon."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Apply firmware + keys, install the title update, launch."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Stutter on first match of every character/stage",
+          "fix": "Normal — shaders compile on first sight. Async shaders + disk cache make subsequent matches smooth."
+        },
+        {
+          "symptom": "Crash loading a stage",
+          "fix": "Confirm you installed the game UPDATE (Smash needs its latest patch) and that firmware matches your keys."
+        }
+      ]
+    },
+    {
+      "id": "switch:smo:eden:t2",
+      "gameId": "switch:smo",
+      "emulatorId": "eden",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Eden.",
+          "url": "https://git.eden-emu.dev/eden-emu/eden/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "Switch prod.keys + firmware required. Import via Eden's installer.",
+          "path": "/storage/emulated/0/eden/keys/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Mario Odyssey settings — one of the best-running first-party titles.",
+          "settings": {
+            "Graphics API": "Vulkan",
+            "GPU driver": "Turnip 24.3.0",
+            "Resolution": "2x (it can hold up)",
+            "Async shaders": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your dumped Odyssey .nsp/.xci.",
+          "path": "/storage/emulated/0/Switch/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — frequently a locked 60 fps, often at 2x, on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Audio stutter in busy areas (New Donk City)",
+          "fix": "Drop resolution to 1x in the densest areas; the bottleneck is GPU, not the emulator."
+        }
+      ]
+    },
+    {
+      "id": "switch:metroid-dread:eden:t2",
+      "gameId": "switch:metroid-dread",
+      "emulatorId": "eden",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Eden.",
+          "url": "https://git.eden-emu.dev/eden-emu/eden/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "Switch prod.keys + firmware required. Import via Eden's installer.",
+          "path": "/storage/emulated/0/eden/keys/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Metroid Dread is well-optimised and runs great.",
+          "settings": {
+            "Graphics API": "Vulkan",
+            "GPU driver": "Turnip 24.3.0",
+            "Resolution": "2x-3x",
+            "Async shaders": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your dumped Dread .nsp/.xci.",
+          "path": "/storage/emulated/0/Switch/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — solid 60 fps even at 2x-3x."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "psp:god-of-war-cos:ppsspp:t2",
+      "gameId": "psp:god-of-war-cos",
+      "emulatorId": "ppsspp",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install PPSSPP.",
+          "url": "https://www.ppsspp.org/download"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Chains of Olympus settings.",
+          "settings": {
+            "Backend": "Vulkan",
+            "Rendering resolution": "5x",
+            "Texture scaling": "Off (3D game, scaling adds little)"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your God of War: Chains of Olympus .iso/.cso.",
+          "path": "/storage/emulated/0/PSP/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — flawless locked 60 fps at 5x on any modern device."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:hades:winlator-cmod:t2",
+      "gameId": "win:hades",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Hades is a light, gorgeous 2D game — runs perfectly.",
+          "settings": {
+            "Screen size": "1920x1080",
+            "Graphics driver": "Turnip",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Hades folder in.",
+          "path": "/storage/emulated/0/Download/Hades/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch Hades.exe — locked 60 fps at 1080p."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:cyberpunk-2077:gamenative:t2",
+      "gameId": "win:cyberpunk-2077",
+      "emulatorId": "gamenative",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://github.com/utkarshdalal/GameNative/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Cyberpunk is extremely heavy — set expectations low.",
+          "settings": {
+            "Proton": "GE-Proton 9.x",
+            "Graphics driver": "Turnip 24.3.0",
+            "DXVK": "On (force DX11 mode if possible)",
+            "VKD3D": "On",
+            "Box64": "Performance",
+            "Video memory": "12 GB"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your install. Launch with the DX11 flag if the game offers one — DX12 is brutal on mobile.",
+          "path": "/storage/emulated/0/GameNative/Cyberpunk2077/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Realistically 15-25 fps at 720p Low on a high-end Snapdragon. This is a 'technically runs' title, not a 'plays well' one. Cap 30 and lower everything."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch at 720p, Low preset, cap 30 fps."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Crash on load / out of memory",
+          "fix": "Set video memory to your full RAM headroom, drop textures to Low, and close all background apps."
+        },
+        {
+          "symptom": "Single-digit FPS",
+          "fix": "Force DX11 mode and 720p Low. Even then this is one of the hardest PC titles to run on mobile."
+        }
+      ]
+    },
+    {
+      "id": "win:stardew:winlator-cmod:t2",
+      "gameId": "win:stardew",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Stardew is trivially light. Note: a native Android version exists — emulation is only needed for the PC mod ecosystem (SMAPI).",
+          "settings": {
+            "Screen size": "1920x1080",
+            "Graphics driver": "Turnip",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Stardew folder in. For mods, install SMAPI inside the container.",
+          "path": "/storage/emulated/0/Download/Stardew/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — locked 60 fps. Use this to run the modded PC version with SMAPI."
+        },
+        {
+          "kind": "TIP",
+          "text": "If you don't mod, just buy the native Android version — it's smoother and made for touch. Emulate only for SMAPI mods."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:dark-souls-r:winlator-cmod:t2",
+      "gameId": "win:dark-souls-r",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-27",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Dark Souls Remastered settings.",
+          "settings": {
+            "Screen size": "1280x720",
+            "Graphics driver": "Turnip 24.3.0",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "BIOS",
+          "text": "Play OFFLINE. DSR online uses anti-cheat that won't work on emulation.",
+          "path": null
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your install. Launch DarkSoulsRemastered.exe offline.",
+          "path": "/storage/emulated/0/Download/DarkSoulsR/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch offline at 720p — ~45-60 fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Stuck connecting online",
+          "fix": "Disable network or set the game offline — DSR's matchmaking hangs under emulation."
+        }
+      ]
+    }
+  ]
+}

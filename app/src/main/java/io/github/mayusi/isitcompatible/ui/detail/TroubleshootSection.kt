@@ -1,0 +1,270 @@
+package io.github.mayusi.isitcompatible.ui.detail
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.FileUpload
+import androidx.compose.material.icons.outlined.Lightbulb
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+
+/**
+ * The "It didn't work" interactive troubleshooter UI.
+ *
+ * Renders, inside the existing detail-screen [Section] wrapper, the full guided
+ * flow driven by [TroubleshootViewModel]:
+ *   PICKING   -> a short list of symptom buttons.
+ *   TRYING    -> ONE ranked fix at a time + "It worked" / "Still broken — next fix".
+ *   SOLVED    -> success state; "Mark as working / log result" and (Windows) the
+ *                existing "Import my working config" CTA.
+ *   EXHAUSTED -> honest "out of known fixes" end state with the same
+ *                journal/import hooks. No dead community-repo references.
+ *
+ * Every outcome CTA is a lambda the screen wires to the existing
+ * [GameDetailViewModel] functions, so the import + journal logic is reused, not
+ * duplicated.
+ */
+@Composable
+fun TroubleshootSection(
+    state: TroubleshootState,
+    accent: Color,
+    onPickSymptom: (TroubleshootSymptom) -> Unit,
+    onWorked: () -> Unit,
+    onNextFix: () -> Unit,
+    onReset: () -> Unit,
+    /** SOLVED + EXHAUSTED: log a "mark as working" journal entry (opens the existing form). */
+    onLogResult: () -> Unit,
+    /** Windows only: launch the existing "import my working config" SAF picker. */
+    onImportConfig: () -> Unit,
+) {
+    when (state.outcome) {
+        Outcome.PICKING -> SymptomPicker(accent, onPickSymptom)
+        Outcome.TRYING -> FixStep(state, accent, onWorked, onNextFix, onReset)
+        Outcome.SOLVED -> SolvedState(state, accent, onLogResult, onImportConfig, onReset)
+        Outcome.EXHAUSTED -> ExhaustedState(state, accent, onLogResult, onImportConfig, onReset)
+    }
+}
+
+@Composable
+private fun SymptomPicker(
+    accent: Color,
+    onPick: (TroubleshootSymptom) -> Unit,
+) {
+    Column(Modifier.fillMaxWidth()) {
+        Text(
+            "What's going wrong? Pick the closest match and we'll walk you through " +
+                "the known fixes one at a time.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(12.dp))
+        TroubleshootSymptom.ordered.forEach { symptom ->
+            OutlinedButton(
+                onClick = { onPick(symptom) },
+                modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp),
+            ) {
+                Text(symptom.label, modifier = Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+@Composable
+private fun FixStep(
+    state: TroubleshootState,
+    accent: Color,
+    onWorked: () -> Unit,
+    onNextFix: () -> Unit,
+    onReset: () -> Unit,
+) {
+    val fix = state.currentFix ?: return
+    Column(Modifier.fillMaxWidth()) {
+        // Context row: symptom + progress + change-symptom.
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                state.symptom?.label ?: "",
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = accent,
+                modifier = Modifier.weight(1f),
+            )
+            Text(state.stepLabel, style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Spacer(Modifier.height(4.dp))
+        SourceChip(fromGuide = fix.fromGuide)
+        Spacer(Modifier.height(12.dp))
+
+        // The one fix to try.
+        Row(verticalAlignment = Alignment.Top) {
+            Icon(Icons.Outlined.Lightbulb, null, tint = Color(0xFFFFB300), modifier = Modifier.size(22.dp))
+            Spacer(Modifier.width(10.dp))
+            Column(Modifier.weight(1f)) {
+                Text("Try this:", style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(fix.fix, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.height(4.dp))
+                Text(fix.detail, style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+        Text("Then relaunch the game — did that work?",
+            style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+        Spacer(Modifier.height(10.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Button(onClick = onWorked, modifier = Modifier.weight(1f)) {
+                Icon(Icons.Filled.CheckCircle, null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(6.dp))
+                Text("It worked")
+            }
+            OutlinedButton(onClick = onNextFix, modifier = Modifier.weight(1f)) {
+                Text(if (state.currentIndex < state.fixes.lastIndex) "Still broken — next" else "Still broken")
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        TextButton(onClick = onReset) {
+            Icon(Icons.Outlined.Close, null, modifier = Modifier.size(14.dp))
+            Spacer(Modifier.width(4.dp))
+            Text("Different problem")
+        }
+    }
+}
+
+@Composable
+private fun SolvedState(
+    state: TroubleshootState,
+    accent: Color,
+    onLogResult: () -> Unit,
+    onImportConfig: () -> Unit,
+    onReset: () -> Unit,
+) {
+    Column(Modifier.fillMaxWidth()) {
+        Box(
+            Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0xFFD1FAE5)).padding(14.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.CheckCircle, null, tint = Color(0xFF065F46), modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(8.dp))
+                Column {
+                    Text("Nice — it's working", style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold, color = Color(0xFF065F46))
+                    Text("Log it so it shows as your last run, and help the next person.",
+                        style = MaterialTheme.typography.bodySmall, color = Color(0xFF065F46))
+                }
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        Button(onClick = onLogResult, modifier = Modifier.fillMaxWidth()) {
+            Icon(Icons.Outlined.Description, null, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(8.dp))
+            Text("Mark as working / log result")
+        }
+        if (state.isWindowsGame) {
+            Spacer(Modifier.height(8.dp))
+            OutlinedButton(onClick = onImportConfig, modifier = Modifier.fillMaxWidth()) {
+                Icon(Icons.Outlined.FileUpload, null, modifier = Modifier.size(16.dp))
+                Spacer(Modifier.width(6.dp))
+                Text("Import your working config to mark it Verified")
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        TextButton(onClick = onReset) { Text("Troubleshoot something else") }
+    }
+}
+
+@Composable
+private fun ExhaustedState(
+    state: TroubleshootState,
+    accent: Color,
+    onLogResult: () -> Unit,
+    onImportConfig: () -> Unit,
+    onReset: () -> Unit,
+) {
+    val hadFixes = state.fixes.isNotEmpty()
+    Column(Modifier.fillMaxWidth()) {
+        Box(
+            Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
+                .background(Color(0xFFFEF3C7)).padding(14.dp),
+        ) {
+            Column {
+                Text(
+                    if (hadFixes) "We're out of known fixes for this one" else "No specific fixes for this one yet",
+                    style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold,
+                    color = Color(0xFF92400E),
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    if (hadFixes)
+                        "That's everything we know to try for this symptom on the recommended " +
+                            "emulator. If you DO get it working, importing your config or logging " +
+                            "the result helps the next person hit the same wall."
+                    else
+                        "We don't have ranked fixes for this symptom on the recommended emulator " +
+                            "yet. If you work it out, logging the result (or importing your config) " +
+                            "saves the next person the trouble.",
+                    style = MaterialTheme.typography.bodySmall, color = Color(0xFF92400E),
+                )
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        if (state.isWindowsGame) {
+            Button(onClick = onImportConfig, modifier = Modifier.fillMaxWidth()) {
+                Icon(Icons.Outlined.FileUpload, null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("Got it working? Import your config")
+            }
+            Spacer(Modifier.height(8.dp))
+            OutlinedButton(onClick = onLogResult, modifier = Modifier.fillMaxWidth()) {
+                Text("Log the result instead")
+            }
+        } else {
+            Button(onClick = onLogResult, modifier = Modifier.fillMaxWidth()) {
+                Icon(Icons.Outlined.Description, null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("Got it working? Log the result")
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        TextButton(onClick = onReset) { Text("Try a different symptom") }
+    }
+}
+
+/** Small tag showing whether a fix is game-specific or an emulator-wide fallback. */
+@Composable
+private fun SourceChip(fromGuide: Boolean) {
+    val (bg, fg, label) = if (fromGuide)
+        Triple(Color(0xFFDBEAFE), Color(0xFF1E40AF), "Known issue for this game")
+    else
+        Triple(Color(0xFFE5E7EB), Color(0xFF374151), "General fix for this emulator")
+    Box(
+        Modifier.clip(RoundedCornerShape(50)).background(bg).padding(horizontal = 9.dp, vertical = 3.dp),
+    ) {
+        Text(label, color = fg, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.SemiBold)
+    }
+}

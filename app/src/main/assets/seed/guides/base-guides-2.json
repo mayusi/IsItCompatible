@@ -1,0 +1,530 @@
+{
+  "schema": 1,
+  "_comment": "v0.8 Tier-4 per-emulator base guides for additional emulators (9 titles). gameId=null means 'standard setup for this emulator, accurate for any game'. Download URLs point at official source/release pages.",
+  "guides": [
+    {
+      "id": "base:citra-mmj:t4",
+      "gameId": null,
+      "emulatorId": "citra-mmj",
+      "tier": 4,
+      "sourceLabel": "Standard Citra MMJ setup",
+      "sourceUrl": "https://github.com/weihuoya/citra",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download Citra MMJ (the performance-tuned 3DS fork) from its release page and install it.",
+          "url": "https://github.com/weihuoya/citra"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "No BIOS strictly required. Recommended settings.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x-4x",
+            "Async shader compilation": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your 3DS dumps (.3ds / .cia / .cxi) to a folder.",
+          "path": "/storage/emulated/0/3DS/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Select the game and play. Configure the dual-screen layout to taste."
+        },
+        {
+          "kind": "TIP",
+          "text": "Citra MMJ is optimized for performance on modest hardware compared to Azahar. Good for lower-end devices."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Game needs a system file",
+          "fix": "Some 3DS titles want shared-system-data dumped from a real 3DS — see the per-game guide."
+        },
+        {
+          "symptom": "Graphical corruption",
+          "fix": "Try lowering internal resolution from 4x to 2x or switching to OpenGL in the Renderer settings."
+        },
+        {
+          "symptom": "Slow / choppy",
+          "fix": "Disable async shader compilation and lower the resolution to 2x."
+        }
+      ]
+    },
+    {
+      "id": "base:lime3ds:t4",
+      "gameId": null,
+      "emulatorId": "lime3ds",
+      "tier": 4,
+      "sourceLabel": "Standard Lime3DS setup",
+      "sourceUrl": "https://github.com/Lime3DS/Lime3DS",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download Lime3DS (an active Citra fork) from its release page and install it.",
+          "url": "https://github.com/Lime3DS/Lime3DS"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "No BIOS strictly required. Recommended settings.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x-4x",
+            "Async shader compilation": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your 3DS dumps (.3ds / .cia / .cxi) to a folder.",
+          "path": "/storage/emulated/0/3DS/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Select the game and play. Adjust the dual-screen layout as preferred."
+        },
+        {
+          "kind": "TIP",
+          "text": "Lime3DS is actively developed and compatible with most Citra game-specific guides. Good long-term choice."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Game won't boot",
+          "fix": "Confirm the dump is a valid .3ds / .cia file; try a different game to rule out a bad dump."
+        },
+        {
+          "symptom": "Slow or stutter",
+          "fix": "Enable async shader compilation, or lower internal resolution to 2x."
+        },
+        {
+          "symptom": "Game needs a system file",
+          "fix": "Some titles need shared-system-data from a real 3DS — check the per-game guide."
+        }
+      ]
+    },
+    {
+      "id": "base:citron:t4",
+      "gameId": null,
+      "emulatorId": "citron",
+      "tier": 4,
+      "sourceLabel": "Standard Citron (Switch) setup",
+      "sourceUrl": "https://git.citron-emu.org",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download the latest Citron APK from its official release page and install it.",
+          "url": "https://git.citron-emu.org"
+        },
+        {
+          "kind": "BIOS",
+          "text": "Switch keys (prod.keys) and firmware are required. These come from a Nintendo Switch you own — there's no download for them. Import them via Citron's key/firmware installer once you have them.",
+          "path": "/storage/emulated/0/citron/keys/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install the recommended Turnip driver — Switch emulation is very GPU-driver-sensitive.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Recommended settings for a high-end Snapdragon / Gen 2.",
+          "settings": {
+            "Graphics API": "Vulkan",
+            "GPU driver": "Turnip (installed above)",
+            "Resolution": "1x (docked)",
+            "Async shaders": "On",
+            "Use disk pipeline cache": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your dumped games (.nsp / .xci) to a folder and set it as the games directory.",
+          "path": "/storage/emulated/0/Switch/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Install firmware + keys, add your game, and launch."
+        },
+        {
+          "kind": "TIP",
+          "text": "Citron uses a different shader cache strategy than Eden. First launch stutters while shaders build; the second run should be much smoother. Compatibility is still early-stage — not all games boot."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Game won't boot / 'missing keys'",
+          "fix": "Re-dump prod.keys from your console and reinstall current firmware — mismatched/old keys are the #1 cause."
+        },
+        {
+          "symptom": "Constant stutter even after shader cache",
+          "fix": "Lower resolution to 1x and confirm Turnip (not the system driver) is selected."
+        },
+        {
+          "symptom": "Many games don't boot",
+          "fix": "Citron is experimental — some titles are not yet compatible. Check community reports before assuming your setup is wrong."
+        }
+      ]
+    },
+    {
+      "id": "base:sudachi:t4",
+      "gameId": null,
+      "emulatorId": "sudachi",
+      "tier": 4,
+      "sourceLabel": "Standard Sudachi (Switch) setup",
+      "sourceUrl": "https://github.com/sudachi-emu/sudachi",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download the latest Sudachi APK from its release page and install it.",
+          "url": "https://github.com/sudachi-emu/sudachi"
+        },
+        {
+          "kind": "BIOS",
+          "text": "Switch keys (prod.keys) and firmware are required. These come from a Nintendo Switch you own — there's no download for them. Import them via Sudachi's setup wizard once you have them.",
+          "path": "/storage/emulated/0/sudachi/keys/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install the recommended Turnip driver — Switch emulation is very GPU-driver-sensitive.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Recommended settings for a high-end Snapdragon+.",
+          "settings": {
+            "Graphics API": "Vulkan",
+            "GPU driver": "Turnip (installed above)",
+            "Resolution": "1x",
+            "Async shaders": "On",
+            "Disk pipeline cache": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your dumped games (.nsp / .xci) to a folder and set it as the games directory.",
+          "path": "/storage/emulated/0/Switch/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Install firmware + keys, add your game, and launch."
+        },
+        {
+          "kind": "TIP",
+          "text": "Sudachi is an older Yuzu fork — less actively maintained than Eden or Citron. Stable, but compatibility is narrower. Good fallback if newer emulators have issues with a specific title."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Game won't boot",
+          "fix": "Confirm prod.keys and firmware are up to date. Sudachi may have lower compatibility than Eden — try Eden for that title."
+        },
+        {
+          "symptom": "Slow / stutters badly",
+          "fix": "Keep resolution at 1x, ensure Turnip driver is selected, and enable async shaders."
+        },
+        {
+          "symptom": "Black screen on launch",
+          "fix": "Sudachi may not support this game. Check the per-game guide or try a newer emulator like Eden."
+        }
+      ]
+    },
+    {
+      "id": "base:dolphin-mmjr:t4",
+      "gameId": null,
+      "emulatorId": "dolphin-mmjr",
+      "tier": 4,
+      "sourceLabel": "Standard Dolphin MMJR2 setup",
+      "sourceUrl": "https://github.com/Medard22/Dolphin-MMJR2-VBI",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Dolphin MMJR2 (the performance-focused Dolphin fork) from its release page.",
+          "url": "https://github.com/Medard22/Dolphin-MMJR2-VBI"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "No BIOS needed. Recommended settings for high-end devices.",
+          "settings": {
+            "Backend": "Vulkan",
+            "Internal resolution": "2x-3x (720p-1080p)",
+            "Dual-core": "On",
+            "Shader compilation": "Hybrid Ubershaders (stops stutter)"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your GameCube/Wii games (.rvz / .iso). RVZ is the compressed modern format.",
+          "path": "/storage/emulated/0/Dolphin/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Pick the game and play. For Wii motion games, configure motion/IR controls first."
+        },
+        {
+          "kind": "TIP",
+          "text": "Dolphin MMJR2 trades some accuracy for speed — it's faster than vanilla Dolphin on demanding games. Expect higher FPS but occasional graphical quirks."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Stutter when new effects appear",
+          "fix": "Set Shader Compilation to Hybrid Ubershaders in Graphics → Advanced."
+        },
+        {
+          "symptom": "Game crashes (MMJR2-specific)",
+          "fix": "MMJR2 is less accurate than vanilla Dolphin — if a game crashes, try vanilla Dolphin or lower the internal resolution."
+        },
+        {
+          "symptom": "Wii game needs motion controls",
+          "fix": "Map the Wii Remote to touch/gyro in the controller settings before launching."
+        }
+      ]
+    },
+    {
+      "id": "base:nethersx2-classic:t4",
+      "gameId": null,
+      "emulatorId": "nethersx2-classic",
+      "tier": 4,
+      "sourceLabel": "Standard NetherSX2-Classic (PS2) setup",
+      "sourceUrl": "https://github.com/Trixarian/NetherSX2-classic",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download the NetherSX2-Classic APK (unpatched build) and install it.",
+          "url": "https://github.com/Trixarian/NetherSX2-classic"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS2 BIOS required (e.g. SCPH-70012.bin or your regional equivalent). Place it in the bios folder. This comes from a PS2 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/NetherSX2/bios/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "On first launch, point NetherSX2 at your BIOS folder when prompted, then at your games folder."
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Recommended settings for Snapdragon 8-class devices.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x-3x",
+            "EE cyclerate": "Default (0)",
+            "Speed hacks": "Enabled (MTVU on)",
+            "Anisotropic filtering": "Off or 2x"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Put your PS2 games (.iso / .chd) in a folder and add it as a game directory.",
+          "path": "/storage/emulated/0/PS2/"
+        },
+        {
+          "kind": "TIP",
+          "text": "NetherSX2-Classic is the unpatched build — less accurate than the patched version but sometimes runs games the patch breaks. For general use, prefer the patched version."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Boots to a black screen",
+          "fix": "Wrong/missing BIOS, or the ISO is bad. Re-dump the BIOS and verify the game dump."
+        },
+        {
+          "symptom": "Game-specific bugs (glitches, wrong colors)",
+          "fix": "Classic is less patched than the patched version — try NetherSX2-patch if the issue is severe."
+        },
+        {
+          "symptom": "Slowdown in heavy scenes",
+          "fix": "Drop internal resolution to 1x-2x, ensure Vulkan renderer, and keep speed hacks enabled."
+        }
+      ]
+    },
+    {
+      "id": "base:rpcsx:t4",
+      "gameId": null,
+      "emulatorId": "rpcsx",
+      "tier": 4,
+      "sourceLabel": "Standard RPCSX (PS3/PS4) setup",
+      "sourceUrl": "https://github.com/RPCSX/rpcsx",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download RPCSX (the experimental cross-PlayStation emulator) from its release page and install it.",
+          "url": "https://github.com/RPCSX/rpcsx"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS3 firmware (PS3UPDAT.PUP) required for PS3 titles. Install via RPCSX's firmware installer. This comes from official Sony firmware — there's no download here; install it once you have it.",
+          "path": "/storage/emulated/0/rpcsx/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install the recommended Turnip driver — PlayStation 3/4 emulation is extremely GPU-heavy.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Set expectations very low — RPCSX is bleeding-edge and most titles don't run yet.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Resolution scale": "1x",
+            "GPU accuracy": "Normal",
+            "CPU decoder": "Recompiler"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Install your PS3/PS4 game (decrypted, from a console you own) into the emulator's game folder.",
+          "path": "/storage/emulated/0/rpcsx/games/"
+        },
+        {
+          "kind": "TIP",
+          "text": "RPCSX is extremely early — it targets both PS3 and PS4, meaning resources are thin. Many games won't boot at all. Treat any working title as a bonus. aPS3e or a desktop PS3/PS4 emulator may be better for serious gaming."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Won't boot at all",
+          "fix": "RPCSX is in early development. Most games simply don't run yet — this is expected. Check the project's GitHub issues for known status."
+        },
+        {
+          "symptom": "Very low FPS (5-15)",
+          "fix": "RPCSX is not yet optimized for mobile. Keep resolution at 1x; accept that performance is severely limited."
+        },
+        {
+          "symptom": "Black screen or crash",
+          "fix": "Switch to a more mature emulator (aPS3e for PS3, or try on desktop RPCS3). RPCSX may simply not support this title."
+        }
+      ]
+    },
+    {
+      "id": "base:shadps4:t4",
+      "gameId": null,
+      "emulatorId": "shadps4",
+      "tier": 4,
+      "sourceLabel": "Standard shadPS4 (PS4) setup",
+      "sourceUrl": "https://github.com/shadps4-emu/shadPS4",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download shadPS4 (the experimental PS4 emulator) from its release page and install it.",
+          "url": "https://github.com/shadps4-emu/shadPS4"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS4 firmware / system files are needed, but setup is complex and varies by build. Follow the project's setup wiki carefully. These come from a PS4 you own — there's no download here, and shadPS4 is very new.",
+          "path": "/storage/emulated/0/shadps4/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install the recommended Turnip driver — PS4 emulation on mobile is demanding.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Set expectations extremely low — shadPS4 is very experimental and most titles don't run.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Resolution": "1x",
+            "GPU accuracy": "Fast"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Install your dumped PS4 games (from a PS4 you own, decrypted) into the emulator's game folder.",
+          "path": "/storage/emulated/0/shadps4/games/"
+        },
+        {
+          "kind": "TIP",
+          "text": "shadPS4 is in very early development — it's the least mature PlayStation emulator on Android. Most commercial PS4 games will not boot. Use this only if you want to experiment with a bleeding-edge project."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Won't boot / firmware error",
+          "fix": "shadPS4 setup is not yet user-friendly. Check the project's GitHub issues and wiki for the latest setup steps."
+        },
+        {
+          "symptom": "Black screen",
+          "fix": "This is normal for most titles in shadPS4 — the emulator doesn't support them yet."
+        },
+        {
+          "symptom": "Very low FPS or instant crash",
+          "fix": "Accept that shadPS4 is not yet viable for gaming. Revisit in a few months as development continues."
+        }
+      ]
+    },
+    {
+      "id": "base:winlator-frost:t4",
+      "gameId": null,
+      "emulatorId": "winlator-frost",
+      "tier": 4,
+      "sourceLabel": "Standard Winlator Frost setup",
+      "sourceUrl": "https://github.com/longjunyu2/winlator",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Download the latest Winlator Frost APK (longjunyu2 build) and install it.",
+          "url": "https://github.com/longjunyu2/winlator"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install the recommended Turnip driver, then in Winlator go to Settings → Graphics Drivers → Install (.zip).",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Create a new container with these settings (Containers tab → +).",
+          "settings": {
+            "Screen size": "1280x720 (raise later if it runs well)",
+            "Graphics driver": "Turnip (the one you just installed)",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64 preset": "Performance",
+            "Wine version": "9.x (bundled)"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy the game's folder (the one with the .exe) into the container's drive_c, e.g. Downloads, then point Winlator at the .exe.",
+          "path": "/storage/emulated/0/Download/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Long-press the container → Run, browse to the game's .exe, and launch."
+        },
+        {
+          "kind": "TIP",
+          "text": "Winlator Frost (longjunyu2 fork) has good Wine 9.x stability and is a solid middle ground between vanilla Winlator and Cmod. First launch is slow — DXVK compiles shaders; let it sit a minute or two."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Black screen but audio plays",
+          "fix": "Switch DX wrapper to an older DXVK (2.3) or to WineD3D in the container's settings, then relaunch."
+        },
+        {
+          "symptom": "Game won't start / instantly closes",
+          "fix": "Set Box64 preset to Compatibility, and confirm the .exe is the actual game launcher, not a redistributable installer."
+        },
+        {
+          "symptom": "Very low FPS",
+          "fix": "Lower the container screen size to 960x540, and make sure you selected the Turnip driver (not the system/llvmpipe one)."
+        },
+        {
+          "symptom": "Missing fonts / squares for text",
+          "fix": "Install corefonts: container settings → Components → corefonts → install, then relaunch."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1244 @@
+{
+  "schema": 1,
+  "_comment": "v0.8 Tier-2 AUTHORED game-specific guides for console emulation. Each guide covers a specific console game with emulator-specific settings, ROM paths, and troubleshooting. Written against known-good community configs as of dataAsOf.",
+  "guides": [
+    {
+      "id": "gc:windwaker:dolphin:t2",
+      "gameId": "gc:windwaker",
+      "emulatorId": "dolphin",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Dolphin Emulator.",
+          "url": "https://dolphin-emu.org/download/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Wind Waker is cel-shaded and runs great with these settings.",
+          "settings": {
+            "Backend": "Vulkan",
+            "Internal resolution": "2x-3x",
+            "Shader compilation": "Hybrid Ubershaders"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Wind Waker .iso/.gcm to the GC ROM folder.",
+          "path": "/storage/emulated/0/GC/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Cell-shading runs great at ~60fps — enable Hybrid Ubershaders to avoid stutter."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch Wind Waker — expect solid 60 fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Shader stutter on first sight",
+          "fix": "Hybrid Ubershaders will compile shaders on first encounter; subsequent runs are smooth."
+        }
+      ]
+    },
+    {
+      "id": "gc:twilight-princess:dolphin:t2",
+      "gameId": "gc:twilight-princess",
+      "emulatorId": "dolphin",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Dolphin Emulator.",
+          "url": "https://dolphin-emu.org/download/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Twilight Princess settings.",
+          "settings": {
+            "Backend": "Vulkan",
+            "Internal resolution": "2x",
+            "Shader compilation": "Hybrid Ubershaders"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Twilight Princess .iso/.gcm.",
+          "path": "/storage/emulated/0/GC/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs well at ~60fps at 2x resolution on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "gc:metroid-prime:dolphin:t2",
+      "gameId": "gc:metroid-prime",
+      "emulatorId": "dolphin",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Dolphin Emulator.",
+          "url": "https://dolphin-emu.org/download/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Metroid Prime settings.",
+          "settings": {
+            "Backend": "Vulkan",
+            "Internal resolution": "2x-3x",
+            "Shader compilation": "Hybrid Ubershaders"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Metroid Prime .iso/.gcm.",
+          "path": "/storage/emulated/0/GC/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Runs great — note that bloom and visor effects need Vulkan backend."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — expect solid 60 fps."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Bloom effects not rendering",
+          "fix": "Confirm Vulkan is selected as the backend."
+        }
+      ]
+    },
+    {
+      "id": "gc:eternal-darkness:dolphin:t2",
+      "gameId": "gc:eternal-darkness",
+      "emulatorId": "dolphin",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Dolphin Emulator.",
+          "url": "https://dolphin-emu.org/download/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Eternal Darkness settings.",
+          "settings": {
+            "Backend": "Vulkan",
+            "Internal resolution": "2x-3x",
+            "Shader compilation": "Hybrid Ubershaders"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Eternal Darkness .iso/.gcm.",
+          "path": "/storage/emulated/0/GC/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs well at ~60fps."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "3ds:smt-iv:azahar:t2",
+      "gameId": "3ds:smt-iv",
+      "emulatorId": "azahar",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Azahar emulator.",
+          "url": "https://github.com/azahar-emu/azahar/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "SMT IV settings — a light JRPG.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x-4x"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your SMT IV .3ds/.cia dump.",
+          "path": "/storage/emulated/0/3DS/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs well at ~60fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "3ds:mh4u:azahar:t2",
+      "gameId": "3ds:mh4u",
+      "emulatorId": "azahar",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Azahar emulator.",
+          "url": "https://github.com/azahar-emu/azahar/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Monster Hunter 4 Ultimate settings.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x-4x"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your MH4U .3ds/.cia dump.",
+          "path": "/storage/emulated/0/3DS/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs well at ~60fps."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Shadow glitches in hunts",
+          "fix": "This is a known minor issue in some areas — does not affect gameplay."
+        }
+      ]
+    },
+    {
+      "id": "3ds:pokemon-x:azahar:t2",
+      "gameId": "3ds:pokemon-x",
+      "emulatorId": "azahar",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Azahar emulator (latest version).",
+          "url": "https://github.com/azahar-emu/azahar/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Pokémon X settings.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x-4x"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Pokémon X .3ds/.cia dump.",
+          "path": "/storage/emulated/0/3DS/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Needs the latest Azahar build for stable battle rendering — ~60fps expected."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — solid 60 fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "3ds:pokemon-sumo:azahar:t2",
+      "gameId": "3ds:pokemon-sumo",
+      "emulatorId": "azahar",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Azahar emulator.",
+          "url": "https://github.com/azahar-emu/azahar/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Pokémon Sun/Moon settings — heavier than X/Y.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Sun/Moon .3ds/.cia dump.",
+          "path": "/storage/emulated/0/3DS/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Heavier title than X/Y — expect ~30-60fps, with outer-area slowdowns."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — variable performance; inner towns ~60fps, exterior routes ~30-45fps."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "n64:majoras-mask:mupen64plus:t2",
+      "gameId": "n64:majoras-mask",
+      "emulatorId": "mupen64plus",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Mupen64Plus AE.",
+          "url": "https://github.com/mupen64plus-ae/mupen64plus-ae/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Majora's Mask settings with GLideN64 plugin.",
+          "settings": {
+            "Video plugin": "GLideN64",
+            "Resolution": "3x native"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Majora's Mask .z64/.n64 ROM.",
+          "path": "/storage/emulated/0/N64/"
+        },
+        {
+          "kind": "TIP",
+          "text": "May need a per-game profile for accurate moon behavior — GLideN64 handles this well."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs well with GLideN64 at 3x resolution."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Moon positioning glitches",
+          "fix": "Create a per-game profile in Mupen64Plus for Majora's Mask to tweak framebuffer accuracy."
+        }
+      ]
+    },
+    {
+      "id": "n64:goldeneye:mupen64plus:t2",
+      "gameId": "n64:goldeneye",
+      "emulatorId": "mupen64plus",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Mupen64Plus AE.",
+          "url": "https://github.com/mupen64plus-ae/mupen64plus-ae/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "GoldenEye settings with GLideN64.",
+          "settings": {
+            "Video plugin": "GLideN64",
+            "Resolution": "2x-3x native"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your GoldenEye .z64/.n64 ROM.",
+          "path": "/storage/emulated/0/N64/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Framebuffer effects (scope, radar) need GLideN64 for proper rendering."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs with good FPS; scope/radar effects need GLideN64."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "n64:ocarina:mupen64plus:t2",
+      "gameId": "n64:ocarina",
+      "emulatorId": "mupen64plus",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Mupen64Plus AE.",
+          "url": "https://github.com/mupen64plus-ae/mupen64plus-ae/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Ocarina of Time settings with GLideN64.",
+          "settings": {
+            "Video plugin": "GLideN64",
+            "Resolution": "3x native"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Ocarina of Time .z64/.n64 ROM.",
+          "path": "/storage/emulated/0/N64/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs great at ~60fps with GLideN64 at 3x resolution."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "n64:banjo:mupen64plus:t2",
+      "gameId": "n64:banjo",
+      "emulatorId": "mupen64plus",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Mupen64Plus AE.",
+          "url": "https://github.com/mupen64plus-ae/mupen64plus-ae/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Banjo-Kazooie settings with GLideN64.",
+          "settings": {
+            "Video plugin": "GLideN64",
+            "Resolution": "3x native"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Banjo-Kazooie .z64/.n64 ROM.",
+          "path": "/storage/emulated/0/N64/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs great at ~60fps."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "nds:mario-kart-ds:retroarch:t2",
+      "gameId": "nds:mario-kart-ds",
+      "emulatorId": "retroarch",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install RetroArch.",
+          "url": "https://retroarch.com"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Mario Kart DS settings with MelonDS core.",
+          "settings": {
+            "Core": "MelonDS",
+            "Renderer": "OpenGL",
+            "Internal resolution": "up to 4x"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Mario Kart DS .nds ROM.",
+          "path": "/storage/emulated/0/NDS/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs at locked ~60fps on MelonDS."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "nds:nsmb-ds:retroarch:t2",
+      "gameId": "nds:nsmb-ds",
+      "emulatorId": "retroarch",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install RetroArch.",
+          "url": "https://retroarch.com"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "New Super Mario Bros DS settings.",
+          "settings": {
+            "Core": "MelonDS",
+            "Renderer": "OpenGL",
+            "Internal resolution": "up to 4x"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your NSMB DS .nds ROM.",
+          "path": "/storage/emulated/0/NDS/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — light game, locked 60 fps."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "nds:sm64-ds:retroarch:t2",
+      "gameId": "nds:sm64-ds",
+      "emulatorId": "retroarch",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install RetroArch.",
+          "url": "https://retroarch.com"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Super Mario 64 DS settings.",
+          "settings": {
+            "Core": "MelonDS",
+            "Renderer": "OpenGL",
+            "Internal resolution": "up to 4x"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your SM64 DS .nds ROM.",
+          "path": "/storage/emulated/0/NDS/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs well."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "nds:zelda-ph:retroarch:t2",
+      "gameId": "nds:zelda-ph",
+      "emulatorId": "retroarch",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install RetroArch.",
+          "url": "https://retroarch.com"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "The Legend of Zelda: Phantom Hourglass settings.",
+          "settings": {
+            "Core": "MelonDS",
+            "Renderer": "OpenGL",
+            "Internal resolution": "up to 4x"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Phantom Hourglass .nds ROM.",
+          "path": "/storage/emulated/0/NDS/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Touch-heavy game — touch controls work well in RetroArch."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs fine."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "ps1:re-1:duckstation:t2",
+      "gameId": "ps1:re-1",
+      "emulatorId": "duckstation",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install DuckStation.",
+          "url": "https://duckstation.org"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS1 BIOS is optional but recommended. Place it in the BIOS folder. This comes from a PS1 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/DuckStation/bios/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Resident Evil settings.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "up to 9x",
+            "PGXP geometry correction": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your RE1 .bin/.cue/.iso.",
+          "path": "/storage/emulated/0/PS1/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Classic game, runs perfect at high resolution with PGXP enabled."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — flawless emulation."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "ps1:vagrant-story:duckstation:t2",
+      "gameId": "ps1:vagrant-story",
+      "emulatorId": "duckstation",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install DuckStation.",
+          "url": "https://duckstation.org"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS1 BIOS is optional. Place it in the BIOS folder if available. This comes from a PS1 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/DuckStation/bios/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Vagrant Story settings — a 2D-heavy RPG.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "up to 9x",
+            "PGXP geometry correction": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Vagrant Story .bin/.cue/.iso.",
+          "path": "/storage/emulated/0/PS1/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs perfect."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "ps1:tony-hawk-2:duckstation:t2",
+      "gameId": "ps1:tony-hawk-2",
+      "emulatorId": "duckstation",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install DuckStation.",
+          "url": "https://duckstation.org"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS1 BIOS optional. This comes from a PS1 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/DuckStation/bios/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Tony Hawk's Pro Skater 2 settings.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "up to 9x",
+            "PGXP geometry correction": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your THPS2 .bin/.cue/.iso.",
+          "path": "/storage/emulated/0/PS1/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs perfect at 60fps."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "ps1:ff7:duckstation:t2",
+      "gameId": "ps1:ff7",
+      "emulatorId": "duckstation",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install DuckStation.",
+          "url": "https://duckstation.org"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS1 BIOS optional. This comes from a PS1 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/DuckStation/bios/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Final Fantasy VII settings.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "up to 9x",
+            "PGXP geometry correction": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your FF7 discs as a .m3u playlist (multi-disc support).",
+          "path": "/storage/emulated/0/PS1/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs perfect at high resolution."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "ps2:silent-hill-2:nethersx2-patch:t2",
+      "gameId": "ps2:silent-hill-2",
+      "emulatorId": "nethersx2-patch",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install patched NetherSX2.",
+          "url": "https://github.com/Trixarian/NetherSX2-patch/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS2 BIOS required. Place it in the bios folder. This comes from a PS2 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/NetherSX2/bios/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Silent Hill 2 settings — fog rendering needs careful tuning.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x-3x",
+            "Speed hacks": "Enabled (MTVU on)",
+            "Blending": "Accurate"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Silent Hill 2 .iso/.chd.",
+          "path": "/storage/emulated/0/PS2/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Runs ~60fps but fog rendering needs Vulkan + correct blending. Classic fix: if fog breaks, switch to software renderer."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — ~60fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Fog is broken or washed out",
+          "fix": "Enable Accurate blending and confirm Vulkan backend; if still broken, fall back to software renderer for fog."
+        }
+      ]
+    },
+    {
+      "id": "ps2:silent-hill-3:nethersx2-patch:t2",
+      "gameId": "ps2:silent-hill-3",
+      "emulatorId": "nethersx2-patch",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install patched NetherSX2.",
+          "url": "https://github.com/Trixarian/NetherSX2-patch/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS2 BIOS required. Place it in the bios folder. This comes from a PS2 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/NetherSX2/bios/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Silent Hill 3 settings — similar to SH2.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x-3x",
+            "Speed hacks": "Enabled (MTVU on)",
+            "Blending": "Accurate"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Silent Hill 3 .iso/.chd.",
+          "path": "/storage/emulated/0/PS2/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — ~50-60fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "ps2:burnout-3:nethersx2-patch:t2",
+      "gameId": "ps2:burnout-3",
+      "emulatorId": "nethersx2-patch",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install patched NetherSX2.",
+          "url": "https://github.com/Trixarian/NetherSX2-patch/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS2 BIOS required. Place it in the bios folder. This comes from a PS2 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/NetherSX2/bios/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Burnout 3 settings — a fast racer.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x-3x",
+            "Speed hacks": "Enabled (MTVU on)"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Burnout 3 .iso/.chd.",
+          "path": "/storage/emulated/0/PS2/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — ~60fps at 2x-3x on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "ps2:gt-4:nethersx2-patch:t2",
+      "gameId": "ps2:gt-4",
+      "emulatorId": "nethersx2-patch",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install patched NetherSX2.",
+          "url": "https://github.com/Trixarian/NetherSX2-patch/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "PS2 BIOS required. Place it in the bios folder. This comes from a PS2 you own — there's no download here; place it once you have it.",
+          "path": "/storage/emulated/0/NetherSX2/bios/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Gran Turismo 4 settings — demanding racer.",
+          "settings": {
+            "Renderer": "Vulkan",
+            "Internal resolution": "2x",
+            "Speed hacks": "Enabled (MTVU on)"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your GT4 .iso/.chd.",
+          "path": "/storage/emulated/0/PS2/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Demanding title — expect ~50-60fps at 2x; lower resolution in busy race scenes."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — ~50-60fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "psp:gow-gos:ppsspp:t2",
+      "gameId": "psp:gow-gos",
+      "emulatorId": "ppsspp",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install PPSSPP.",
+          "url": "https://www.ppsspp.org/download"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "God of War: Ghost of Sparta settings.",
+          "settings": {
+            "Backend": "Vulkan",
+            "Rendering resolution": "5x",
+            "Texture scaling": "Off"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your GoW: Ghost of Sparta .iso/.cso.",
+          "path": "/storage/emulated/0/PSP/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — flawless 60fps at 5x on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "psp:persona-3-p:ppsspp:t2",
+      "gameId": "psp:persona-3-p",
+      "emulatorId": "ppsspp",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install PPSSPP.",
+          "url": "https://www.ppsspp.org/download"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Persona 3 Portable settings — 2D-heavy JRPG.",
+          "settings": {
+            "Backend": "Vulkan",
+            "Rendering resolution": "5x"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your P3P .iso/.cso.",
+          "path": "/storage/emulated/0/PSP/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs perfect at 60fps."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "psp:crisis-core:ppsspp:t2",
+      "gameId": "psp:crisis-core",
+      "emulatorId": "ppsspp",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install PPSSPP.",
+          "url": "https://www.ppsspp.org/download"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Crisis Core: Final Fantasy VII settings.",
+          "settings": {
+            "Backend": "Vulkan",
+            "Rendering resolution": "5x"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Crisis Core .iso/.cso.",
+          "path": "/storage/emulated/0/PSP/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs perfect at ~60fps."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "switch:totk:eden:t2",
+      "gameId": "switch:totk",
+      "emulatorId": "eden",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Eden.",
+          "url": "https://git.eden-emu.dev/eden-emu/eden/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "Switch keys (prod.keys) and firmware are required. These come from a Nintendo Switch you own — there's no download for them. Import them via Eden's key/firmware installer once you have them.",
+          "path": "/storage/emulated/0/eden/keys/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Tears of the Kingdom settings — a very demanding title.",
+          "settings": {
+            "Graphics API": "Vulkan",
+            "GPU driver": "Turnip 24.3.0",
+            "Resolution": "1x",
+            "Async shaders": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your TotK dumped .nsp/.xci + update.",
+          "path": "/storage/emulated/0/Switch/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Very heavy — ~20-30fps on a high-end Snapdragon. Play areas twice to build shader cache for smoother second runs."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch with latest Eden and Turnip — expect ~20-30fps."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Heavy stutter on first visit to areas",
+          "fix": "Normal — shaders compile on first sight. Play through twice to cache shaders."
+        }
+      ]
+    },
+    {
+      "id": "switch:fe-engage:eden:t2",
+      "gameId": "switch:fe-engage",
+      "emulatorId": "eden",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Eden.",
+          "url": "https://git.eden-emu.dev/eden-emu/eden/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "Switch keys (prod.keys) and firmware are required. These come from a Nintendo Switch you own — there's no download for them. Import them via Eden's key/firmware installer once you have them.",
+          "path": "/storage/emulated/0/eden/keys/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Fire Emblem Engage settings — UE-based tactical RPG.",
+          "settings": {
+            "Graphics API": "Vulkan",
+            "GPU driver": "Turnip 24.3.0",
+            "Resolution": "1x-2x",
+            "Async shaders": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your FE Engage dumped .nsp/.xci + update.",
+          "path": "/storage/emulated/0/Switch/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — ~30-45fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "switch:bayonetta-3:eden:t2",
+      "gameId": "switch:bayonetta-3",
+      "emulatorId": "eden",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Eden.",
+          "url": "https://git.eden-emu.dev/eden-emu/eden/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "Switch keys (prod.keys) and firmware are required. These come from a Nintendo Switch you own — there's no download for them. Import them via Eden's key/firmware installer once you have them.",
+          "path": "/storage/emulated/0/eden/keys/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Bayonetta 3 settings — demanding action game.",
+          "settings": {
+            "Graphics API": "Vulkan",
+            "GPU driver": "Turnip 24.3.0",
+            "Resolution": "1x",
+            "Async shaders": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Bayonetta 3 dumped .nsp/.xci + update.",
+          "path": "/storage/emulated/0/Switch/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — ~30fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "switch:astral-chain:eden:t2",
+      "gameId": "switch:astral-chain",
+      "emulatorId": "eden",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Eden.",
+          "url": "https://git.eden-emu.dev/eden-emu/eden/releases"
+        },
+        {
+          "kind": "BIOS",
+          "text": "Switch keys (prod.keys) and firmware are required. These come from a Nintendo Switch you own — there's no download for them. Import them via Eden's key/firmware installer once you have them.",
+          "path": "/storage/emulated/0/eden/keys/"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Astral Chain settings.",
+          "settings": {
+            "Graphics API": "Vulkan",
+            "GPU driver": "Turnip 24.3.0",
+            "Resolution": "1x-2x",
+            "Async shaders": "On"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Astral Chain dumped .nsp/.xci + update.",
+          "path": "/storage/emulated/0/Switch/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — ~30-40fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "wii:mario-galaxy:dolphin:t2",
+      "gameId": "wii:mario-galaxy",
+      "emulatorId": "dolphin",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-06-05",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Dolphin Emulator.",
+          "url": "https://dolphin-emu.org/download/"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Mario Galaxy settings — note motion controls require mapping.",
+          "settings": {
+            "Backend": "Vulkan",
+            "Internal resolution": "2x-3x",
+            "Shader compilation": "Hybrid Ubershaders"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Add your Mario Galaxy .iso/.wbfs to the Wii ROM folder.",
+          "path": "/storage/emulated/0/Wii/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch — runs well at ~60fps."
+        }
+      ],
+      "troubleshooting": []
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+## Android / Gradle / IDE noise
+*.iml
+.gradle/
+local.properties
+.idea/
+.DS_Store
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.hprof
+
+## Signing
+release/
+*.jks
+*.keystore
+keystore.properties
+keystore.properties.local
+
+## KSP / generated
+**/generated/
+**/build/
+
+## Kotlin compiler session cache
+.kotlin/
+
+## Build log
+build.log
+
+## OS / editor
+Thumbs.db
+*.swp
+*.swo
+
+## Build-time ingest tool transient artifacts (the curated seed JSON it emits
+## into app/src/main/assets/seed/ IS committed; only scratch/raw caches are not)
+tools/ingest/_*.json
+tools/ingest/raw/
+tools/ingest/.cache/
+tools/scrape-guides/drafts/

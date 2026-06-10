@@ -1,0 +1,887 @@
+{
+  "schema": 1,
+  "_comment": "v0.8 Tier-2 AUTHORED game-specific guides for additional Windows titles. Each guide is game-specific with realistic performance expectations, proper container settings, and known gotchas for the recommended emulator. Written against known-good community configs as of dataAsOf.",
+  "guides": [
+    {
+      "id": "win:fallout-4:winlator-cmod:t2",
+      "gameId": "win:fallout-4",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod (latest).",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0 — Fallout 4's Creation Engine DX11 is stable on Turnip.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Create a Fallout 4 container with these settings.",
+          "settings": {
+            "Screen size": "1280x720",
+            "Graphics driver": "Turnip 24.3.0",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64 preset": "Performance",
+            "Wine": "9.4-staging-tkg",
+            "Video memory": "Set to ~10 GB for mod support"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Fallout 4 folder (the one with Fallout4.exe) into the container.",
+          "path": "/storage/emulated/0/Download/Fallout4/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Mods are supported via Mod Organizer 2 or Vortex inside the container. Install them before launching for best results."
+        },
+        {
+          "kind": "TIP",
+          "text": "Cap FPS to 60 — the Creation Engine physics break above 60 fps. Use in-game settings or external tools."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Run Fallout4.exe. Expect 50-60 fps at 720p on a high-end Snapdragon with mods."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Crash on startup / DXVK init error",
+          "fix": "Drop DXVK to 2.3 and relaunch; a few systems have compatibility issues with 2.4-async."
+        },
+        {
+          "symptom": "Physics bugs / falling through terrain",
+          "fix": "Confirm FPS cap is at or below 60. The Creation Engine's physics engine is tied to frame rate."
+        }
+      ]
+    },
+    {
+      "id": "win:hl2:winlator-cmod:t2",
+      "gameId": "win:hl2",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Half-Life 2 is light — minimal container settings needed.",
+          "settings": {
+            "Screen size": "1920x1080",
+            "Graphics driver": "Turnip 24.3.0",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Half-Life 2 folder into the container.",
+          "path": "/storage/emulated/0/Download/HL2/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Run hl2.exe — locked 60 fps at 1080p is easily achievable."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:portal:winlator-cmod:t2",
+      "gameId": "win:portal",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Portal is very light on the Source engine.",
+          "settings": {
+            "Screen size": "1920x1080",
+            "Graphics driver": "Turnip 24.3.0",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Portal folder in.",
+          "path": "/storage/emulated/0/Download/Portal/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Run portal.exe — locked 60 fps at 1080p."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:portal-2:winlator-cmod:t2",
+      "gameId": "win:portal-2",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Portal 2 is light on the Source engine.",
+          "settings": {
+            "Screen size": "1920x1080",
+            "Graphics driver": "Turnip 24.3.0",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Portal 2 folder in.",
+          "path": "/storage/emulated/0/Download/Portal2/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Run portal2.exe — locked 60 fps at 1080p."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:l4d2:winlator-cmod:t2",
+      "gameId": "win:l4d2",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Left 4 Dead 2 is a Source engine game — runs very well.",
+          "settings": {
+            "Screen size": "1920x1080",
+            "Graphics driver": "Turnip 24.3.0",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "BIOS",
+          "text": "Play offline or with friends via LAN only. Online multiplayer uses Valve Anti-Cheat and will not work on emulation.",
+          "path": null
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Left 4 Dead 2 folder in.",
+          "path": "/storage/emulated/0/Download/L4D2/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Run left4dead2.exe offline or locally — locked 60 fps."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:re-village:gamenative:t2",
+      "gameId": "win:re-village",
+      "emulatorId": "gamenative",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative — its Proton support handles RE Engine titles well.",
+          "url": "https://github.com/utkarshdalal/GameNative/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0 for RE Engine DX12 support.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Resident Evil Village settings.",
+          "settings": {
+            "Proton": "GE-Proton 9.x",
+            "Graphics driver": "Turnip 24.3.0",
+            "DXVK": "On (2.4-async)",
+            "VKD3D": "On (DX12 title)",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your RE Village folder into the container.",
+          "path": "/storage/emulated/0/GameNative/REVillage/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Set to 720p Low settings for the best balance. The RE Engine is demanding even on desktop — mobile requires tuning."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch the game. Expect ~30 fps at 720p Low on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Low FPS or heavy stutter in village areas",
+          "fix": "Lower shadow distance and object draw distance in-game; RE Engine's draw calls are CPU-heavy under Box64."
+        }
+      ]
+    },
+    {
+      "id": "win:re-2-remake:gamenative:t2",
+      "gameId": "win:re-2-remake",
+      "emulatorId": "gamenative",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://github.com/utkarshdalal/GameNative/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "RE2 Remake settings — DX11/12 hybrid engine.",
+          "settings": {
+            "Proton": "GE-Proton 9.x",
+            "Graphics driver": "Turnip 24.3.0",
+            "DXVK": "On (2.4-async)",
+            "VKD3D": "On",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your RE2 Remake folder in.",
+          "path": "/storage/emulated/0/GameNative/RE2Remake/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch at 720p Medium. Expect ~35-45 fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Crash on startup",
+          "fix": "Ensure VKD3D is enabled for the hybrid DX11/DX12 code paths in this title."
+        }
+      ]
+    },
+    {
+      "id": "win:re-3-remake:gamenative:t2",
+      "gameId": "win:re-3-remake",
+      "emulatorId": "gamenative",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://github.com/utkarshdalal/GameNative/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "RE3 Remake settings.",
+          "settings": {
+            "Proton": "GE-Proton 9.x",
+            "Graphics driver": "Turnip 24.3.0",
+            "DXVK": "On (2.4-async)",
+            "VKD3D": "On",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your RE3 Remake folder in.",
+          "path": "/storage/emulated/0/GameNative/RE3Remake/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch at 720p Medium. Expect ~35-45 fps."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:re-7:gamenative:t2",
+      "gameId": "win:re-7",
+      "emulatorId": "gamenative",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://github.com/utkarshdalal/GameNative/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "RE7 settings.",
+          "settings": {
+            "Proton": "GE-Proton 9.x",
+            "Graphics driver": "Turnip 24.3.0",
+            "DXVK": "On (2.4-async)",
+            "VKD3D": "On",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your RE7 folder in.",
+          "path": "/storage/emulated/0/GameNative/RE7/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch at 720p Medium. Expect ~35-45 fps."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:doom-eternal:winlator-cmod:t2",
+      "gameId": "win:doom-eternal",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0 for Vulkan support.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "DOOM Eternal uses Vulkan natively — runs better than many DX11 titles.",
+          "settings": {
+            "Screen size": "1280x720",
+            "Graphics driver": "Turnip 24.3.0",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "BIOS",
+          "text": "Campaign mode is offline and works great. Multiplayer uses online anti-cheat — play campaign only.",
+          "path": null
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your DOOM Eternal folder in.",
+          "path": "/storage/emulated/0/Download/DOOMEternal/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Run campaign mode at 720p High. Expect ~40-50 fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Black screen on startup",
+          "fix": "The game may take longer to initialize Vulkan paths on first run. Wait 30 seconds before force-closing."
+        }
+      ]
+    },
+    {
+      "id": "win:cuphead:winlator-cmod:t2",
+      "gameId": "win:cuphead",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Cuphead is a light 2D game — minimal requirements.",
+          "settings": {
+            "Screen size": "1920x1080",
+            "Graphics driver": "Turnip",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Cuphead folder in.",
+          "path": "/storage/emulated/0/Download/Cuphead/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Run cuphead.exe — locked 60 fps at 1080p."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:control:gamenative:t2",
+      "gameId": "win:control",
+      "emulatorId": "gamenative",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://github.com/utkarshdalal/GameNative/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Control uses the Northlight engine — heavy on DX11/12.",
+          "settings": {
+            "Proton": "GE-Proton 9.x",
+            "Graphics driver": "Turnip 24.3.0",
+            "DXVK": "On (2.4-async)",
+            "VKD3D": "On",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Control folder in.",
+          "path": "/storage/emulated/0/GameNative/Control/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Control is demanding — play at 720p Low for the best experience. Expect 25-35 fps."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch at 720p Low settings."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Heavy stutter in combat",
+          "fix": "Lower shadows and reflections; the Northlight engine's ray-traced effects are too demanding for mobile."
+        }
+      ]
+    },
+    {
+      "id": "win:bg3:gamenative:t2",
+      "gameId": "win:bg3",
+      "emulatorId": "gamenative",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://github.com/utkarshdalal/GameNative/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "BG3 uses DX11 with heavy CPU demands. Single-player only.",
+          "settings": {
+            "Proton": "GE-Proton 9.x",
+            "Graphics driver": "Turnip 24.3.0",
+            "DXVK": "On (2.4-async)",
+            "Box64": "Performance",
+            "Video memory": "12 GB"
+          }
+        },
+        {
+          "kind": "BIOS",
+          "text": "Play single-player offline. BG3 has online components that don't work under emulation.",
+          "path": null
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your BG3 folder in.",
+          "path": "/storage/emulated/0/GameNative/BG3/"
+        },
+        {
+          "kind": "TIP",
+          "text": "BG3 is CPU-heavy even on desktop. Play at 720p Low and expect 25-35 fps. Longer turns may be slower."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch in single-player at 720p Low."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Very slow turn-based combat",
+          "fix": "Lower draw distance and disable reflections. Box64 CPU emulation adds overhead on CPU-bound games."
+        }
+      ]
+    },
+    {
+      "id": "win:gta-iv:winlator-cmod:t2",
+      "gameId": "win:gta-iv",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "GTA IV uses the RAGE engine — CPU-heavy but works on mobile.",
+          "settings": {
+            "Screen size": "1280x720",
+            "Graphics driver": "Turnip 24.3.0",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "BIOS",
+          "text": "Play story mode only. Multiplayer and online features do not work on emulation.",
+          "path": null
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your GTA IV folder in.",
+          "path": "/storage/emulated/0/Download/GTAIV/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch story mode at 720p Medium. Expect ~30-40 fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Stuttering while driving",
+          "fix": "Lower population density and traffic; the streaming engine is CPU-bound under Box64."
+        }
+      ]
+    },
+    {
+      "id": "win:yakuza-0:winlator-cmod:t2",
+      "gameId": "win:yakuza-0",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Yakuza 0 runs well — it's well-optimized from the Dragon Engine predecessor.",
+          "settings": {
+            "Screen size": "1280x720",
+            "Graphics driver": "Turnip 24.3.0",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Yakuza 0 folder in.",
+          "path": "/storage/emulated/0/Download/Yakuza0/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch at 720p. Expect ~50-60 fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:yakuza-kiwami:winlator-cmod:t2",
+      "gameId": "win:yakuza-kiwami",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Yakuza Kiwami is similar to Yakuza 0 in performance.",
+          "settings": {
+            "Screen size": "1280x720",
+            "Graphics driver": "Turnip 24.3.0",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Yakuza Kiwami folder in.",
+          "path": "/storage/emulated/0/Download/YakuzaKiwami/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch at 720p. Expect ~50-60 fps."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:tomb-raider-2013:gamenative:t2",
+      "gameId": "win:tomb-raider-2013",
+      "emulatorId": "gamenative",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://github.com/utkarshdalal/GameNative/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Tomb Raider 2013 uses the Crystal engine — DX11, well-optimized.",
+          "settings": {
+            "Proton": "GE-Proton 9.x",
+            "Graphics driver": "Turnip 24.3.0",
+            "DXVK": "On (2.4-async)",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Tomb Raider 2013 folder in.",
+          "path": "/storage/emulated/0/GameNative/TombRaider2013/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch at 720p Medium. Expect ~40-50 fps on a high-end Snapdragon."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:undertale:winlator-cmod:t2",
+      "gameId": "win:undertale",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Undertale is trivially light — GameMaker engine with minimal demands.",
+          "settings": {
+            "Screen size": "1920x1080",
+            "Graphics driver": "Turnip",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Undertale folder in.",
+          "path": "/storage/emulated/0/Download/Undertale/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Run Undertale.exe — locked 60 fps at 1080p."
+        }
+      ],
+      "troubleshooting": []
+    },
+    {
+      "id": "win:subnautica:gamenative:t2",
+      "gameId": "win:subnautica",
+      "emulatorId": "gamenative",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install GameNative.",
+          "url": "https://github.com/utkarshdalal/GameNative/releases"
+        },
+        {
+          "kind": "GET_DRIVER",
+          "text": "Install Turnip 24.3.0.",
+          "driverId": "turnip-24.3.0"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Subnautica uses Unity DX11 — moderately demanding.",
+          "settings": {
+            "Proton": "GE-Proton 9.x",
+            "Graphics driver": "Turnip 24.3.0",
+            "DXVK": "On (2.4-async)",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Subnautica folder in.",
+          "path": "/storage/emulated/0/GameNative/Subnautica/"
+        },
+        {
+          "kind": "TIP",
+          "text": "Play in the shallow zones first — deep areas are more demanding. Expect variable 30-40 fps."
+        },
+        {
+          "kind": "ACTION",
+          "text": "Launch at 720p Medium for stable performance."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Heavy lag near the deep zones",
+          "fix": "Lower water quality and render distance in-game settings."
+        }
+      ]
+    },
+    {
+      "id": "win:tunic:winlator-cmod:t2",
+      "gameId": "win:tunic",
+      "emulatorId": "winlator-cmod",
+      "tier": 2,
+      "sourceLabel": "Authored guide",
+      "dataAsOf": "2026-05-29",
+      "steps": [
+        {
+          "kind": "GET_APP",
+          "text": "Install Winlator Cmod.",
+          "url": "https://github.com/coffincolors/winlator/releases"
+        },
+        {
+          "kind": "CONTAINER",
+          "text": "Tunic is a light Unity game — runs great.",
+          "settings": {
+            "Screen size": "1920x1080",
+            "Graphics driver": "Turnip",
+            "DX wrapper": "DXVK 2.4-async",
+            "Box64": "Performance"
+          }
+        },
+        {
+          "kind": "FILES",
+          "text": "Copy your Tunic folder in.",
+          "path": "/storage/emulated/0/Download/Tunic/"
+        },
+        {
+          "kind": "ACTION",
+          "text": "Run Tunic.exe — locked 60 fps at 1080p."
+        }
+      ],
+      "troubleshooting": []
+    }
+  ]
+}

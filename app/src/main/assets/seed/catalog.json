@@ -1,0 +1,432 @@
+{
+  "schema": 1,
+  "emulators": [
+    { "id": "winlator",          "name": "Winlator",          "packageId": "com.winlator",            "platformTargets": ["WINDOWS"], "sourceUrl": "https://github.com/brunodev85/winlator",       "notes": "Original Winlator. DirectX via DXVK. Best for older + indie titles." },
+    { "id": "winlator-cmod",     "name": "Winlator Cmod",     "packageId": "com.winlator.cmod",       "platformTargets": ["WINDOWS"], "sourceUrl": "https://github.com/coffincolors/winlator",     "notes": "Cmod fork. Aggressive optimisations. Recommended on Snapdragon 8 Gen 2+." },
+    { "id": "winlator-frost",    "name": "Winlator Frost",    "packageId": "com.winlator.frost",      "platformTargets": ["WINDOWS"], "sourceUrl": "https://github.com/longjunyu2/winlator",       "notes": "Frost build. Good Wine 9.x stability." },
+    { "id": "gamenative",        "name": "GameNative",        "packageId": "app.gamenative", "platformTargets": ["WINDOWS"], "sourceUrl": "https://github.com/utkarshdalal/GameNative",        "notes": "Steam-focused Winlator fork with built-in Proton support. Best for UE4/UE5 games and Steam DRM." },
+    { "id": "gamehub",           "name": "GameHub",           "packageId": "com.tsng.hidisplay.gamehub", "platformTargets": ["WINDOWS"], "sourceUrl": "https://github.com/MrSnake01/GameHub",      "notes": "Winlator-derived launcher with simplified container management." },
+    { "id": "mobox",             "name": "Mobox",             "packageId": "com.micewine.emu",        "platformTargets": ["WINDOWS"], "sourceUrl": "https://mobox.org",                            "notes": "Box86/Box64 + Wine, no DXVK by default. Lighter for older / OpenGL games." },
+
+    { "id": "nethersx2-patch",   "name": "NetherSX2-Patch",   "packageId": "xyz.aethersx2.android",   "platformTargets": ["PS2"],     "sourceUrl": "https://github.com/Trixarian/NetherSX2-patch", "notes": "Build 4248. Best on Adreno GPUs." },
+    { "id": "nethersx2-classic", "name": "NetherSX2-Classic", "packageId": "xyz.aethersx2.android",   "platformTargets": ["PS2"],     "sourceUrl": "https://github.com/Trixarian/NetherSX2-classic","notes": "Build 3668. Better on Mali GPUs and weaker chips." },
+    { "id": "armsx2",            "name": "ARMSX2",            "packageId": "com.armsx2",              "platformTargets": ["PS2"],     "sourceUrl": "https://github.com/ARMSX2/ARMSX2",              "notes": "Newer PCSX2 fork. Faster on some chips, regressions on others." },
+
+    { "id": "duckstation",       "name": "DuckStation",       "packageId": "com.github.stenzek.duckstation", "platformTargets": ["PS1"], "sourceUrl": "https://duckstation.org",                "notes": "Best PS1 emulator on Android. Locked 60fps on basically any modern device." },
+
+    { "id": "aps3e",             "name": "aPS3e",             "packageId": "com.aenu1.aps3e",         "platformTargets": ["PS3"],     "sourceUrl": "https://github.com/aenu1/aps3e",                "notes": "RPCS3 fork for Android. Very heavy — only viable on top-end devices." },
+    { "id": "rpcsx",             "name": "RPCSX",             "packageId": "org.rpcsx",               "platformTargets": ["PS3", "PS4"], "sourceUrl": "https://github.com/RPCSX/rpcsx",             "notes": "Experimental cross-PlayStation emulator. PS3 and PS4 — early days." },
+    { "id": "shadps4",           "name": "shadPS4",           "packageId": "net.shadps4",             "platformTargets": ["PS4"],     "sourceUrl": "https://github.com/shadps4-emu/shadPS4",        "notes": "PS4 emulator. Usually wrapped inside Winlator/GameNative." },
+
+    { "id": "ppsspp",            "name": "PPSSPP",            "packageId": "org.ppsspp.ppsspp",       "platformTargets": ["PSP"],     "sourceUrl": "https://www.ppsspp.org",                        "notes": "Mature PSP emu. 4x IR runs locked 60 on any modern phone." },
+    { "id": "vita3k",            "name": "Vita3K",            "packageId": "org.vita3k.emulator",     "platformTargets": ["PSVITA"],  "sourceUrl": "https://vita3k.org",                            "notes": "PS Vita emulator. Compatibility varies wildly per title." },
+
+    { "id": "eden",              "name": "Eden",              "packageId": "dev.eden.eden_emulator",  "platformTargets": ["SWITCH"],  "sourceUrl": "https://git.eden-emu.dev/eden-emu/eden",        "notes": "Active Switch emulator, fork of Yuzu. Best Switch experience on Android right now." },
+    { "id": "citron",            "name": "Citron",            "packageId": "org.citron.citron_emu",   "platformTargets": ["SWITCH"],  "sourceUrl": "https://git.citron-emu.org",                    "notes": "Alternative Switch emulator with different shader cache approach." },
+    { "id": "sudachi",           "name": "Sudachi",           "packageId": "org.sudachi.sudachi_emu", "platformTargets": ["SWITCH"],  "sourceUrl": "https://github.com/sudachi-emu/sudachi",        "notes": "Older Yuzu fork. Less active but stable." },
+
+    { "id": "azahar",            "name": "Azahar",            "packageId": "org.citra.citra_emu",     "platformTargets": ["N3DS"],    "sourceUrl": "https://github.com/azahar-emu/azahar",          "notes": "Stable Citra-derived 3DS emulator. Vulkan backend." },
+    { "id": "citra-mmj",         "name": "Citra MMJ",         "packageId": "io.github.weihuoya.citra","platformTargets": ["N3DS"],    "sourceUrl": "https://github.com/weihuoya/citra",             "notes": "Performance-tuned 3DS fork." },
+    { "id": "lime3ds",           "name": "Lime3DS",           "packageId": "io.github.lime3ds.android","platformTargets": ["N3DS"],   "sourceUrl": "https://github.com/Lime3DS/Lime3DS",            "notes": "Another active Citra fork." },
+
+    { "id": "cemu",              "name": "Cemu",              "packageId": "info.cemu.cemu",          "platformTargets": ["WIIU"],    "sourceUrl": "https://github.com/SSimco/Cemu",                "notes": "Wii U emulator Android port. Use graphic packs for 60fps / high-res." },
+
+    { "id": "dolphin",           "name": "Dolphin",           "packageId": "org.dolphinemu.dolphinemu","platformTargets": ["GC", "WII"], "sourceUrl": "https://dolphin-emu.org",                  "notes": "GameCube + Wii. Vulkan backend on modern Android is solid." },
+    { "id": "dolphin-mmjr",      "name": "Dolphin MMJR2",     "packageId": "org.dolphinemu.mmjr",     "platformTargets": ["GC", "WII"], "sourceUrl": "https://github.com/Medard22/Dolphin-MMJR2-VBI", "notes": "Performance-focused Dolphin fork. Less accurate, faster." },
+
+    { "id": "mupen64plus",       "name": "Mupen64Plus FZ",    "packageId": "org.mupen64plusae.v3.fzurita.pro", "platformTargets": ["N64"], "sourceUrl": "https://github.com/mupen64plus-ae/mupen64plus-ae", "notes": "N64 with GLideN64 plugin. Locked 60 on most titles." },
+
+    { "id": "retroarch",         "name": "RetroArch",         "packageId": "com.retroarch",           "platformTargets": ["NES", "SNES", "GB", "GBC", "GBA", "GENESIS", "MASTERSYSTEM", "GAMEGEAR", "PS1", "PSP"], "sourceUrl": "https://retroarch.com", "notes": "Multi-system frontend. Mature, lots of cores." }
+  ],
+  "drivers": [
+    { "id": "turnip-adreno8xx-current", "name": "Turnip (Mesa 26.1.x line, AdrenoTools) — Adreno 8xx/Snapdragon 8 Elite", "gpuTargets": ["Adreno 830", "Adreno 840", "Adreno 8 series"], "downloadUrl": "https://github.com/whitebelyash/freedreno_turnip-CI/releases", "sha256": null, "dataAsOf": "2026-06", "notes": "Current AdrenoTools Turnip line. Mesa 26.0+ added Adreno Gen 8 / A8xx (830/840) support; the freedreno_turnip-CI (whitebelyash) and Banners-Turnip repos publish per-commit AdrenoTools-packaged A8xx builds. Pick the latest Mesa 26.1.x .adpkg.zip for your Adreno 8xx GPU. UNVERIFIED: exact pinned build filename + sha256 not captured — confirm against the release page before pinning a hash." },
+    { "id": "turnip-24.3.0",     "name": "Turnip 24.3.0 R6 (LEGACY/pinned, Adreno 7xx — outdated for Windows stack)",    "gpuTargets": ["Adreno 750", "Adreno 740", "Adreno 730"], "downloadUrl": "https://github.com/K11MCH1/AdrenoToolsDrivers/releases/download/Turnip-v24.3.0/turnip_v24.3.0_R6.adpkg.zip", "dataAsOf": "2026-06", "notes": "LEGACY pinned build. Superseded by the Mesa 26.1.x line (turnip-adreno8xx-current) for the Windows/GameNative stack and for Adreno 8xx. Retained only for older Adreno 7xx targets and existing console-emulator guide references. Does not reliably support Adreno 830." },
+    { "id": "turnip-24.2.0",     "name": "Turnip 24.2.0 R3 (Adreno 7xx)",    "gpuTargets": ["Adreno 750", "Adreno 740", "Adreno 730", "Adreno 660"], "downloadUrl": "https://github.com/K11MCH1/AdrenoToolsDrivers/releases/download/Turnip-v24.2.0/turnip_v24.2.0_R3.adpkg.zip" },
+    { "id": "turnip-24.1.0",     "name": "Turnip 24.1.0 (Adreno 6xx+)",      "gpuTargets": ["Adreno 660", "Adreno 650", "Adreno 730"], "downloadUrl": "https://github.com/K11MCH1/AdrenoToolsDrivers/releases" },
+    { "id": "turnip-mr31p",      "name": "Turnip mr31.p (dev, Adreno 7xx)",  "gpuTargets": ["Adreno 750", "Adreno 740"], "downloadUrl": "https://github.com/K11MCH1/AdrenoToolsDrivers/releases" },
+    { "id": "adreno-stock",      "name": "Stock Adreno driver",              "gpuTargets": ["Adreno 750", "Adreno 740", "Adreno 730", "Adreno 660", "Adreno 650"], "downloadUrl": "" },
+    { "id": "vortek",            "name": "Vortek (Universal) — built-in fallback driver in GameNative / Winlator",  "gpuTargets": ["Adreno 830", "Adreno 8 series", "Adreno 8xx"], "downloadUrl": "https://github.com/utkarshdalal/GameNative/releases", "sha256": null, "dataAsOf": "2026-06-08", "notes": "On GameNative, Vortek (Universal) is a built-in entry in the Graphics Driver dropdown (no .zip import needed) and is the default fallback. For Adreno 830 / Snapdragon 8 Elite the preferred path is the 'Wrapper' driver with 'Use Adrenotools Turnip' ON plus a recent Turnip build (matches the real exported config graphicsDriver=wrapper, adrenotoolsTurnip=1); use Vortek or the 'SD 8 Elite' entry only if a game won't render on Turnip. Confirmed against GameNative source app/src/main/res/values/arrays.xml (graphics_driver_entries) and core/DefaultVersion.java." }
+  ],
+  "presets": [
+    { "id": "winlator-cmod-modern-aaa",
+      "emulatorId": "winlator-cmod", "name": "Modern AAA — Cmod + patched Turnip 26.1.x + DXVK 2.4-async",
+      "driverId": "turnip-adreno8xx-current",
+      "dataAsOf": "2026-06",
+      "settings": {
+        "containerName": "Modern-AAA",
+        "wineVersion": "9.4-staging-tkg",
+        "windowsVersion": "Windows 10",
+        "dxvkVersion": "2.4-async",
+        "vkd3dVersion": "2.13",
+        "vulkanDriver": "patched-Turnip-26.1.x",
+        "graphicsDriver": "Turnip",
+        "box64Dynarec": "ON",
+        "box64Preset": "Performance",
+        "cpuList": "0,1,2,3,4,5,6,7",
+        "cpuListWoW64": "0,1,2,3",
+        "wineD3D": "OFF",
+        "esync": "ON",
+        "fsync": "ON",
+        "videoMemorySizeMB": 8192,
+        "args": "",
+        "envVars": "DXVK_ASYNC=1;WINE_FULLSCREEN_FSR=1;WINE_FULLSCREEN_FSR_STRENGTH=2",
+        "notes": "Default preset for modern AAA games on SD8E. Skyrim SE / DS3 / Fallout 4 class."
+      }
+    },
+    { "id": "winlator-cmod-fromsoft",
+      "emulatorId": "winlator-cmod", "name": "FromSoft — Cmod + EAC bypass + DXVK 2.4",
+      "driverId": "turnip-adreno8xx-current",
+      "dataAsOf": "2026-06",
+      "settings": {
+        "containerName": "FromSoft",
+        "wineVersion": "9.6-staging",
+        "windowsVersion": "Windows 11",
+        "dxvkVersion": "2.4-async",
+        "vkd3dVersion": "2.13",
+        "vulkanDriver": "patched-Turnip-26.1.x",
+        "box64Dynarec": "ON",
+        "esync": "ON",
+        "fsync": "ON",
+        "videoMemorySizeMB": 8192,
+        "args": "-eac-nop -nosteam",
+        "envVars": "VKD3D_CONFIG=dxr11,no_upload_hvv;DXVK_ASYNC=1",
+        "notes": "Elden Ring / DS3 / Sekiro with EAC bypass. Requires the LukeFZ EAC patch installed first."
+      }
+    },
+    { "id": "winlator-cmod-resource-light",
+      "emulatorId": "winlator-cmod", "name": "Indie / 2D — Cmod resource-light",
+      "driverId": "adreno-stock",
+      "settings": {
+        "containerName": "Light",
+        "wineVersion": "9.0",
+        "windowsVersion": "Windows 10",
+        "dxvkVersion": "2.3.1",
+        "vkd3dVersion": "2.12",
+        "vulkanDriver": "Stock Adreno",
+        "box64Dynarec": "ON",
+        "videoMemorySizeMB": 4096,
+        "esync": "ON",
+        "notes": "Cuphead, Hollow Knight, Celeste, Hades, Dead Cells — anything under 1GB VRAM."
+      }
+    },
+    { "id": "winlator-cmod-bethesda",
+      "emulatorId": "winlator-cmod", "name": "Bethesda — Cmod + extra VRAM",
+      "driverId": "turnip-adreno8xx-current",
+      "dataAsOf": "2026-06",
+      "settings": {
+        "containerName": "Bethesda",
+        "wineVersion": "9.4-staging-tkg",
+        "windowsVersion": "Windows 10",
+        "dxvkVersion": "2.4-async",
+        "vkd3dVersion": "2.13",
+        "vulkanDriver": "patched-Turnip-26.1.x",
+        "box64Dynarec": "ON",
+        "videoMemorySizeMB": 12288,
+        "esync": "ON",
+        "fsync": "ON",
+        "envVars": "DXVK_ASYNC=1;DXVK_HUD=fps;STAGING_SHARED_MEMORY=1",
+        "args": "-windowed -borderless",
+        "notes": "Skyrim / Fallout 4 / Fallout NV. Extra VRAM for HD texture mods."
+      }
+    },
+    { "id": "winlator-cmod-source-engine",
+      "emulatorId": "winlator-cmod", "name": "Source engine — Cmod + DXVK",
+      "driverId": "turnip-adreno8xx-current",
+      "dataAsOf": "2026-06",
+      "settings": {
+        "containerName": "Source",
+        "wineVersion": "9.0",
+        "windowsVersion": "Windows 10",
+        "dxvkVersion": "2.4-async",
+        "vulkanDriver": "patched-Turnip-26.1.x",
+        "box64Dynarec": "ON",
+        "videoMemorySizeMB": 4096,
+        "args": "-novid -high",
+        "envVars": "DXVK_ASYNC=1",
+        "notes": "Half-Life 2, Portal 1/2, L4D2, CSGO offline. Locked 60 anywhere."
+      }
+    },
+    { "id": "winlator-cmod-ue4",
+      "emulatorId": "winlator-cmod", "name": "UE4 — Cmod + patched Turnip 26.1.x + DXVK",
+      "driverId": "turnip-adreno8xx-current",
+      "dataAsOf": "2026-06",
+      "settings": {
+        "containerName": "UE4",
+        "wineVersion": "9.4-staging-tkg",
+        "windowsVersion": "Windows 10",
+        "dxvkVersion": "2.4-async",
+        "vkd3dVersion": "2.13",
+        "vulkanDriver": "patched-Turnip-26.1.x",
+        "box64Dynarec": "ON",
+        "videoMemorySizeMB": 8192,
+        "esync": "ON",
+        "fsync": "ON",
+        "args": "-d3d11 -windowed",
+        "envVars": "DXVK_ASYNC=1;UE_RHI_FORCE_DXVK=1",
+        "notes": "Force D3D11 for UE4 games — D3D12 path is unstable on Adreno."
+      }
+    },
+    { "id": "winlator-vanilla-stock",
+      "emulatorId": "winlator", "name": "Vanilla Winlator + stock driver",
+      "driverId": "adreno-stock",
+      "settings": {
+        "containerName": "Default",
+        "wineVersion": "9.0",
+        "windowsVersion": "Windows 10",
+        "dxvkVersion": "2.3.1",
+        "box64Dynarec": "ON",
+        "videoMemorySizeMB": 4096,
+        "notes": "Baseline for older 2000s-era games (GTA SA, NFS MW 2005, classic FPS)."
+      }
+    },
+
+    { "id": "gamenative-proton-modern",
+      "emulatorId": "gamenative", "name": "proton-9.0-arm64ec + patched Turnip (Modern Steam)",
+      "driverId": "turnip-adreno8xx-current",
+      "dataAsOf": "2026-06",
+      "settings": {
+        "protonVersion": "proton-9.0-arm64ec",
+        "translationLayer": "FEXCore (current) / Box64 (current)",
+        "vulkanDriver": "patched-Turnip-26.1.x",
+        "dxvk": "on",
+        "vkd3d": "on",
+        "esync": "on",
+        "fsync": "on",
+        "args": "-USEALLAVAILABLECORES",
+        "envVars": "DXVK_ASYNC=1;PROTON_NO_ESYNC=0",
+        "notes": "Most modern Steam DRM-free games. Better than Winlator for UE4/UE5/CryEngine. Updated 2026-06 to the current GameNative stack (proton-9.0-arm64ec + current FEXCore/Box64 + patched Mesa Turnip 26.1.x or Vortek); the old GE-Proton9-15 / Turnip-24.3.0 combo was stale."
+      }
+    },
+    { "id": "gamenative-proton-eac",
+      "emulatorId": "gamenative", "name": "Proton-EAC bypass build (current stack)",
+      "driverId": "turnip-adreno8xx-current",
+      "dataAsOf": "2026-06",
+      "settings": {
+        "protonVersion": "proton-9.0-arm64ec",
+        "translationLayer": "FEXCore (current) / Box64 (current)",
+        "vulkanDriver": "patched-Turnip-26.1.x",
+        "easyAntiCheat": "bypass",
+        "dxvk": "on",
+        "vkd3d": "on",
+        "envVars": "PROTON_EAC_RUNTIME=1;DXVK_ASYNC=1",
+        "args": "-eac-nop",
+        "notes": "Elden Ring offline / Sekiro / DS3 — requires Proton EAC runtime files. Updated 2026-06 to current stack (proton-9.0-arm64ec + current FEXCore/Box64 + patched Turnip 26.1.x); old GE-Proton9-15 was stale."
+      }
+    },
+    { "id": "gamenative-proton-light",
+      "emulatorId": "gamenative", "name": "Proton light (Indies, current stack)",
+      "driverId": "adreno-stock",
+      "dataAsOf": "2026-06",
+      "settings": {
+        "protonVersion": "proton-9.0-arm64ec",
+        "translationLayer": "FEXCore (current) / Box64 (current)",
+        "dxvk": "on",
+        "envVars": "DXVK_ASYNC=1",
+        "notes": "Indies via Steam. Hades, Dead Cells, Vampire Survivors. Updated 2026-06 to proton-9.0-arm64ec; old GE-Proton9-15 was stale."
+      }
+    },
+
+    { "id": "gamehub-default",
+      "emulatorId": "gamehub", "name": "GameHub default + patched Turnip 26.1.x",
+      "driverId": "turnip-adreno8xx-current",
+      "dataAsOf": "2026-06",
+      "settings": {
+        "wineVersion": "9.0",
+        "dxvkVersion": "2.4-async",
+        "box64Dynarec": "ON",
+        "envVars": "DXVK_ASYNC=1",
+        "notes": "GameHub all-purpose preset."
+      }
+    },
+
+    { "id": "mobox-box64-light",
+      "emulatorId": "mobox", "name": "Mobox Box64 + Wine 8.21",
+      "driverId": "adreno-stock",
+      "settings": {
+        "wineVersion": "8.21",
+        "box64Dynarec": "ON",
+        "noDxvk": "true",
+        "notes": "Best for Source-engine and old OpenGL games. Lighter than Winlator."
+      }
+    },
+
+    { "id": "nethersx2-patch-balanced",
+      "emulatorId": "nethersx2-patch", "name": "Balanced (Vulkan, 2x IR)",
+      "driverId": null,
+      "settings": {
+        "renderer": "Vulkan",
+        "internalRes": "2x",
+        "preset": "Balanced",
+        "widescreen": "off",
+        "blendingAccuracy": "Basic",
+        "asyncMtvu": "on",
+        "fastMemAccess": "on",
+        "notes": "Sweet spot for SD8E. 60fps locked on most titles at 2x IR."
+      }
+    },
+    { "id": "nethersx2-patch-quality",
+      "emulatorId": "nethersx2-patch", "name": "Quality (Vulkan, 4x IR)",
+      "driverId": null,
+      "settings": {
+        "renderer": "Vulkan",
+        "internalRes": "4x",
+        "preset": "Safe",
+        "blendingAccuracy": "Medium",
+        "anisotropic": "16x",
+        "widescreen": "off",
+        "notes": "Eye-candy mode. 4x looks gorgeous; drops to 45-55 in heavy scenes."
+      }
+    },
+    { "id": "nethersx2-patch-perf",
+      "emulatorId": "nethersx2-patch", "name": "Performance (OpenGL, 1x IR)",
+      "driverId": null,
+      "settings": {
+        "renderer": "OpenGL",
+        "internalRes": "1x",
+        "preset": "VeryAggressive",
+        "notes": "Battery saver / older device fallback."
+      }
+    },
+    { "id": "armsx2-balanced",
+      "emulatorId": "armsx2", "name": "ARMSX2 balanced (Vulkan 2x)",
+      "driverId": null,
+      "settings": { "renderer": "Vulkan", "internalRes": "2x", "preset": "Balanced" }
+    },
+    { "id": "armsx2-quality",
+      "emulatorId": "armsx2", "name": "ARMSX2 quality (Vulkan 4x)",
+      "driverId": null,
+      "settings": { "renderer": "Vulkan", "internalRes": "4x", "preset": "Safe" }
+    },
+
+    { "id": "duckstation-default",
+      "emulatorId": "duckstation", "name": "DuckStation default (Vulkan, 4x IR)",
+      "driverId": null,
+      "settings": { "renderer": "Vulkan", "internalRes": "4x", "ptgu": "on", "trueColor": "on" }
+    },
+    { "id": "duckstation-max",
+      "emulatorId": "duckstation", "name": "DuckStation max (Vulkan, 8x IR)",
+      "driverId": null,
+      "settings": { "renderer": "Vulkan", "internalRes": "8x", "ptgu": "on", "trueColor": "on", "msaa": "4x" }
+    },
+
+    { "id": "ppsspp-default",
+      "emulatorId": "ppsspp", "name": "PPSSPP default (Vulkan, 4x IR)",
+      "driverId": null,
+      "settings": { "backend": "Vulkan", "internalRes": "4x", "frameskip": "off", "vsync": "on" }
+    },
+    { "id": "ppsspp-perf",
+      "emulatorId": "ppsspp", "name": "PPSSPP perf (Vulkan, 2x)",
+      "driverId": null,
+      "settings": { "backend": "Vulkan", "internalRes": "2x", "frameskip": "off" }
+    },
+
+    { "id": "vita3k-default",
+      "emulatorId": "vita3k", "name": "Vita3K default (Vulkan)",
+      "driverId": null,
+      "settings": { "backend": "Vulkan", "asyncPipelineCompilation": "on" }
+    },
+
+    { "id": "eden-balanced",
+      "emulatorId": "eden", "name": "Eden balanced + Turnip 24.3",
+      "driverId": "turnip-24.3.0",
+      "settings": {
+        "gpuAccuracy": "Normal",
+        "cpuAccuracy": "Auto",
+        "resolution": "1x",
+        "asyncShaders": "on",
+        "useDiskShaderCache": "on",
+        "vsync": "on",
+        "notes": "Build shader cache first; second run is much smoother."
+      }
+    },
+    { "id": "eden-quality",
+      "emulatorId": "eden", "name": "Eden quality + Turnip 24.3 (2x)",
+      "driverId": "turnip-24.3.0",
+      "settings": {
+        "gpuAccuracy": "High",
+        "cpuAccuracy": "Accurate",
+        "resolution": "2x",
+        "asyncShaders": "on",
+        "notes": "Lighter games at handheld-Switch+ quality."
+      }
+    },
+    { "id": "eden-perf",
+      "emulatorId": "eden", "name": "Eden perf — undocked (0.75x)",
+      "driverId": "turnip-24.3.0",
+      "settings": {
+        "gpuAccuracy": "Normal",
+        "cpuAccuracy": "Auto",
+        "resolution": "0.75x",
+        "asyncShaders": "on",
+        "fastGpu": "on",
+        "notes": "For heavy titles (TOTK, Pokemon SV)."
+      }
+    },
+    { "id": "citron-balanced",
+      "emulatorId": "citron", "name": "Citron balanced + Turnip",
+      "driverId": "turnip-24.3.0",
+      "settings": { "gpuAccuracy": "High", "resolution": "1x", "vsync": "on" }
+    },
+
+    { "id": "azahar-2x",
+      "emulatorId": "azahar", "name": "Azahar 2x IR (default)",
+      "driverId": null,
+      "settings": { "resolution": "2x", "useVulkan": true, "asyncShaderCompile": true }
+    },
+    { "id": "azahar-4x",
+      "emulatorId": "azahar", "name": "Azahar 4x IR (high res)",
+      "driverId": null,
+      "settings": { "resolution": "4x", "useVulkan": true, "anisotropic": "16x" }
+    },
+    { "id": "citra-mmj-default",
+      "emulatorId": "citra-mmj", "name": "Citra MMJ default (2x)",
+      "driverId": null,
+      "settings": { "resolution": "2x", "useVulkan": true }
+    },
+
+    { "id": "cemu-balanced",
+      "emulatorId": "cemu", "name": "Cemu balanced + Turnip",
+      "driverId": "turnip-24.3.0",
+      "settings": { "resolution": "1x", "asyncShaderCompile": true, "vsync": "on" }
+    },
+    { "id": "cemu-botw-60fps",
+      "emulatorId": "cemu", "name": "Cemu BOTW 60fps pack + 1440p",
+      "driverId": "turnip-24.3.0",
+      "settings": { "resolution": "1440p", "graphicPack": "BOTW_60fps", "asyncShaderCompile": true }
+    },
+
+    { "id": "dolphin-balanced",
+      "emulatorId": "dolphin", "name": "Dolphin balanced (Vulkan, 2x IR)",
+      "driverId": null,
+      "settings": { "renderer": "Vulkan", "internalRes": "2x", "anisotropic": "4x", "asyncShader": "on" }
+    },
+    { "id": "dolphin-4x",
+      "emulatorId": "dolphin", "name": "Dolphin 4x IR (max IQ)",
+      "driverId": null,
+      "settings": { "renderer": "Vulkan", "internalRes": "4x", "anisotropic": "16x", "asyncShader": "on" }
+    },
+    { "id": "dolphin-mmjr-perf",
+      "emulatorId": "dolphin-mmjr", "name": "MMJR2 perf (Vulkan, 1x)",
+      "driverId": null,
+      "settings": { "renderer": "Vulkan", "internalRes": "1x", "asyncShader": "on" }
+    },
+
+    { "id": "mupen64plus-default",
+      "emulatorId": "mupen64plus", "name": "Mupen64Plus default (GLideN64, 2x)",
+      "driverId": null,
+      "settings": { "plugin": "GLideN64", "resolution": "2x", "framebufferEmu": "on" }
+    },
+
+    { "id": "aps3e-default",
+      "emulatorId": "aps3e", "name": "aPS3e default + Turnip",
+      "driverId": "turnip-24.3.0",
+      "settings": { "renderer": "Vulkan", "spuMode": "ASMJIT", "ppuMode": "LLVM" }
+    },
+
+    { "id": "retroarch-snes9x",
+      "emulatorId": "retroarch", "name": "RetroArch — snes9x current core",
+      "driverId": null,
+      "settings": { "core": "snes9x", "shader": "crt-easymode", "rewind": "on" }
+    }
+  ]
+}

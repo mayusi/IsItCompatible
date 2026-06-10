@@ -1,0 +1,3 @@
+# Raw scraped drafts never get committed — they're unvetted candidate content.
+# Only hand-reviewed guides belong in app/src/main/assets/seed/guides/.
+drafts/

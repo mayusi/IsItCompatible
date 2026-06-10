@@ -1,0 +1,430 @@
+{
+  "schema": 1,
+  "_comment": "Adds setupSteps, knownIssues, recommendedRamGb, bestVersionGuidance to top-played titles. Same `id` as existing entries — the BundledCompatSource merger does later-wins so these enrichments overwrite the base entry. Each enriched game retains its existing reports + descriptions.",
+  "games": [
+    {
+      "id": "win:skyrim-se", "title": "The Elder Scrolls V: Skyrim Special Edition", "titleSlug": "skyrim-se", "platform": "WINDOWS",
+      "releaseYear": 2016, "exeHints": ["skyrimse.exe"], "alsoOn": ["SWITCH","PS4","PS5","XBONE","XBSX"],
+      "genres": ["RPG","Open World"],
+      "description": "Bethesda's 2011 RPG, remastered with 64-bit engine and mod support. Best Winlator candidate in its class — DXVK handles it perfectly.",
+      "recommendedRamGb": 12,
+      "setupSteps": [
+        "Install Winlator Cmod from its GitHub releases.",
+        "Open Winlator Cmod, tap Settings → Wine, switch to Wine 9.4-staging-tkg.",
+        "Tap GPU Driver settings → Install custom driver → load Turnip 24.3.0 R6 zip.",
+        "Create a new container named 'Bethesda', set videoMemorySizeMB to 8192, eSync ON, fSync ON.",
+        "Add env var: DXVK_ASYNC=1 (this is critical for Skyrim's shader compile stutter).",
+        "Place Skyrim install folder under the container's C:\\Games\\.",
+        "Launch SkyrimSELauncher.exe to set graphics (Medium-High works), then run SkyrimSE.exe."
+      ],
+      "knownIssues": [
+        "Solitude and Whiterun drop to ~40fps during peak hours (lots of NPCs).",
+        "If you use SKSE, install the version matching your Skyrim build number exactly.",
+        "ENB shaders won't run — disable them. ReShade works fine.",
+        "Mod managers (MO2/Vortex) work but slow to launch — be patient on first run."
+      ],
+      "bestVersionGuidance": "Stick with the PC Special Edition — Switch port via Eden has ~30fps cap and no mod support, AE upgrade on PC has fewer free mods than SE."
+    },
+    {
+      "id": "win:elden-ring", "title": "Elden Ring", "titleSlug": "elden-ring", "platform": "WINDOWS",
+      "releaseYear": 2022, "exeHints": ["eldenring.exe","start_protected_game.exe"],
+      "alsoOn": ["PS5","PS4","XBSX","XBONE"],
+      "genres": ["Action RPG","Open World","Souls-like"],
+      "description": "FromSoft's open-world Souls. EAC patch required for offline. Limgrave runs ~35fps on SD8E; Caelid drops to 20fps.",
+      "recommendedRamGb": 16,
+      "setupSteps": [
+        "Install GameNative (not Winlator) — Proton-EAC support is far better here.",
+        "Download Proton-GE 9-15 inside GameNative's Proton manager.",
+        "Install Turnip 24.3.0 R6 GPU driver via the in-app driver picker.",
+        "Download the LukeFZ Elden Ring offline EAC bypass patch.",
+        "Apply the patch to Elden Ring's game folder (NOT eldenring.exe — patch start_protected_game.exe).",
+        "Create a profile, set Proton EAC runtime ON, args: '-eac-nop'.",
+        "Launch via the patched executable, not the original."
+      ],
+      "knownIssues": [
+        "DO NOT play online — anticheat will detect Wine and ban you. Always offline-only.",
+        "Caelid swamp area drops to ~20fps even on SD8E.",
+        "Open menu briefly when you enter a new region to pre-compile shaders.",
+        "DLC (Shadow of the Erdtree) has the same perf profile as base game."
+      ],
+      "bestVersionGuidance": "PC version via GameNative is the only reasonable path — PS4/PS5 emulation isn't feasible. If you have a PS5 via Remote Play, that's better."
+    },
+    {
+      "id": "win:gta-v", "title": "Grand Theft Auto V", "titleSlug": "gta-v", "platform": "WINDOWS",
+      "releaseYear": 2015, "exeHints": ["gta5.exe","playgtav.exe"],
+      "alsoOn": ["PS5","PS4","PS3","XBSX","XBONE","XB360"],
+      "genres": ["Action","Open World"],
+      "description": "Rockstar's open-world. Social Club is flaky in Winlator; offline single-player is the reliable path.",
+      "recommendedRamGb": 12,
+      "setupSteps": [
+        "Install Winlator Cmod (Cmod's Box64 dynarec handles RAGE engine well).",
+        "Install Turnip 24.3.0 R6 GPU driver.",
+        "Create container with: Wine 9.4-staging-tkg, DXVK 2.4-async, videoMemoryMB 8192, eSync+fSync ON.",
+        "Disable Steam DRM — use the no-Steam executable.",
+        "First boot is SLOW (shader cache builds for ~10 min). Don't kill it.",
+        "Launch with command-line: '-windowed -borderless -noBOI'."
+      ],
+      "knownIssues": [
+        "Social Club login often fails in Wine — play offline.",
+        "Mods (FiveM, scripthook) work but may crash randomly — keep saves backed up.",
+        "Cutscenes can desync audio — pause and resume to fix.",
+        "FPS dips to 30 in heavy traffic on Vinewood Boulevard."
+      ],
+      "bestVersionGuidance": "PC version is the way — the PS3/X360 versions via emulation are too heavy, and PS4/Xbox One PKG isn't a viable path on Android. Cloud-gaming via GeForce Now is the alternative if you own it."
+    },
+    {
+      "id": "win:re-4-remake", "title": "Resident Evil 4 (Remake)", "titleSlug": "re-4-remake", "platform": "WINDOWS",
+      "releaseYear": 2023, "exeHints": ["re4.exe"], "alsoOn": ["PS5","PS4","XBSX","MAC"],
+      "genres": ["Survival Horror","Action"],
+      "description": "RE Engine. Needs Vulkan VK_KHR_dynamic_rendering (Turnip 24.x has it). Cutscenes are heavier than gameplay.",
+      "recommendedRamGb": 12,
+      "setupSteps": [
+        "Install Winlator Cmod with Turnip 24.3.0 R6 driver.",
+        "Set container Wine to 9.4-staging-tkg, Windows version Windows 10.",
+        "Use DXVK 2.4-async (older DXVK lacks dynamic_rendering support).",
+        "videoMemoryMB 8192, eSync+fSync ON.",
+        "Install RE4 via Steam in Wine, or copy from your PC install.",
+        "In-game: set graphics to Medium, disable Ray Tracing entirely."
+      ],
+      "knownIssues": [
+        "Cutscenes drop to ~22fps — this is engine-level, can't fix.",
+        "DLC chapters (Separate Ways) have the same perf as base game.",
+        "Mercenaries mode is more demanding than the campaign — drops in big mob fights.",
+        "Save data is tied to Steam account — sign in once per session."
+      ],
+      "bestVersionGuidance": "PC version is the only viable option. PS5 cloud streaming would also work if you own it there."
+    },
+    {
+      "id": "win:dark-souls-3", "title": "Dark Souls III", "titleSlug": "dark-souls-3", "platform": "WINDOWS",
+      "releaseYear": 2016, "exeHints": ["darksoulsiii.exe"],
+      "alsoOn": ["PS4","XBONE"], "genres": ["Action RPG","Souls-like"],
+      "description": "FromSoftware's third Dark Souls. Locks ~58fps with the FPS unlock mod.",
+      "recommendedRamGb": 8,
+      "setupSteps": [
+        "Install Winlator Cmod + Turnip 24.3.0 R6.",
+        "Create container, Wine 9.6-staging, DXVK 2.4-async, eSync+fSync ON.",
+        "Install LukeFZ EAC bypass patch.",
+        "Install the DS3 FPS unlock mod (60+).",
+        "Launch with args: '-eac-nop -nosteam'.",
+        "First boot — let it sit on the FromSoftware logo to compile shaders."
+      ],
+      "knownIssues": [
+        "Online play is impossible (EAC).",
+        "Texture loading hitches first time you enter a new area — second visit is smooth.",
+        "Some bosses with weather effects (Storm King, Lothric) dip to 45fps.",
+        "Cinder of a Lord cutscene transitions can desync audio."
+      ],
+      "bestVersionGuidance": "PC via Winlator Cmod is best. PS4 emulation via shadPS4 inside Winlator is theoretically possible but adds an emulation layer on top of an emulation layer — too slow."
+    },
+    {
+      "id": "win:hollow-knight", "title": "Hollow Knight", "titleSlug": "hollow-knight", "platform": "WINDOWS",
+      "releaseYear": 2017, "exeHints": ["hollow_knight.exe"],
+      "alsoOn": ["SWITCH","PS4","XBONE"], "genres": ["Metroidvania","Indie"],
+      "description": "Team Cherry's masterpiece. Unity. Runs locked 60 on basically any setup.",
+      "recommendedRamGb": 4,
+      "setupSteps": [
+        "Install Winlator Cmod or Winlator (vanilla works fine).",
+        "Stock Adreno driver is fine — Turnip not required.",
+        "Wine 9.0 + DXVK 2.3.1 + Box64 dynarec ON.",
+        "Drop the game folder in C:\\Games\\, launch hollow_knight.exe."
+      ],
+      "knownIssues": [
+        "No real issues — this is the easiest Winlator title you can run."
+      ],
+      "bestVersionGuidance": "PC version is the smallest and most flexible (mod support). Switch port via Eden is also flawless if you prefer that route."
+    },
+    {
+      "id": "win:cyberpunk-2077", "title": "Cyberpunk 2077", "titleSlug": "cyberpunk-2077", "platform": "WINDOWS",
+      "releaseYear": 2020, "exeHints": ["cyberpunk2077.exe"],
+      "alsoOn": ["PS5","PS4","XBSX","XBONE"], "genres": ["Action RPG","Open World"],
+      "description": "Heavy. SD8E sits at ~25fps with low settings. Watson district is brutal.",
+      "recommendedRamGb": 16,
+      "setupSteps": [
+        "Install GameNative (Proton handles RED Engine 4 better than Wine).",
+        "Use Proton-GE 9-15 + Turnip 24.3.0 R6.",
+        "DXVK + VKD3D both ON, eSync+fSync ON, async shader on.",
+        "Launch args: '-USEALLAVAILABLECORES -skipStartScreen'.",
+        "In-game: set ALL graphics to Low or Medium, FSR Performance, disable RT, disable crowd density.",
+        "Set resolution to 720p — anything higher will tank below 20fps."
+      ],
+      "knownIssues": [
+        "Watson and Westbrook districts will drop to 15-18fps regardless of settings.",
+        "RED Engine has memory leaks — save and restart the game every ~1 hour.",
+        "Phantom Liberty DLC is even heavier — base game performs better.",
+        "DLSS doesn't work; use FSR instead."
+      ],
+      "bestVersionGuidance": "Honestly: SD8E is below the recommended minimum. PS5 Remote Play or GeForce Now will give you a way better experience than emulation."
+    },
+    {
+      "id": "win:witcher-3", "title": "The Witcher 3: Wild Hunt", "titleSlug": "witcher-3", "platform": "WINDOWS",
+      "releaseYear": 2015, "exeHints": ["witcher3.exe"],
+      "alsoOn": ["PS5","PS4","XBSX","XBONE","SWITCH"], "genres": ["Action RPG","Open World"],
+      "description": "CDPR's open-world RPG. Use the 1.32 build (DX11) — Next-Gen DX12 update is unstable on Adreno.",
+      "recommendedRamGb": 12,
+      "setupSteps": [
+        "Install Winlator Cmod + Turnip 24.3.0 R6.",
+        "Use Wine 9.4-staging-tkg, DXVK 2.4-async (NOT VKD3D — Next-Gen needs that).",
+        "Critical: use Witcher 3 build 1.32 (Classic), NOT the Next-Gen update.",
+        "Container videoMemoryMB 8192, eSync+fSync ON.",
+        "Disable HairWorks (it tanks frames).",
+        "In-game: graphics Medium-High, post-processing Low."
+      ],
+      "knownIssues": [
+        "Next-Gen 4.x update uses DX12 + VKD3D — unstable on Adreno, stick with 1.32.",
+        "Novigrad drops to ~25fps during festivals/crowds.",
+        "GOG version has fewer DRM issues than Steam.",
+        "Mods that change textures may cause hitches on first load."
+      ],
+      "bestVersionGuidance": "PC Classic (1.32) via Winlator is the path. Switch version via Eden has 30fps cap and lower textures — same compromise but with Switch's online services."
+    },
+    {
+      "id": "win:bg3", "title": "Baldur's Gate 3", "titleSlug": "bg3", "platform": "WINDOWS",
+      "releaseYear": 2023, "exeHints": ["bg3.exe","bg3_dx11.exe"],
+      "alsoOn": ["PS5","XBSX","MAC"], "genres": ["RPG"],
+      "description": "Divinity 4.0 engine. Act 3 / Lower City is brutal — drops to ~18fps. Act 1/2 manageable at ~25fps.",
+      "recommendedRamGb": 16,
+      "setupSteps": [
+        "Install GameNative + Proton-GE 9-15.",
+        "Use Turnip 24.3.0 R6 driver.",
+        "IMPORTANT: use bg3_dx11.exe, NOT bg3.exe (Vulkan path is buggy in Wine here).",
+        "Resolution 720p, graphics Medium.",
+        "Disable cloud shadows, set lighting quality to Low for big perf gain."
+      ],
+      "knownIssues": [
+        "Lower City drops to ~15fps regardless of settings — engine-limited.",
+        "Multiplayer needs Steam logged in — Wine login can be flaky.",
+        "Save scumming triggers garbage collection pauses (~2s freezes).",
+        "Mod loader works but big modlists cause crashes on startup."
+      ],
+      "bestVersionGuidance": "PC via GameNative is the only path. PS5 Remote Play is way smoother if you own it there."
+    },
+    {
+      "id": "win:hl2", "title": "Half-Life 2", "titleSlug": "half-life-2", "platform": "WINDOWS",
+      "releaseYear": 2004, "exeHints": ["hl2.exe"],
+      "alsoOn": ["PS3","X360","XBOX"], "genres": ["FPS"],
+      "description": "Source engine. Use Mobox for best perf — it doesn't need DXVK overhead.",
+      "recommendedRamGb": 4,
+      "setupSteps": [
+        "Install Mobox (Box64 + Wine, no DXVK).",
+        "Use Wine 8.21 (stable for Source engine).",
+        "Drop HL2 install in the Mobox games folder.",
+        "Launch hl2.exe — first boot caches shaders.",
+        "Optional: launch with '-novid -high' for faster startup."
+      ],
+      "knownIssues": [
+        "Source's mouse input has slight lag — adjust m_filter 0 in the console."
+      ],
+      "bestVersionGuidance": "PC via Mobox is the best. PS3 port runs in aPS3e but the PC version is lighter."
+    },
+    {
+      "id": "switch:totk", "title": "The Legend of Zelda: Tears of the Kingdom", "titleSlug": "totk", "platform": "SWITCH",
+      "releaseYear": 2023, "romHints": ["tears of the kingdom"],
+      "genres": ["Action Adventure"],
+      "description": "Sky islands hit ~22fps even on SD8E. Surface ~30fps. Pre-build shader cache before playing.",
+      "recommendedRamGb": 8,
+      "setupSteps": [
+        "Install Eden or Sudachi (Sudachi handles shader cache slightly better).",
+        "Install Turnip 24.3.0 R6 GPU driver.",
+        "Settings: GPU accuracy Normal, CPU accuracy Auto, resolution 0.75x (undocked).",
+        "Async shaders ON, disk shader cache ON.",
+        "Boot the game once and let it idle on the title screen for 5-10 min to build shaders.",
+        "Use the 60fps mod from r/yuzu — works in Eden/Sudachi.",
+        "Apply the dynamic FPS mod to avoid game-speed issues when frames dip."
+      ],
+      "knownIssues": [
+        "Sky islands ALWAYS drop to ~22fps (engine-level streaming bottleneck).",
+        "First entry into Hyrule Castle has a shader compile spike.",
+        "Ultrahand / Fuse combinations cause stutter as new objects are loaded.",
+        "Building shader cache fully may take a full playthrough of the tutorial."
+      ],
+      "bestVersionGuidance": "Switch via Eden/Sudachi is the only way until/unless Nintendo ports it to PC. If you have a Switch 2, that's vastly better."
+    },
+    {
+      "id": "switch:mk8d", "title": "Mario Kart 8 Deluxe", "titleSlug": "mk8d", "platform": "SWITCH",
+      "releaseYear": 2017, "romHints": ["mario kart 8","mk8d"],
+      "genres": ["Racing"],
+      "description": "Locked 60fps on SD8E — one of the best Switch emulation experiences.",
+      "recommendedRamGb": 6,
+      "setupSteps": [
+        "Install Eden with Turnip 24.3.0 R6 driver.",
+        "Settings: GPU accuracy High, resolution 2x for crisp visuals.",
+        "Async shaders ON, vsync ON.",
+        "Boot game, play one race to build shader cache.",
+        "If you have a Switch online subscription, online play works too."
+      ],
+      "knownIssues": [
+        "Online has occasional desyncs — keep your shader cache up to date.",
+        "Battle mode arena 'Sweet Sweet Kingdom' drops ~5fps during item spam.",
+        "DLC tracks (Booster Course Pass) all work but need separate XCI/NSP."
+      ],
+      "bestVersionGuidance": "Switch original via Eden is perfect — no other version exists. Switch 2 native version would be even better if you have one."
+    },
+    {
+      "id": "switch:smash-ultimate", "title": "Super Smash Bros. Ultimate", "titleSlug": "smash-ultimate", "platform": "SWITCH",
+      "releaseYear": 2018, "romHints": ["super smash bros","smash ultimate"],
+      "genres": ["Fighting"],
+      "description": "FD runs locked 60. Effect-heavy stages (FoFD with hazards) drop to ~40fps.",
+      "recommendedRamGb": 8,
+      "setupSteps": [
+        "Install Citron OR Eden — Citron edges Eden on Smash stage variety.",
+        "Turnip 24.3.0 R6.",
+        "Settings: GPU accuracy High, resolution 1x (don't push higher — drops frames).",
+        "Async shaders ON.",
+        "Build shader cache by playing one match on Final Destination first."
+      ],
+      "knownIssues": [
+        "Stages with weather/hazards (Skyloft, FoFD with hazards) drop to ~40fps.",
+        "8-player Smash overwhelms emulation — stick to 1v1 or 2v2.",
+        "Online mode is blocked (Nintendo anti-cheat)."
+      ],
+      "bestVersionGuidance": "Switch via Citron is best. Original hardware is way smoother for serious play."
+    },
+    {
+      "id": "ps2:god-of-war-ps2", "title": "God of War", "titleSlug": "god-of-war-ps2", "platform": "PS2",
+      "releaseYear": 2005, "romHints": ["god of war","scus-97399"],
+      "alsoOn": ["PS3","PS5","PS4"], "genres": ["Action"],
+      "description": "Original GoW. Locked 60fps on NetherSX2-Patch at 2x IR; gorgeous at 4x IR with minor drops.",
+      "recommendedRamGb": 6,
+      "setupSteps": [
+        "Install NetherSX2-Patch (build 4248) — it's the best PS2 emu on Adreno.",
+        "Settings → Graphics: Renderer Vulkan, IR 2x (or 4x for max IQ), Blending Accuracy Basic.",
+        "Settings → Speed Hacks: Preset Balanced, async MTVU ON, fast Memory Access ON.",
+        "Load your legally-dumped God of War ISO.",
+        "Optional: enable widescreen patch in the per-game config."
+      ],
+      "knownIssues": [
+        "4x IR drops to ~55fps in big arena fights with multiple enemies.",
+        "Some shadow rendering is slightly off vs. native — a known PCSX2 issue.",
+        "Audio crackle if you set MTVU but your device is single-thread limited (SD8E is not)."
+      ],
+      "bestVersionGuidance": "PS2 original via NetherSX2 is great. The PS3 HD remaster bundled with GoW Saga isn't accessible on Android (aPS3e is too heavy). The 2018 reboot is a different game entirely."
+    },
+    {
+      "id": "ps2:persona-4", "title": "Persona 4", "titleSlug": "persona-4", "platform": "PS2",
+      "releaseYear": 2008, "romHints": ["persona 4","slus-21782"],
+      "alsoOn": ["PSVITA"], "genres": ["JRPG"],
+      "description": "Locked 60 perfect on NetherSX2 from start to finish. One of the best PS2 emulation experiences.",
+      "recommendedRamGb": 4,
+      "setupSteps": [
+        "Install NetherSX2-Patch.",
+        "Renderer Vulkan, IR 4x (P4 looks great at 4x, no perf cost).",
+        "Speed Hacks preset Balanced.",
+        "Load your legally-dumped Persona 4 ISO."
+      ],
+      "knownIssues": [
+        "Some menu blurring at 4x IR — set 'Texture Filtering' to PS2 Bilinear if it bothers you."
+      ],
+      "bestVersionGuidance": "PS2 original is great. P4 Golden (Vita / PC / modern consoles) has more content — that's the canonical way to experience this game."
+    },
+    {
+      "id": "ps2:mgs3-ps2", "title": "Metal Gear Solid 3: Snake Eater", "titleSlug": "mgs3-ps2", "platform": "PS2",
+      "releaseYear": 2004, "romHints": ["metal gear solid 3","slus-20915"],
+      "alsoOn": ["PS3","X360","N3DS","SWITCH","PS5","PS4","XBSX","WINDOWS"], "genres": ["Stealth"],
+      "description": "Locked 60 on NetherSX2-Patch. Cutscene-heavy game runs smoothly.",
+      "recommendedRamGb": 6,
+      "setupSteps": [
+        "Install NetherSX2-Patch.",
+        "Vulkan renderer, 2x or 4x IR.",
+        "Preset Balanced; enable widescreen patch.",
+        "Load your dumped MGS3 ISO (Subsistence or Snake Eater)."
+      ],
+      "knownIssues": [
+        "Cutscene transitions can have a brief frame drop.",
+        "Camera-rotation cutscenes occasionally show slight tearing — turn vsync on."
+      ],
+      "bestVersionGuidance": "MGS Master Collection (modern consoles + PC) is the easiest way to play officially. PS2 via NetherSX2 is a perfectly authentic alternative. Skip the upcoming MGS Δ remake if you want the original tone."
+    },
+    {
+      "id": "ps1:metal-gear-solid", "title": "Metal Gear Solid", "titleSlug": "mgs", "platform": "PS1",
+      "releaseYear": 1998, "romHints": ["metal gear solid","slus-00594"],
+      "alsoOn": ["WINDOWS","PS5","PS4","SWITCH","XBSX"], "genres": ["Stealth"],
+      "description": "Locked 60 (game runs at 30 native — DuckStation can boost) on DuckStation.",
+      "recommendedRamGb": 2,
+      "setupSteps": [
+        "Install DuckStation.",
+        "Set renderer Vulkan, IR 4x or 8x (this game looks great upscaled).",
+        "Enable PGXP texture correction and True Color.",
+        "Load your dumped MGS PS1 disc 1 (you'll swap to disc 2 mid-game)."
+      ],
+      "knownIssues": [
+        "Disc swap mid-game — DuckStation handles this from the in-game menu.",
+        "Codec calls are PS1-native 30fps even if framerate is unlocked — this is intentional."
+      ],
+      "bestVersionGuidance": "MGS Master Collection includes a clean version on modern platforms. PS1 via DuckStation is fine if you want authentic. The MGS Twin Snakes GameCube remake is a different beast (more action, less stealth)."
+    },
+    {
+      "id": "ps1:ff7", "title": "Final Fantasy VII", "titleSlug": "ff7", "platform": "PS1",
+      "releaseYear": 1997, "romHints": ["final fantasy vii","scus-94163"],
+      "alsoOn": ["WINDOWS","SWITCH","PS5","PS4","XBSX","XBONE","MOBILE"], "genres": ["JRPG"],
+      "description": "Available on every platform. PS1 original via DuckStation is the most authentic.",
+      "recommendedRamGb": 2,
+      "setupSteps": [
+        "Install DuckStation.",
+        "Renderer Vulkan, IR 4x.",
+        "PGXP perspective correction ON.",
+        "Load disc 1; you'll swap to discs 2 and 3 mid-game."
+      ],
+      "knownIssues": [
+        "Pre-rendered backgrounds look low-res next to upscaled 3D — this is normal.",
+        "The 'Save Anywhere' field hack only works at save points by default."
+      ],
+      "bestVersionGuidance": "The mobile port has touch controls and nicer UI. Steam port (with mods) is the best PC experience. Remake/Rebirth on PS5/PC are completely different games — totally worth playing too."
+    },
+    {
+      "id": "3ds:smt-iv", "title": "Shin Megami Tensei IV", "titleSlug": "smt-iv", "platform": "N3DS",
+      "releaseYear": 2013, "romHints": ["smt iv"],
+      "genres": ["JRPG"],
+      "description": "Locked 30fps (native cap) on Azahar at 4x IR. Beautiful upscaled.",
+      "recommendedRamGb": 4,
+      "setupSteps": [
+        "Install Azahar (or Citra MMJ).",
+        "Use Vulkan backend, IR 4x.",
+        "Async shader compile ON.",
+        "Load SMT IV .cia or .3ds file."
+      ],
+      "knownIssues": [
+        "Battle backgrounds have minor flicker at 4x — drop to 2x if it bothers you.",
+        "Save state mid-battle can corrupt — use in-game saves only."
+      ],
+      "bestVersionGuidance": "3DS original via Azahar is the only way (no remake). The sequel SMT IV Apocalypse is also available the same way."
+    },
+    {
+      "id": "wiiu:botw-wiiu", "title": "Breath of the Wild (Wii U)", "titleSlug": "botw-wiiu", "platform": "WIIU",
+      "releaseYear": 2017, "romHints": ["breath of the wild"],
+      "alsoOn": ["SWITCH"], "genres": ["Action Adventure"],
+      "description": "Use Cemu's BOTW 60fps graphic pack. Better than Switch version via Eden in most scenes.",
+      "recommendedRamGb": 8,
+      "setupSteps": [
+        "Install Cemu Android port + Turnip 24.3.0 R6 driver.",
+        "Apply BOTW 60fps + 1440p graphic packs via Cemu's pack manager.",
+        "Async shader compile ON.",
+        "Build shader cache by exploring Great Plateau for ~10 min.",
+        "Use Cemuhook for additional fixes if you hit specific glitches."
+      ],
+      "knownIssues": [
+        "Korok Forest is heavier than rest of map — drops to ~45fps.",
+        "60fps pack causes some recipe-cutscene speed glitches — toggle off briefly during cooking sequences.",
+        "Save data is NOT interchangeable with Switch version."
+      ],
+      "bestVersionGuidance": "Wii U via Cemu is actually better than Switch via Eden — fewer frame drops, mod support, no DLC purchase split. Switch 2 native (if you have one) trumps everything."
+    },
+    {
+      "id": "gc:smash-melee", "title": "Super Smash Bros. Melee", "titleSlug": "smash-melee", "platform": "GC",
+      "releaseYear": 2001, "romHints": ["super smash bros melee","smash melee"],
+      "genres": ["Fighting"],
+      "description": "60fps perfect on Dolphin. For competitive play, use the 20XX training pack ISO.",
+      "recommendedRamGb": 4,
+      "setupSteps": [
+        "Install Dolphin Android.",
+        "Vulkan backend, IR 2x (or 4x if you want max IQ).",
+        "Async shader compile ON.",
+        "Optional: load the 20XX Training Pack ISO for competitive features (DI training, action replay codes)."
+      ],
+      "knownIssues": [
+        "Online play via Slippi requires extra setup — search 'Slippi Android' for guides.",
+        "Some stages with backgrounds (Temple, Hyrule Temple) drop briefly when items appear."
+      ],
+      "bestVersionGuidance": "GameCube via Dolphin is the only way (no rerelease). Slippi for online competitive."
+    }
+  ]
+}

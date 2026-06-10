@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Is It Compatible?</string>
+    <string name="app_tagline">Pick the right emulator + settings for any game on your device.</string>
+
+    <!-- Wizard -->
+    <string name="wizard_welcome_title">Welcome</string>
+    <string name="wizard_welcome_blurb">Search ANY game — PC, PlayStation, Switch, 3DS, anything — and we\'ll tell you the best emulator + driver + preset to run it on YOUR device. You don\'t need the game installed or dumped. Browse compatibility for everything.</string>
+    <string name="wizard_welcome_credit">Console compatibility data comes from EmuReady. Thanks to the EmuReady community.</string>
+    <string name="wizard_lets_go">Let\'s Go</string>
+
+    <string name="wizard_libraries_title">Where are your games?</string>
+    <string name="wizard_pick_rom_folder">Pick ROM folder</string>
+    <string name="wizard_pick_pc_folder">Pick Windows games folder (optional)</string>
+    <string name="wizard_pick_staging_folder">Pick staging folder</string>
+    <string name="wizard_staging_blurb">Used to download recommended drivers and write emulator config files for you.</string>
+    <string name="wizard_continue">Continue</string>
+
+    <string name="wizard_fingerprint_title">Your device</string>
+    <string name="wizard_fingerprint_blurb">We use this to find reports from people with similar hardware. You can correct anything wrong on the Settings tab later.</string>
+    <string name="wizard_done">Done</string>
+
+    <!-- Tabs -->
+    <string name="tab_browse">Browse</string>
+    <string name="tab_journal">Journal</string>
+    <string name="tab_autodetect">My Device</string>
+    <!-- tab_my_games retired in v0.5; folder scanning moved into Settings. -->
+    <string name="tab_my_games">My Games</string>
+    <string name="tab_updates">Database</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Fingerprint fields -->
+    <string name="fp_soc">SoC</string>
+    <string name="fp_gpu">GPU</string>
+    <string name="fp_ram">RAM</string>
+    <string name="fp_android">Android</string>
+    <string name="fp_vulkan">Vulkan</string>
+    <string name="fp_driver">GPU driver</string>
+    <string name="fp_unknown">Unknown</string>
+
+    <string name="not_picked">(not picked)</string>
+</resources>

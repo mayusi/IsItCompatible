@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "_comment": "Emulator-level fallback fixes for the interactive troubleshooter, keyed by emulatorId then symptom. These are GENERIC, emulator-wide fixes that apply after a game's own guide.troubleshooting entries. Symptom keys: crash-on-launch | black-screen | cutscene-crash | no-audio | low-fps | wont-install. Honesty rule: only real, documented fixes. Wording is 'try this', never 'this will fix it'.",
+  "dataAsOf": "2026-06-06",
+  "emulators": {
+    "gamenative": {
+      "crash-on-launch": [
+        { "fix": "Turn on the DirectX 9 / Direct3D Wine component (this IS 'install d3dx9')", "detail": "GameNative installs the legacy d3dx9 + d3dcompiler DLLs via the Direct3D component — there is no separate 'd3dx9' or 'DirectX June 2010' button. Steps: 1) Long-press the game in GameNative. 2) Tap Container Settings. 3) Open the Wine Components tab. 4) Set Direct3D and VC++ 2010 to enabled (1). 5) Tap Save and relaunch. (GameNative's only VC++ token is VC++ 2010; there is no vcrun2015/2019 component.)" },
+        { "fix": "Launch the game's real .exe, not a launcher", "detail": "Wrapper/launcher EXEs often crash the Wine child. Steps: 1) Long-press the game -> Container Settings (or Edit). 2) Find the Executable Path field. 3) Set it to the game's real .exe (e.g. dmc3.exe), not dmcLauncher.exe or a storefront launcher. 4) Save and relaunch." },
+        { "fix": "Try FEXCore instead of Box64 (or vice-versa)", "detail": "Some games run under one x86 backend but crash under the other. Steps: 1) Long-press the game -> Container Settings. 2) Open the Emulation/Box64 settings. 3) Switch the backend (FEXCore <-> Box64). 4) Save and relaunch. Cheap to test both." },
+        { "fix": "Switch the Graphics Driver to Wrapper + Adrenotools Turnip (Adreno 830 / SD 8 Elite)", "detail": "On Snapdragon 8 Elite (Adreno 830) the stock Turnip path is unreliable; GameNative's recommended fix is the Wrapper driver with a custom AdrenoTools Turnip. Steps: 1) Long-press the game -> Container Settings. 2) Open the Graphics Driver dropdown. 3) Pick 'Wrapper' (the bionic/AdrenoTools wrapper) and turn ON 'Use Adrenotools Turnip'. 4) In 'Graphics Driver Version' choose a recent Turnip build (e.g. turnip25.3.0_R11 or turnip26.0.0_R8). 5) Save and relaunch. (GameNative also lists a 'Vortek (Universal)' driver and a dedicated 'SD 8 Elite' entry in the same dropdown — try those if Wrapper+Turnip still fails.) To add a newer Turnip than the built-in list, use the Driver Manager: app Settings -> Driver Manager -> Import ZIP from device -> pick an AdrenoTools driver .zip from K11MCH1/AdrenoToolsDrivers, then select it under Graphics Driver Version." }
+      ],
+      "black-screen": [
+        { "fix": "Switch the Graphics Driver to Wrapper + Adrenotools Turnip (Adreno 830)", "detail": "A black screen with audio on Adreno 830 (Snapdragon 8 Elite) is the classic stock-Turnip symptom. GameNative's fix is the Wrapper driver with a custom Turnip. Steps: 1) Long-press the game -> Container Settings. 2) Open the Graphics Driver dropdown. 3) Pick 'Wrapper' and turn ON 'Use Adrenotools Turnip'. 4) Under 'Graphics Driver Version' pick a recent Turnip (e.g. turnip25.3.0_R11). 5) Save and relaunch. If it still blanks, try the 'Vortek (Universal)' or 'SD 8 Elite' entries in the same Graphics Driver dropdown." },
+        { "fix": "Change the DXVK version, or switch to WineD3D", "detail": "Steps: 1) Long-press the game -> Container Settings. 2) Open the DX Wrapper (dxwrapper) setting. 3) Either pick a different DXVK build (try the newest, or an older 1.x for old DX9 games), or switch the wrapper to WineD3D. 4) Save and relaunch." },
+        { "fix": "Set the Box64 preset to Compatibility", "detail": "Steps: 1) Long-press the game -> Container Settings. 2) Open the Box64 settings. 3) Change the preset from Performance to Compatibility. 4) Save and relaunch. The aggressive preset can blank the render on some titles." },
+        { "fix": "Wait through first-boot shader compilation", "detail": "A black screen on the very first launch is often DXVK shaders compiling. Leave it for one to two minutes before deciding it is hung — later launches are much faster. No setting to change; just wait once." }
+      ],
+      "cutscene-crash": [
+        { "fix": "Enable the WM Decoder + DirectShow Wine components first (best-effort, no file access needed)", "detail": "Wine's WMV3/VC-1 decode is what crashes a pre-rendered FMV (the documented Devil May Cry 3 'crash after the loading screen' cause). Before touching any files, try the codec DLLs. Steps: 1) Long-press the game -> Container Settings -> Wine Components. 2) Enable WM Decoder (wmdecoder) and DirectShow (directshow). 3) Save and relaunch. This sometimes lets the intro play. Note: Wine's WMV3 support is incomplete, so it often still fails — if so, make the game skip the .wmv (next fixes)." },
+        { "fix": "Reach the .wmv from INSIDE the container (the fix when files are in app-private/Steam-internal storage)", "detail": "If you installed the game via Steam inside GameNative, its files sit in app-private storage (e.g. /data/user/0/app.gamenative/Steam/steamapps/common/...) that NO Android file manager or non-root adb can open on Android 13+ — so 'open a file manager' does not work. Reach the files from inside the container instead, where the install maps to a Windows drive. Steps: 1) Long-press the game -> 'Open container' (boots the Wine desktop without launching the game). 2) Inside, open the Windows file explorer (GameNative is Winlator-derived and exposes one over the mapped C:/D:/Z: and game drives); if none is visible, run a temporary shortcut whose exe is winefile or explorer.exe. 3) Browse to the game's Video/Movies folder (DMC3: ...\\data\\dmc3\\Video). 4) Rename each .wmv (or .bik/.bk2) to add .bak. 5) Close the container and relaunch. The game skips the missing FMVs; real-time in-engine cutscenes still play." },
+        { "fix": "Or reinstall to external storage so a normal file manager CAN reach the videos", "detail": "Steam-internal installs hide the game files; an external-storage install puts them somewhere an Android file manager can browse. Steps: 1) In GameNative tap your avatar -> Settings -> Downloads & Storage -> turn ON 'Write to external storage'. 2) Reinstall (or move) the game so it lands on accessible storage (e.g. /storage/emulated/0/...). 3) Open any Android file manager, go to the game folder -> Video/Movies subfolder (DMC3: data\\dmc3\\Video). 4) Rename each .wmv -> add .bak. 5) Relaunch so the game skips the missing FMVs. (Games you copied in yourself to /storage/emulated/0/... are already reachable this way — only Steam-internal installs need this.)" }
+      ],
+      "no-audio": [
+        { "fix": "Switch the audio driver between PulseAudio and ALSA", "detail": "Steps: 1) Long-press the game -> Container Settings. 2) Open the Audio Driver setting. 3) Flip it from PulseAudio to ALSA (or back). 4) Save and relaunch. One of the two usually produces sound." },
+        { "fix": "Enable the XAudio / DirectSound Wine components", "detail": "XACT/XAudio games and many DX9 titles need these for sound. Steps: 1) Long-press the game -> Container Settings -> Wine Components. 2) Enable XAudio (xaudio) and DirectSound (directsound). 3) Save and relaunch." }
+      ],
+      "low-fps": [
+        { "fix": "Set the Box64 preset to Performance", "detail": "If the game is stable but slow: 1) Long-press the game -> Container Settings -> Box64. 2) Change the preset from Compatibility to Performance. 3) Save and relaunch." },
+        { "fix": "Match the Graphics Driver to your GPU", "detail": "Steps: 1) Long-press the game -> Container Settings -> Graphics Driver. 2) On Adreno 740/750 (7xx) pick 'Turnip (Adreno)' with a current version; on Adreno 830 / SD 8 Elite (8xx) pick 'Wrapper' with 'Use Adrenotools Turnip' ON (or try the 'SD 8 Elite' / 'Vortek (Universal)' entries). 3) Save and relaunch. The wrong driver can cost a lot of FPS." },
+        { "fix": "Enable DXVK async and lower the resolution", "detail": "Steps: 1) Long-press the game -> Container Settings. 2) In the DX Wrapper (DXVK) settings turn async ON. 3) In the display/screen settings drop the resolution (e.g. 1080p -> 720p). 4) Save and relaunch." }
+      ],
+      "wont-install": [
+        { "fix": "Copy in a finished game folder instead of running an installer", "detail": "Windows installers (.msi / setup.exe) often fail under Wine. Steps: 1) Install the game on a PC (or via Steam). 2) Copy the finished game folder onto your phone (e.g. /storage/emulated/0/GameNative/). 3) In GameNative create/edit a container and set its Executable Path to the game's .exe inside that copied folder. 4) Launch." },
+        { "fix": "Use a pre-built / portable copy of the game", "detail": "A portable or already-installed copy avoids the installer entirely. Copy it into GameNative storage and point the container's Executable Path at the .exe — this is the most reliable path onto GameNative." }
+      ]
+    },
+    "winlator-cmod": {
+      "crash-on-launch": [
+        { "fix": "Enable the DirectX (Direct3D) + VC++ Windows components", "detail": "Steps: 1) On the Winlator main screen long-press your container -> Settings (or tap Edit). 2) Open the Wine Components / Windows Components tab. 3) Set Direct3D to enabled — this installs the d3dx9 and d3dcompiler DLLs (there is no separate d3dx9 entry). 4) Also enable VC++ 2010. 5) Save and relaunch. Missing DX9 runtimes are the most common instant-crash cause." },
+        { "fix": "Switch DX wrapper between DXVK and WineD3D", "detail": "Steps: 1) Long-press the container -> Settings. 2) Open the DX Wrapper setting. 3) For older DX9 games try WineD3D; for DX10/11 keep DXVK. 4) Save and relaunch." },
+        { "fix": "Try the Box64 Compatibility preset", "detail": "Steps: 1) Long-press the container -> Settings -> Box64. 2) Choose the Compatibility/Stability preset rather than Performance. 3) Save and relaunch." }
+      ],
+      "black-screen": [
+        { "fix": "Switch the graphics driver to Vortek on Adreno 8xx", "detail": "Steps: 1) Long-press the container -> Settings -> Graphics Driver. 2) On Snapdragon 8 Elite (Adreno 830) select Vortek; on Adreno 7xx a recent Turnip is fine. 3) Save and relaunch." },
+        { "fix": "Try a different DXVK version", "detail": "Steps: 1) Long-press the container -> Settings -> DX Wrapper. 2) Pick a different DXVK build (e.g. an older 1.x for old DX9 titles). 3) Save and relaunch." },
+        { "fix": "Add the env var MESA_EXTENSION_MAX_YEAR=2003", "detail": "For some old OpenGL/DX9 games on Turnip this hides newer GL extensions the game mishandles. Steps: 1) Long-press the container -> Settings -> Environment Variables. 2) Add MESA_EXTENSION_MAX_YEAR=2003. 3) Save and relaunch." }
+      ],
+      "cutscene-crash": [
+        { "fix": "First just try launching — the WMV/codec components may let the cutscene play", "detail": "Before deleting anything, try this: relaunch as-is. If the game's GameNative config enables the WM Decoder (wmdecoder) and DirectShow (directshow) Wine components, Wine can sometimes decode the WMV3/VC-1 cutscene instead of crashing. Only if it STILL crashes on the cutscene do you need to remove the video files (next fixes)." },
+        { "fix": "Remove the cutscene videos FROM INSIDE THE CONTAINER (no reinstall)", "detail": "Use this when the game was installed by running STEAM INSIDE GameNative — those files sit in app-private storage that NO Android file manager can open (so 'open a file manager' will NOT work; see the last fix for why). Reach them from inside the container instead, where the game folder is mapped to a Windows drive (often A:). Steps: 1) In GameNative long-press the game -> 'Open container' (boots the Wine desktop WITHOUT launching the game). 2) Inside the container open its Windows file manager — GameNative is Winlator-derived and ships a Windows file explorer (Winlator File Manager); if you don't see one, add a temporary shortcut whose executable is winefile or explorer.exe and run it. 3) Browse the mapped game drive (try A:) to the game's Video/Movies folder. 4) Rename each .wmv/.bik file to add .bak (rename, don't delete, so you can undo). 5) Close the container and relaunch the game. It skips the missing FMVs instead of crashing." },
+        { "fix": "Make the videos reachable from Android by moving the game to external storage", "detail": "Alternative to editing inside the container. Steps: 1) In GameNative open Settings -> Downloads & Storage -> turn ON 'use external storage' / 'Write to external storage'. NOTE: if it says 'No external storage detected', that ONLY means you have no physical SD card or USB drive plugged in — it does NOT mean internal storage is unusable. On modern GameNative builds external app storage still resolves to /storage/emulated/0/Android/data/app.gamenative/files/..., which IS reachable. 2) Move or reinstall the game to external (GameNative's move-game / reinstall). 3) The game folder now appears under /storage/emulated/0/Android/data/app.gamenative/files/Steam/steamapps/common/<game>/, where a normal Android file manager CAN open it. 4) Go to that game's Video/Movies folder, rename each .wmv/.bik to add .bak. 5) Relaunch." },
+        { "fix": "Why 'just open a file manager' didn't work before", "detail": "If you installed via Steam inside GameNative, the videos live in the app's private storage (e.g. /data/user/0/app.gamenative/...). On Android 13+ this folder is sandboxed: no Android file manager and no non-root adb can browse it, so the usual 'open a file manager and rename the .wmv' advice is impossible for Steam-internal installs. The two fixes above are the only paths that actually reach the files." }
+      ],
+      "no-audio": [
+        { "fix": "Toggle the audio backend (ALSA / PulseAudio)", "detail": "Steps: 1) Long-press the container -> Settings -> Audio Driver. 2) Flip between ALSA and PulseAudio. 3) Save and relaunch." }
+      ],
+      "low-fps": [
+        { "fix": "Use the Box64 Performance preset", "detail": "Switch Box64 to Performance once the game is stable, and enable DXVK async to cut stutter." },
+        { "fix": "Lower the screen / internal resolution", "detail": "Drop the container resolution; mobile GPUs rarely sustain native-res DX11 titles." }
+      ],
+      "wont-install": [
+        { "fix": "Copy in a pre-installed game folder", "detail": "Install on PC and copy the finished folder into Winlator storage rather than running a Windows installer under Wine." }
+      ]
+    },
+    "winlator": {
+      "black-screen": [
+        { "fix": "Switch the graphics driver to Vortek on Adreno 8xx", "detail": "Steps: 1) Long-press the container -> Settings -> Graphics Driver. 2) Use Vortek (Winlator 9+) on Snapdragon 8 Elite / Adreno 830; on Adreno 7xx a recent Turnip is fine. 3) Save and relaunch." },
+        { "fix": "Try a different DXVK version", "detail": "Steps: 1) Long-press the container -> Settings -> DX Wrapper. 2) Pick a different DXVK build. 3) Save and relaunch." }
+      ],
+      "crash-on-launch": [
+        { "fix": "Enable the DirectX (Direct3D) + VC++ Windows components", "detail": "Steps: 1) Long-press the container -> Settings -> Wine/Windows Components. 2) Enable Direct3D (installs the d3dx9 + d3dcompiler DLLs; no separate d3dx9 entry) and VC++ 2010. 3) Save and relaunch." },
+        { "fix": "Launch the real game .exe, not a launcher", "detail": "Steps: 1) Long-press the container -> Settings (or Edit). 2) Set the Executable Path to the game's own .exe rather than a storefront launcher. 3) Save and relaunch." }
+      ],
+      "cutscene-crash": [
+        { "fix": "Rename the game's .wmv cutscene files", "detail": "Wine cannot decode WMV3. Steps: 1) Open a file manager. 2) Go to the game's Video/Movies folder. 3) Long-press each .wmv -> Rename -> add .bak. 4) Relaunch so the game skips them." }
+      ],
+      "low-fps": [
+        { "fix": "Set Box64 to Performance and enable DXVK async", "detail": "Steps: 1) Long-press the container -> Settings -> Box64 -> set preset to Performance. 2) In DX Wrapper settings turn DXVK async ON. 3) Save and relaunch." }
+      ]
+    },
+    "nethersx2-patch": {
+      "crash-on-launch": [
+        { "fix": "Confirm a real PS2 boot BIOS is set", "detail": "NetherSX2 needs a genuine ~4 MB PS2 boot BIOS dumped from your own console (e.g. SCPH-39001). A DVD-player ROM (ps2-dvd-*) will NOT work. Point Settings > BIOS at the correct file." },
+        { "fix": "Switch the renderer to Vulkan", "detail": "On Adreno GPUs use the Vulkan backend rather than OpenGL — it's both faster and more stable on NetherSX2." }
+      ],
+      "black-screen": [
+        { "fix": "Use the Vulkan renderer", "detail": "Set Graphics > Renderer to Vulkan. The OpenGL backend can show a black screen on Adreno." },
+        { "fix": "Lower the internal/upscale resolution to native", "detail": "Drop the upscale multiplier back to 1x (native). High upscales can blank the screen or exhaust VRAM on mobile." }
+      ],
+      "cutscene-crash": [
+        { "fix": "Lower EE/VU clock and set rounding to Chop/Zero", "detail": "If the game hangs at an FMV/cutscene, reduce the EE cycle rate and try the per-game compatibility/rounding options. Some titles need specific gamefixes documented in the PCSX2 wiki." }
+      ],
+      "no-audio": [
+        { "fix": "Set SPU2 to a higher latency / async mix", "detail": "In the audio settings raise the latency and use async mixing to stop dropouts on mobile." }
+      ],
+      "low-fps": [
+        { "fix": "Drop to native resolution and Vulkan", "detail": "Use 1x internal res with the Vulkan renderer. PS2 upscaling is very heavy on phones." },
+        { "fix": "Enable speed hacks (MTVU / preset)", "detail": "Turn on the recommended speed-hack preset and MTVU where supported for a large FPS gain on multi-core chips." }
+      ]
+    },
+    "eden": {
+      "crash-on-launch": [
+        { "fix": "Add the correct firmware and prod.keys", "detail": "Eden needs Switch firmware plus keys (prod.keys/title.keys) dumped from your own console. A missing or mismatched key set crashes most games at launch." },
+        { "fix": "Switch the CPU backend / accuracy", "detail": "Lower CPU accuracy or toggle the NCE backend in Settings > CPU and relaunch — some titles crash on the higher-accuracy path." }
+      ],
+      "black-screen": [
+        { "fix": "Delete the shader and pipeline cache", "detail": "A corrupt shader cache shows as a black screen or hang. Clear the game's shader/pipeline cache and let it rebuild on next launch." },
+        { "fix": "Toggle async shader / GPU accuracy to Normal", "detail": "Set GPU accuracy to Normal and enable asynchronous shaders in the graphics settings." }
+      ],
+      "cutscene-crash": [
+        { "fix": "Disable async GPU emulation for this game", "detail": "If it hangs at a specific scene, turning off async GPU emulation (at an FPS cost) gets some titles past the spot." }
+      ],
+      "no-audio": [
+        { "fix": "Set the audio output engine to Cubeb", "detail": "Switch the audio backend in Settings > Audio and relaunch if there's no sound." }
+      ],
+      "low-fps": [
+        { "fix": "Enable async shaders and lower the resolution", "detail": "Turn on asynchronous shader building to cut shader stutter and drop the resolution scale to 1x." },
+        { "fix": "Use the NCE CPU backend on supported devices", "detail": "Native Code Execution is much faster than the interpreter where your device supports it." }
+      ]
+    }
+  }
+}
