@@ -2,13 +2,11 @@ package io.github.mayusi.isitcompatible.ui.detail
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -177,13 +175,15 @@ fun GameDetailScreen(
                         recommendedRamGb = game.recommendedRamGb,
                         isWindows = s.isWindowsGame,
                         canOneTapLaunch = s.canOneTapLaunch,
-                        onApplyReal = { realTop?.let { vm.apply(it) } },
-                        onApplyGen = { genTop?.let { vm.apply(it) } },
-                        onLaunchInGameNative = { vm.launchInGameNative() },
-                        onDownloadConfig = { vm.applyGameNativeConfig() },
-                        onLogAnother = { vm.openJournalForm() },
-                        onImportConfig = launchImport,
-                        onSubmitReport = { SubmitLinks.openSubmitFor(ctx, game, s.fingerprint) },
+                        actions = VerdictCardActions(
+                            onApplyReal = { realTop?.let { vm.apply(it) } },
+                            onApplyGen = { genTop?.let { vm.apply(it) } },
+                            onLaunchInGameNative = { vm.launchInGameNative() },
+                            onDownloadConfig = { vm.applyGameNativeConfig() },
+                            onLogAnother = { vm.openJournalForm() },
+                            onImportConfig = launchImport,
+                            onSubmitReport = { SubmitLinks.openSubmitFor(ctx, game, s.fingerprint) },
+                        ),
                     )
 
                     // The "top" pick — used downstream for Setup tabs / Preset details.
@@ -673,6 +673,20 @@ internal fun formatJournalDate(epochMs: Long): String {
    - GENERATED_SECONDARY second hero card is removed.
    ============================================================================= */
 
+/**
+ * Action lambdas for VerdictCard, bundled to keep param count well below the
+ * dex-register threshold (the companion fork hit a VerifyError at 17+ params).
+ */
+private data class VerdictCardActions(
+    val onApplyReal: () -> Unit,
+    val onApplyGen: () -> Unit,
+    val onLaunchInGameNative: () -> Unit,
+    val onDownloadConfig: () -> Unit,
+    val onLogAnother: () -> Unit,
+    val onImportConfig: () -> Unit,
+    val onSubmitReport: () -> Unit,
+)
+
 @Composable
 private fun VerdictCard(
     realTop: Recommendation?,
@@ -684,14 +698,15 @@ private fun VerdictCard(
     recommendedRamGb: Int?,
     isWindows: Boolean,
     canOneTapLaunch: Boolean,
-    onApplyReal: () -> Unit,
-    onApplyGen: () -> Unit,
-    onLaunchInGameNative: () -> Unit,
-    onDownloadConfig: () -> Unit,
-    onLogAnother: () -> Unit,
-    onImportConfig: () -> Unit,
-    onSubmitReport: () -> Unit,
+    actions: VerdictCardActions,
 ) {
+    val onApplyReal = actions.onApplyReal
+    val onApplyGen = actions.onApplyGen
+    val onLaunchInGameNative = actions.onLaunchInGameNative
+    val onDownloadConfig = actions.onDownloadConfig
+    val onLogAnother = actions.onLogAnother
+    val onImportConfig = actions.onImportConfig
+    val onSubmitReport = actions.onSubmitReport
     // No data at all — GeneratedOnlyHonestTile path
     if (realTop == null && genTop == null) return
 
@@ -793,7 +808,7 @@ private fun VerdictCard(
                     val effectiveRecRamGb = recommendedRamGb ?: presetRecRam
                     val userRamGb = userRamMb?.let { it / 1024 }
                     val warns = effectiveRecRamGb != null && userRamGb != null && userRamGb < effectiveRecRamGb
-                    if (warns && (vramMb != null || effectiveRecRamGb != null)) {
+                    if (warns) {
                         Spacer(Modifier.height(14.dp))
                         HardwareCallout(vramMb = vramMb, recRamGb = effectiveRecRamGb, userRamMb = userRamMb)
                     }
