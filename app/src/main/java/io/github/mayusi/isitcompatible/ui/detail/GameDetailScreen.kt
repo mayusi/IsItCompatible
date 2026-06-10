@@ -773,6 +773,12 @@ private fun VerdictCard(
                             color = onContainer.copy(alpha = 0.7f),
                         )
                     }
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        friendlyConfidenceLabel(rec.bucket),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = onContainer.copy(alpha = 0.6f),
+                    )
                 } else {
                     Text(
                         "Estimated for ${emulator?.name ?: rec.emulatorId} — not a real test result.",
@@ -895,10 +901,10 @@ private fun StabilityPill(stability: String) {
 }
 
 private fun friendlyConfidenceLabel(b: Bucket): String = when (b) {
-    Bucket.SAME_SOC_AND_RAM -> "Same chip and RAM class as you"
-    Bucket.SAME_SOC_FAMILY -> "Same chip as you"
-    Bucket.SAME_GPU_VENDOR -> "Similar GPU, different chip"
-    Bucket.ANY_DEVICE -> "Different hardware — best guess"
+    Bucket.SAME_SOC_AND_RAM -> "Reports are from the same chip and RAM as yours — high accuracy."
+    Bucket.SAME_SOC_FAMILY -> "Same chip family, different RAM — result may vary."
+    Bucket.SAME_GPU_VENDOR -> "Same GPU brand only — rough estimate."
+    Bucket.ANY_DEVICE -> "No reports for your hardware — best-guess from other devices."
 }
 
 @Composable

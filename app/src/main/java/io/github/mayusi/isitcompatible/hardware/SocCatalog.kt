@@ -1,5 +1,14 @@
 package io.github.mayusi.isitcompatible.hardware
 
+/** Hardware performance tier — conservative mapping for the My Device card. */
+enum class SocTier(val label: String) {
+    FLAGSHIP("Flagship"),
+    HIGH_END("High-end"),
+    MID_RANGE("Mid-range"),
+    BUDGET("Budget"),
+    UNKNOWN("Unknown"),
+}
+
 /**
  * Maps Build.SOC_MODEL / Build.HARDWARE strings to user-friendly SoC family names.
  *
@@ -123,4 +132,38 @@ internal object SocCatalog {
         "UNISOC" to "Unisoc (unspecified)",
         "ALLWINNER" to "Allwinner (unspecified)",
     )
+
+    /**
+     * Returns a hardware tier for a given SoC family string.
+     * Conservative — unknown families fall back to UNKNOWN.
+     */
+    fun tier(socFamily: String): SocTier {
+        val f = socFamily.uppercase()
+        return when {
+            // Flagship: top-of-line Snapdragon + Dimensity 9xxx
+            "8 ELITE" in f || "8 GEN 3" in f -> SocTier.FLAGSHIP
+            "DIMENSITY 9300" in f || "DIMENSITY 9200" in f -> SocTier.FLAGSHIP
+            "EXYNOS 2400" in f -> SocTier.FLAGSHIP
+            // High-end: 8 Gen 2 / 8+ Gen 1 / 8 Gen 1 / Dimensity 8xxx / 1200
+            "8 GEN 2" in f || "8+ GEN 1" in f || "8 GEN 1" in f -> SocTier.HIGH_END
+            "DIMENSITY 8200" in f || "DIMENSITY 1200" in f || "DIMENSITY 1100" in f -> SocTier.HIGH_END
+            "SNAPDRAGON 888" in f || "SNAPDRAGON 865" in f -> SocTier.HIGH_END
+            "EXYNOS 2200" in f -> SocTier.HIGH_END
+            "ROCKCHIP RK3588" in f -> SocTier.HIGH_END
+            // Mid-range: 7-series, Dimensity 900, G-series handhelds, Helio G99/G95
+            "7+ GEN 2" in f || "7S GEN 2" in f || "778G" in f || "720G" in f -> SocTier.MID_RANGE
+            "SNAPDRAGON 6 GEN 1" in f -> SocTier.MID_RANGE
+            "G3X GEN 2" in f || "G3X GEN 1" in f || "G3 GEN 3" in f -> SocTier.MID_RANGE
+            "DIMENSITY 900" in f -> SocTier.MID_RANGE
+            "HELIO G99" in f || "HELIO G95" in f || "HELIO G90" in f -> SocTier.MID_RANGE
+            "UNISOC T820" in f || "UNISOC T826" in f -> SocTier.MID_RANGE
+            "DIMENSITY 1100" in f -> SocTier.MID_RANGE
+            // Budget: T618, low Snapdragon, Rockchip 3566 and below, Allwinner
+            "UNISOC T618" in f || "SNAPDRAGON 480" in f -> SocTier.BUDGET
+            "ROCKCHIP RK3566" in f || "ROCKCHIP RK3328" in f || "ROCKCHIP RK3326" in f -> SocTier.BUDGET
+            "ALLWINNER" in f -> SocTier.BUDGET
+            "G1 GEN 2" in f -> SocTier.BUDGET
+            else -> SocTier.UNKNOWN
+        }
+    }
 }

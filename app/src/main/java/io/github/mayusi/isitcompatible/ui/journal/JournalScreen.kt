@@ -2,6 +2,7 @@ package io.github.mayusi.isitcompatible.ui.journal
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -78,15 +80,10 @@ fun JournalScreen(
             return@Column
         }
 
-        // Summary strip
-        val totals = remember(s.entries) {
-            val games = s.entries.map { it.gameId }.toSet().size
-            "${s.entries.size} entr${if (s.entries.size == 1) "y" else "ies"} across $games game${if (games == 1) "" else "s"}"
+        // Stats strip
+        s.stats?.let { stats ->
+            StatsStrip(stats = stats)
         }
-        Text(totals,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
 
         LazyColumn(
             Modifier.fillMaxSize().padding(horizontal = 12.dp),
@@ -120,6 +117,49 @@ fun JournalScreen(
             dismissButton = {
                 TextButton(onClick = { pendingDelete = null }) { Text("Cancel") }
             },
+        )
+    }
+}
+
+@Composable
+private fun StatsStrip(stats: JournalStats) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        StatChip(
+            label = "${stats.gameCount} game${if (stats.gameCount == 1) "" else "s"} tried",
+            color = MaterialTheme.colorScheme.primary,
+        )
+        StatChip(
+            label = "${stats.workingCount} working",
+            color = androidx.compose.ui.graphics.Color(0xFF4CAF50),
+        )
+        val hrs = stats.sessionHrs
+        val hrsLabel = if (hrs < 1f) "${(hrs * 60).toInt()}m" else "${"%.1f".format(hrs)} hrs"
+        StatChip(
+            label = "$hrsLabel session",
+            color = MaterialTheme.colorScheme.secondary,
+        )
+    }
+}
+
+@Composable
+private fun StatChip(label: String, color: androidx.compose.ui.graphics.Color) {
+    Box(
+        Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(color.copy(alpha = 0.15f))
+            .padding(horizontal = 14.dp, vertical = 7.dp),
+    ) {
+        Text(
+            label,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = color,
         )
     }
 }
@@ -200,6 +240,21 @@ private fun JournalEntryRow(
                     },
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
+                // Session duration chip
+                entry.sessionMinutes?.takeIf { it > 0 }?.let { mins ->
+                    Spacer(Modifier.width(6.dp))
+                    Box(
+                        Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f))
+                            .padding(horizontal = 5.dp, vertical = 1.dp),
+                    ) {
+                        Text("${mins}m",
+                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
+                            color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.SemiBold)
+                    }
+                }
                 // v0.6: tiny "shared" chip when the user opted into community sharing
                 if (entry.shareWithCommunity) {
                     Spacer(Modifier.width(6.dp))

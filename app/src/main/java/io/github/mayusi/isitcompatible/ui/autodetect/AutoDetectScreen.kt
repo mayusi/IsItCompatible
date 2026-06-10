@@ -14,14 +14,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,6 +44,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.mayusi.isitcompatible.autodetect.AllFilesAccess
 import io.github.mayusi.isitcompatible.autodetect.SwitchKeysStatus
+import io.github.mayusi.isitcompatible.hardware.DeviceFingerprint
+import io.github.mayusi.isitcompatible.hardware.SocCatalog
+import io.github.mayusi.isitcompatible.hardware.SocTier
 import java.io.File
 
 @Composable
@@ -66,6 +72,11 @@ fun AutoDetectScreen(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+
+        // Hardware summary card — shown when fingerprint is available
+        s.deviceFingerprint?.let { fp ->
+            HardwareSummaryCard(fp = fp, stats = s.coverageStats)
+        }
 
         // Permission gate
         if (!s.permissionGranted) {
@@ -598,6 +609,100 @@ private fun CopyPathChip(label: String, path: String, context: Context) {
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(14.dp),
         )
+    }
+}
+
+@Composable
+private fun HardwareSummaryCard(
+    fp: DeviceFingerprint,
+    stats: DeviceCoverageStats?,
+) {
+    val tier = SocCatalog.tier(fp.socFamily)
+    val tierColor = when (tier) {
+        SocTier.FLAGSHIP -> Color(0xFF6200EE)
+        SocTier.HIGH_END -> Color(0xFF1976D2)
+        SocTier.MID_RANGE -> Color(0xFF00897B)
+        SocTier.BUDGET -> Color(0xFF757575)
+        SocTier.UNKNOWN -> Color(0xFF9E9E9E)
+    }
+    Card(
+        Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
+        ),
+        shape = RoundedCornerShape(14.dp),
+    ) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "Your hardware",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Box(
+                    Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(tierColor.copy(alpha = 0.18f))
+                        .padding(horizontal = 10.dp, vertical = 4.dp),
+                ) {
+                    Text(
+                        tier.label,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = tierColor,
+                    )
+                }
+            }
+            Text(
+                fp.displayLine,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (stats != null) {
+                val total = stats.real + stats.estimated
+                val fraction = if (total > 0) stats.real.toFloat() / total else 0f
+                Spacer(Modifier.height(4.dp))
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(
+                        "${stats.real} games have data for your chip",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Text(
+                        "${stats.estimated} estimated",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                LinearProgressIndicator(
+                    progress = { fraction },
+                    modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
+                    color = Color(0xFF4CAF50),
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                )
+            } else {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(12.dp), strokeWidth = 1.5.dp)
+                    Text(
+                        "Computing catalog coverage…",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
     }
 }
 

@@ -153,21 +153,62 @@ class SearchViewModel @Inject constructor(
         refilter()
     }
 
+    fun setSortOrder(order: SortOrder) {
+        _state.update { it.copy(sortOrder = order) }
+        refilter()
+    }
+
+    fun toggleStabilityFilter() {
+        _state.update {
+            it.copy(stabilityFilter = if (it.stabilityFilter == null) "runs_great" else null)
+        }
+        refilter()
+    }
+
     private fun refilter() {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             delay(60)
             val s = _state.value
             val needle = s.query.trim().lowercase()
+            val tokens = needle.split("\\s+".toRegex()).filter { it.isNotEmpty() }
+            val comparator: Comparator<GameSummary> = when (s.sortOrder) {
+                SortOrder.ALPHA -> compareBy { it.game.title }
+                SortOrder.FPS_DESC -> Comparator<GameSummary> { a, b ->
+                    val fa = a.bestFps; val fb = b.bestFps
+                    when {
+                        fa == null && fb == null -> a.game.title.compareTo(b.game.title)
+                        fa == null -> 1
+                        fb == null -> -1
+                        else -> if (fb != fa) fb.compareTo(fa) else a.game.title.compareTo(b.game.title)
+                    }
+                }
+                SortOrder.REPORTS_DESC -> compareByDescending<GameSummary> { it.reportCount }.thenBy { it.game.title }
+                SortOrder.FPS_ASC -> Comparator<GameSummary> { a, b ->
+                    val fa = a.bestFps; val fb = b.bestFps
+                    when {
+                        fa == null && fb == null -> a.game.title.compareTo(b.game.title)
+                        fa == null -> 1
+                        fb == null -> -1
+                        else -> if (fa != fb) fa.compareTo(fb) else a.game.title.compareTo(b.game.title)
+                    }
+                }
+            }
             val filtered = s.allSummaries
                 .asSequence()
                 .filter { s.platformFilter == null || it.game.platform == s.platformFilter }
                 .filter {
-                    needle.isEmpty() ||
-                        needle in it.game.title.lowercase() ||
-                        needle in it.game.titleSlug
+                    if (tokens.isEmpty()) true
+                    else {
+                        val haystack = "${it.game.title} ${it.game.titleSlug}".lowercase()
+                        tokens.all { token -> token in haystack }
+                    }
                 }
-                .sortedBy { it.game.title }
+                .filter {
+                    s.stabilityFilter == null ||
+                        it.bestStability?.uppercase() in listOf("PERFECT", "PLAYABLE")
+                }
+                .sortedWith(comparator)
                 .toList()
             _state.update { it.copy(results = filtered) }
         }
@@ -189,6 +230,13 @@ data class GameSummary(
     val reportCount: Int,
 )
 
+enum class SortOrder(val label: String) {
+    ALPHA("A–Z"),
+    FPS_DESC("Best performance"),
+    REPORTS_DESC("Most reports"),
+    FPS_ASC("Worst performance"),
+}
+
 data class SearchState(
     val loaded: Boolean = false,
     val query: String = "",
@@ -204,4 +252,8 @@ data class SearchState(
     val deviceFingerprint: DeviceFingerprint? = null,
     /** True when the IIC fork (app.gamenative.iic) is installed. */
     val iicInstalled: Boolean = false,
+    /** Current sort order for the Browse list. */
+    val sortOrder: SortOrder = SortOrder.ALPHA,
+    /** When non-null, filter to only PERFECT/PLAYABLE stability results. */
+    val stabilityFilter: String? = null,
 )

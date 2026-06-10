@@ -75,8 +75,15 @@ fun SearchScreen(
             )
         }
 
+        SortAndFilterChips(
+            sortOrder = s.sortOrder,
+            stabilityFilterActive = s.stabilityFilter != null,
+            onSetSort = vm::setSortOrder,
+            onToggleStability = vm::toggleStabilityFilter,
+        )
+
         ResultCountBar(count = s.results.size, total = s.allSummaries.size,
-            filterActive = s.query.isNotBlank() || s.platformFilter != null)
+            filterActive = s.query.isNotBlank() || s.platformFilter != null || s.stabilityFilter != null)
 
         if (s.results.isEmpty() && s.allSummaries.isNotEmpty()) {
             Box(Modifier.fillMaxSize().padding(32.dp), Alignment.Center) {
@@ -240,6 +247,65 @@ private fun PlatformChips(
             ) {
                 Text(
                     text = p,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = if (isSel) FontWeight.Bold else FontWeight.Normal,
+                    color = if (isSel) Color.White
+                            else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SortAndFilterChips(
+    sortOrder: SortOrder,
+    stabilityFilterActive: Boolean,
+    onSetSort: (SortOrder) -> Unit,
+    onToggleStability: () -> Unit,
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        // "Runs great" quick-filter chip
+        val runGreatColor = Color(0xFF4CAF50)
+        Box(
+            Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .background(
+                    if (stabilityFilterActive) runGreatColor.copy(alpha = 0.85f)
+                    else MaterialTheme.colorScheme.surfaceVariant
+                )
+                .clickable { onToggleStability() }
+                .padding(horizontal = 14.dp, vertical = 7.dp),
+        ) {
+            Text(
+                "Runs great",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = if (stabilityFilterActive) FontWeight.Bold else FontWeight.Normal,
+                color = if (stabilityFilterActive) Color.White
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        // Sort order chips
+        SortOrder.entries.forEach { order ->
+            val isSel = sortOrder == order
+            Box(
+                Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(
+                        if (isSel) MaterialTheme.colorScheme.primary.copy(alpha = 0.85f)
+                        else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                    .clickable { onSetSort(order) }
+                    .padding(horizontal = 14.dp, vertical = 7.dp),
+            ) {
+                Text(
+                    order.label,
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = if (isSel) FontWeight.Bold else FontWeight.Normal,
                     color = if (isSel) Color.White

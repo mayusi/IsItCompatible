@@ -43,16 +43,31 @@ class JournalViewModel @Inject constructor(
                 gameIds.forEach { id -> gameDao.byId(id)?.let { games[id] = it } }
                 val emusById = emulatorDao.all().associateBy { it.id }
                     .filterKeys { it in emuIds }
+                val stats = computeStats(entries)
                 _state.update {
                     it.copy(
                         loading = false,
                         entries = entries,
                         gamesById = games,
                         emulatorsById = emusById,
+                        stats = stats,
                     )
                 }
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun computeStats(entries: List<JournalEntryEntity>): JournalStats {
+        val gameCount = entries.map { it.gameId }.toSet().size
+        val workingCount = entries.count {
+            it.stability.uppercase() in listOf("PERFECT", "PLAYABLE")
+        }
+        val sessionHrs = entries.sumOf { it.sessionMinutes ?: 0 } / 60f
+        return JournalStats(
+            gameCount = gameCount,
+            workingCount = workingCount,
+            sessionHrs = sessionHrs,
+        )
     }
 
     fun delete(entryId: String) {
@@ -60,9 +75,16 @@ class JournalViewModel @Inject constructor(
     }
 }
 
+data class JournalStats(
+    val gameCount: Int,
+    val workingCount: Int,
+    val sessionHrs: Float,
+)
+
 data class JournalState(
     val loading: Boolean = true,
     val entries: List<JournalEntryEntity> = emptyList(),
     val gamesById: Map<String, GameEntity> = emptyMap(),
     val emulatorsById: Map<String, EmulatorEntity> = emptyMap(),
+    val stats: JournalStats? = null,
 )

@@ -10,13 +10,23 @@ import io.github.mayusi.isitcompatible.autodetect.BiosExtractor
 import io.github.mayusi.isitcompatible.autodetect.BiosStatus
 import io.github.mayusi.isitcompatible.autodetect.DeviceScanner
 import io.github.mayusi.isitcompatible.autodetect.DetectionResult
+import io.github.mayusi.isitcompatible.compatdb.CompatDbRepository
+import io.github.mayusi.isitcompatible.compatdb.room.GameDao
+import io.github.mayusi.isitcompatible.compatdb.room.ReportDao
+import io.github.mayusi.isitcompatible.data.UserPreferences
 import io.github.mayusi.isitcompatible.getit.EmulatorInstaller
 import io.github.mayusi.isitcompatible.getit.InstallProgress
+import io.github.mayusi.isitcompatible.hardware.DeviceFingerprint
+import io.github.mayusi.isitcompatible.recommend.Bucket
+import io.github.mayusi.isitcompatible.recommend.Recommender
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -30,14 +40,62 @@ class AutoDetectViewModel @Inject constructor(
     private val deviceScanner: DeviceScanner,
     private val installer: EmulatorInstaller,
     private val biosExtractor: BiosExtractor,
+    private val prefs: UserPreferences,
+    private val gameDao: GameDao,
+    private val reportDao: ReportDao,
+    private val compatDb: CompatDbRepository,
 ) : ViewModel() {
 
+    private val recommender = Recommender()
     private val _state = MutableStateFlow(AutoDetectState())
     val state: StateFlow<AutoDetectState> = _state.asStateFlow()
 
     init {
         // Check permission and auto-scan if granted
         refreshPermission()
+        // Compute hardware coverage stats once the DB is ready
+        viewModelScope.launch {
+            val fp = prefs.data.first().fingerprint
+            _state.update { it.copy(deviceFingerprint = fp) }
+            if (fp != null) {
+                compatDb.ready.first { it }
+                loadCoverageStats(fp)
+            }
+        }
+    }
+
+    private suspend fun loadCoverageStats(fp: DeviceFingerprint) {
+        val stats = withContext(Dispatchers.IO) {
+            val games = gameDao.all()
+            var realCount = 0
+            var estimatedCount = 0
+            games.map { it.id }.chunked(500).forEach { chunk ->
+                val reports = reportDao.byGameIds(chunk)
+                val grouped = reports.groupBy { it.gameId }
+                chunk.forEach { gameId ->
+                    val gameReports = grouped[gameId].orEmpty()
+                    if (gameReports.isEmpty()) return@forEach
+                    // v0.5 source-aware split: real = non-GENERATED_HEURISTIC reports,
+                    // generated = GENERATED_HEURISTIC. A game only counts as having "real
+                    // data for your chip" when the real pool produces a STRONG (SAME_SOC_AND_RAM)
+                    // or MODERATE (SAME_SOC_FAMILY) match — the same determination
+                    // GameDetailViewModel uses via bySource.fromReal.isEmpty(). This matches
+                    // exactly what the detail screen shows so the count is consistent with what
+                    // the user sees per-game.
+                    val bySource = recommender.rankBySource(gameReports, fp, topK = 1)
+                    val topReal = bySource.fromReal.firstOrNull()
+                    if (topReal != null &&
+                        (topReal.bucket == Bucket.SAME_SOC_AND_RAM || topReal.bucket == Bucket.SAME_SOC_FAMILY)
+                    ) {
+                        realCount++
+                    } else {
+                        estimatedCount++
+                    }
+                }
+            }
+            DeviceCoverageStats(real = realCount, estimated = estimatedCount)
+        }
+        _state.update { it.copy(coverageStats = stats) }
     }
 
     fun refreshPermission() {
@@ -181,6 +239,14 @@ sealed interface ExtractStatus {
     data class Failed(val message: String) : ExtractStatus
 }
 
+/** Catalog coverage counts for the device hardware summary card. */
+data class DeviceCoverageStats(
+    /** Games with STRONG or MODERATE confidence reports for this device. */
+    val real: Int,
+    /** Games where only WEAK/VERY_WEAK (estimated) reports are available. */
+    val estimated: Int,
+)
+
 data class AutoDetectState(
     val permissionGranted: Boolean = false,
     val scanning: Boolean = false,
@@ -194,4 +260,8 @@ data class AutoDetectState(
     val emuHelperInstalled: Boolean = false,
     /** Switch keys & firmware: download/install status for the EmuHelper Get button. */
     val emuHelperStatus: GetItStatus? = null,
+    /** Device fingerprint from prefs (for hardware summary card). */
+    val deviceFingerprint: DeviceFingerprint? = null,
+    /** Catalog coverage stats — null while computing. */
+    val coverageStats: DeviceCoverageStats? = null,
 )
