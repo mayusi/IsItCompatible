@@ -1,0 +1,240 @@
+package io.github.mayusi.isitcompatible.ui.appupdate
+
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
+import androidx.core.content.FileProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import io.github.mayusi.isitcompatible.data.UserPreferences
+import io.github.mayusi.isitcompatible.getit.AppUpdateChecker
+import io.github.mayusi.isitcompatible.getit.InstallPermission
+import io.github.mayusi.isitcompatible.getit.UpdateCheckResult
+import io.github.mayusi.isitcompatible.getit.download.ApkDownloader
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.io.File
+import javax.inject.Inject
+
+/**
+ * ViewModel driving the self-update UX.
+ *
+ * Observes [UserPreferences] for a pending-update payload written by
+ * [AppUpdateChecker.checkIfDue] / [checkNow].  Surfaces install progress
+ * via [AppUpdateState] so the Settings banner and the launch-time dialog
+ * can both subscribe without duplicating logic.
+ */
+@HiltViewModel
+class AppUpdateViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val prefs: UserPreferences,
+    private val checker: AppUpdateChecker,
+    private val downloader: ApkDownloader,
+) : ViewModel() {
+
+    private val _state = MutableStateFlow(AppUpdateState())
+    val state: StateFlow<AppUpdateState> = _state.asStateFlow()
+
+    init {
+        // Mirror pending-update prefs into UI state.
+        prefs.data
+            .map { snap ->
+                if (snap.pendingUpdateVersion != null &&
+                    snap.pendingUpdateUrl != null &&
+                    snap.pendingUpdateFilename != null
+                ) {
+                    PendingUpdate(
+                        version = snap.pendingUpdateVersion,
+                        releaseTitle = snap.pendingUpdateVersion,
+                        patchNotes = snap.pendingUpdateNotes ?: "",
+                        apkUrl = snap.pendingUpdateUrl,
+                        apkFilename = snap.pendingUpdateFilename,
+                        apkSizeBytes = snap.pendingUpdateSize,
+                    )
+                } else null
+            }
+            .onEach { pending ->
+                _state.update { it.copy(pendingUpdate = pending) }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    /**
+     * Manual "Check for updates" — not debounced by the 12h gate.
+     * Sets [AppUpdateState.checkInProgress] while running and updates
+     * [AppUpdateState.lastCheckMessage] on completion.
+     *
+     * This path also works on DEBUG builds for manual testing: the checker
+     * itself returns UpToDate immediately on debug, so the message will read
+     * "You're on the latest version (vX)" — which is correct behaviour.
+     * To test the UpdateAvailable path on debug, temporarily remove the
+     * BuildConfig.DEBUG guard in AppUpdateChecker.check().
+     */
+    fun checkNow() {
+        viewModelScope.launch {
+            _state.update { it.copy(checkInProgress = true, lastCheckMessage = null) }
+            val result = checker.check()
+            val now = System.currentTimeMillis()
+            prefs.setLastUpdateCheck(now)
+            when (result) {
+                is UpdateCheckResult.UpdateAvailable -> {
+                    prefs.setPendingUpdate(
+                        version = result.version,
+                        url = result.apkUrl,
+                        filename = result.apkFilename,
+                        notes = result.patchNotes,
+                        sizeBytes = result.apkSizeBytes,
+                    )
+                    _state.update { it.copy(checkInProgress = false, lastCheckMessage = null) }
+                }
+                UpdateCheckResult.UpToDate -> {
+                    _state.update {
+                        it.copy(
+                            checkInProgress = false,
+                            lastCheckMessage = "You're on the latest version",
+                        )
+                    }
+                }
+                UpdateCheckResult.NoReleasesYet -> {
+                    // Silent — repo has no releases yet.
+                    _state.update { it.copy(checkInProgress = false, lastCheckMessage = null) }
+                }
+                is UpdateCheckResult.Failed -> {
+                    _state.update {
+                        it.copy(
+                            checkInProgress = false,
+                            lastCheckMessage = "Check failed: ${result.reason}",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Download + hand-off to system installer.
+     *
+     * Guards on [InstallPermission.canInstall]; if the user hasn't granted
+     * "install unknown apps", emits Failed with an actionable message.
+     * The caller can surface [InstallPermission.settingsIntent] to let the
+     * user fix the permission without leaving the app.
+     */
+    fun installUpdate() {
+        val pending = _state.value.pendingUpdate ?: return
+
+        if (!InstallPermission.canInstall(context)) {
+            _state.update {
+                it.copy(
+                    installState = AppInstallState.Failed(
+                        "Allow 'Install unknown apps' for this app in Settings first."
+                    )
+                )
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            _state.update { it.copy(installState = AppInstallState.Resolving) }
+            downloader.download(pending.apkUrl, pending.apkFilename)
+                .collect { progress ->
+                    when (progress) {
+                        is ApkDownloader.Progress.Started ->
+                            _state.update { it.copy(installState = AppInstallState.Downloading(0)) }
+                        is ApkDownloader.Progress.Chunk -> {
+                            val pct = if (progress.totalBytes > 0) {
+                                ((progress.downloaded * 100) / progress.totalBytes).toInt()
+                            } else 0
+                            _state.update { it.copy(installState = AppInstallState.Downloading(pct)) }
+                        }
+                        is ApkDownloader.Progress.Done -> {
+                            val ok = launchInstaller(progress.file)
+                            if (ok) {
+                                _state.update { it.copy(installState = AppInstallState.ReadyToInstall) }
+                            } else {
+                                _state.update {
+                                    it.copy(
+                                        installState = AppInstallState.Failed(
+                                            "Downloaded, but couldn't open the system installer."
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                        is ApkDownloader.Progress.Failed ->
+                            _state.update {
+                                it.copy(installState = AppInstallState.Failed(progress.message))
+                            }
+                    }
+                }
+        }
+    }
+
+    /**
+     * Dismiss the pending-update notification (removes pref, hides banner).
+     * Does NOT prevent re-detection on next launch if the version is still
+     * newer — the checker will re-write the pref on the next 12h cycle.
+     */
+    fun dismiss() {
+        viewModelScope.launch { prefs.clearPendingUpdate() }
+        _state.update { it.copy(installState = AppInstallState.Idle) }
+    }
+
+    fun setAutoCheck(enabled: Boolean) {
+        viewModelScope.launch { prefs.setUpdateAutoCheck(enabled) }
+    }
+
+    fun installPermissionIntent(): Intent? = InstallPermission.settingsIntent(context)
+
+    // ── private helpers ────────────────────────────────────────────────────────
+
+    private fun launchInstaller(file: File): Boolean = runCatching {
+        val uri: Uri = FileProvider.getUriForFile(
+            context, "${context.packageName}.fileprovider", file,
+        )
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "application/vnd.android.package-archive")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
+        true
+    }.getOrElse {
+        Log.w("AppUpdateViewModel", "Installer launch failed", it)
+        false
+    }
+}
+
+// ── State types ────────────────────────────────────────────────────────────────
+
+data class AppUpdateState(
+    val pendingUpdate: PendingUpdate? = null,
+    val installState: AppInstallState = AppInstallState.Idle,
+    val checkInProgress: Boolean = false,
+    val lastCheckMessage: String? = null,
+)
+
+data class PendingUpdate(
+    val version: String,
+    val releaseTitle: String,
+    val patchNotes: String,
+    val apkUrl: String,
+    val apkFilename: String,
+    val apkSizeBytes: Long,
+)
+
+sealed interface AppInstallState {
+    data object Idle : AppInstallState
+    data object Resolving : AppInstallState
+    data class Downloading(val percent: Int) : AppInstallState
+    data object ReadyToInstall : AppInstallState
+    data class Failed(val message: String) : AppInstallState
+}

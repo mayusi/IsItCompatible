@@ -6,6 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,11 +18,16 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -32,6 +38,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.mayusi.isitcompatible.BuildConfig
 import io.github.mayusi.isitcompatible.data.UserPreferences
 import io.github.mayusi.isitcompatible.hardware.HardwareFingerprinter
+import io.github.mayusi.isitcompatible.ui.appupdate.AppUpdateViewModel
+import io.github.mayusi.isitcompatible.ui.common.AppUpdateBanner
+import io.github.mayusi.isitcompatible.ui.common.AppUpdateDialog
 import io.github.mayusi.isitcompatible.ui.submit.SubmitLinks
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -55,9 +64,12 @@ class SettingsViewModel @Inject constructor(
 fun SettingsScreen(
     contentPadding: PaddingValues,
     vm: SettingsViewModel = hiltViewModel(),
+    updateVm: AppUpdateViewModel = hiltViewModel(),
 ) {
     val snapshot by vm.prefs.data.collectAsState(initial = null)
     val ctx = LocalContext.current
+    val updateState by updateVm.state.collectAsState()
+    var showUpdateDialog by remember { mutableStateOf(false) }
 
     val romLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocumentTree()
@@ -90,12 +102,31 @@ fun SettingsScreen(
         vm.setStaging(uri)
     }
 
+    // Show the update dialog if requested.
+    if (showUpdateDialog && updateState.pendingUpdate != null) {
+        AppUpdateDialog(
+            update = updateState.pendingUpdate!!,
+            installState = updateState.installState,
+            onInstall = updateVm::installUpdate,
+            onDismiss = { showUpdateDialog = false },
+        )
+    }
+
     Column(
         Modifier.fillMaxSize().padding(contentPadding).padding(16.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text("Settings", style = MaterialTheme.typography.headlineSmall)
+
+        // Update banner — shown when an update is pending.
+        updateState.pendingUpdate?.let { pending ->
+            AppUpdateBanner(
+                update = pending,
+                onSeeWhatsNew = { showUpdateDialog = true },
+                onDismiss = updateVm::dismiss,
+            )
+        }
 
         snapshot?.fingerprint?.let { fp ->
             Card(Modifier.fillMaxWidth()) {
@@ -161,7 +192,15 @@ fun SettingsScreen(
             }
         }
 
-        AboutCard()
+        AboutCard(
+            autoCheckEnabled = snapshot?.updateAutoCheckEnabled ?: true,
+            checkInProgress = updateState.checkInProgress,
+            lastCheckMessage = updateState.lastCheckMessage,
+            onCheckNow = updateVm::checkNow,
+            onAutoCheckToggle = updateVm::setAutoCheck,
+            onShowDialog = { showUpdateDialog = true },
+            hasPendingUpdate = updateState.pendingUpdate != null,
+        )
     }
 }
 
@@ -180,7 +219,15 @@ private fun FolderRow(label: String, uri: String?, onPick: () -> Unit) {
 }
 
 @Composable
-private fun AboutCard() {
+private fun AboutCard(
+    autoCheckEnabled: Boolean,
+    checkInProgress: Boolean,
+    lastCheckMessage: String?,
+    onCheckNow: () -> Unit,
+    onAutoCheckToggle: (Boolean) -> Unit,
+    onShowDialog: () -> Unit,
+    hasPendingUpdate: Boolean,
+) {
     Card(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("About", style = MaterialTheme.typography.titleMedium)
@@ -191,6 +238,53 @@ private fun AboutCard() {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(6.dp))
+
+            // App update controls
+            HorizontalDivider()
+            Text("App updates", style = MaterialTheme.typography.titleSmall)
+
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text("Check automatically", style = MaterialTheme.typography.bodyMedium)
+                Switch(
+                    checked = autoCheckEnabled,
+                    onCheckedChange = onAutoCheckToggle,
+                )
+            }
+
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TextButton(
+                    onClick = onCheckNow,
+                    enabled = !checkInProgress,
+                ) {
+                    Text(if (checkInProgress) "Checking…" else "Check for updates")
+                }
+                if (hasPendingUpdate) {
+                    TextButton(onClick = onShowDialog) {
+                        Text("See what's new")
+                    }
+                }
+            }
+
+            lastCheckMessage?.let {
+                Text(
+                    it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            Spacer(Modifier.height(6.dp))
+            HorizontalDivider()
+            Spacer(Modifier.height(6.dp))
+
             Text("Credits", style = MaterialTheme.typography.titleSmall)
             Text(
                 "• EmuReady (emuready.com) — console compatibility data.\n" +

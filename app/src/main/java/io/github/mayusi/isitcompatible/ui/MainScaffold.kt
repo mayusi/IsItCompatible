@@ -12,10 +12,16 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -24,7 +30,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import io.github.mayusi.isitcompatible.R
+import io.github.mayusi.isitcompatible.ui.appupdate.AppUpdateViewModel
 import io.github.mayusi.isitcompatible.ui.autodetect.AutoDetectScreen
+import io.github.mayusi.isitcompatible.ui.common.AppUpdateDialog
 import io.github.mayusi.isitcompatible.ui.detail.GameDetailScreen
 import io.github.mayusi.isitcompatible.ui.journal.JournalScreen
 import io.github.mayusi.isitcompatible.ui.search.SearchScreen
@@ -51,12 +59,41 @@ private const val DETAIL_ROUTE = "game/{gameId}"
 private fun detailRoute(gameId: String) = "game/$gameId"
 
 @Composable
-fun MainScaffold() {
+fun MainScaffold(
+    updateVm: AppUpdateViewModel = hiltViewModel(),
+) {
     val nav = rememberNavController()
     val current by nav.currentBackStackEntryAsState()
     val currentRoute = current?.destination?.route
 
     val isTabRoute = currentRoute in Tab.entries.map { it.route }
+
+    val updateState by updateVm.state.collectAsState()
+
+    // One-time per session: show the update dialog on first launch when
+    // an update is already pending.  "Later" dismisses the dialog but does
+    // NOT clear the pref — the Settings banner continues to show.
+    // rememberSaveable so it survives recomposition but resets on process restart.
+    var launchDialogShown by rememberSaveable { mutableStateOf(false) }
+    val showLaunchDialog = !launchDialogShown && updateState.pendingUpdate != null
+
+    if (showLaunchDialog) {
+        AppUpdateDialog(
+            update = updateState.pendingUpdate!!,
+            installState = updateState.installState,
+            onInstall = updateVm::installUpdate,
+            onDismiss = {
+                // Dismiss the launch dialog only — keep the pref so the
+                // Settings banner stays visible.
+                launchDialogShown = true
+            },
+        )
+    }
+    // Once we've shown it once, mark it as shown.
+    if (updateState.pendingUpdate != null && !launchDialogShown) {
+        // The dialog is now open; mark shown so it doesn't re-open on tab switch.
+        launchDialogShown = true
+    }
 
     Scaffold(
         bottomBar = {

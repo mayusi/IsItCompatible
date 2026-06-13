@@ -9,6 +9,7 @@ import io.github.mayusi.isitcompatible.compatdb.CompatDbRepository
 import io.github.mayusi.isitcompatible.compatdb.CompatDbSyncWorker
 import io.github.mayusi.isitcompatible.compatdb.CoverArtSyncWorker
 import io.github.mayusi.isitcompatible.compatdb.DriverSyncWorker
+import io.github.mayusi.isitcompatible.getit.AppUpdateChecker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,6 +21,7 @@ class IsItCompatibleApplication : Application(), Configuration.Provider {
 
     @Inject lateinit var workerFactory: HiltWorkerFactory
     @Inject lateinit var compatDbRepository: CompatDbRepository
+    @Inject lateinit var appUpdateChecker: AppUpdateChecker
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -45,5 +47,10 @@ class IsItCompatibleApplication : Application(), Configuration.Provider {
         // v0.7: IGDB cover art backfill — no-ops when credentials aren't set
         // in local.properties, so this is safe to always schedule.
         CoverArtSyncWorker.schedulePeriodic(this)
+        // self-update: debounced (12h), silent, no-op on DEBUG builds.
+        appScope.launch {
+            runCatching { appUpdateChecker.checkIfDue() }
+                .onFailure { Log.w("App", "Self-update check failed", it) }
+        }
     }
 }

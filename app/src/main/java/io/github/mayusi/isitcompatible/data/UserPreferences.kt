@@ -53,6 +53,14 @@ class UserPreferences @Inject constructor(
             pendingSessionShowedFps = p[Keys.PENDING_SESSION_SHOWED_FPS] ?: false,
             // v0.11: Windows quick-start onboarding card dismissed flag.
             windowsQuickStartDismissed = p[Keys.WINDOWS_QUICK_START_DISMISSED] ?: false,
+            // self-update
+            lastUpdateCheckMs = p[Keys.LAST_UPDATE_CHECK_MS] ?: 0L,
+            updateAutoCheckEnabled = p[Keys.UPDATE_AUTO_CHECK_ENABLED] ?: true,
+            pendingUpdateVersion = p[Keys.PENDING_UPDATE_VERSION],
+            pendingUpdateUrl = p[Keys.PENDING_UPDATE_URL],
+            pendingUpdateFilename = p[Keys.PENDING_UPDATE_FILENAME],
+            pendingUpdateNotes = p[Keys.PENDING_UPDATE_NOTES],
+            pendingUpdateSize = p[Keys.PENDING_UPDATE_SIZE] ?: 0L,
         )
     }
 
@@ -95,6 +103,38 @@ class UserPreferences @Inject constructor(
     suspend fun dismissWindowsQuickStart() =
         context.dataStore.edit { it[Keys.WINDOWS_QUICK_START_DISMISSED] = true }
 
+    // ── self-update prefs ──────────────────────────────────────────────────────
+
+    suspend fun setLastUpdateCheck(epochMs: Long) =
+        context.dataStore.edit { it[Keys.LAST_UPDATE_CHECK_MS] = epochMs }
+
+    suspend fun setUpdateAutoCheck(enabled: Boolean) =
+        context.dataStore.edit { it[Keys.UPDATE_AUTO_CHECK_ENABLED] = enabled }
+
+    /** Write all pending-update fields at once. */
+    suspend fun setPendingUpdate(
+        version: String,
+        url: String,
+        filename: String,
+        notes: String,
+        sizeBytes: Long,
+    ) = context.dataStore.edit { p ->
+        p[Keys.PENDING_UPDATE_VERSION] = version
+        p[Keys.PENDING_UPDATE_URL] = url
+        p[Keys.PENDING_UPDATE_FILENAME] = filename
+        p[Keys.PENDING_UPDATE_NOTES] = notes
+        p[Keys.PENDING_UPDATE_SIZE] = sizeBytes
+    }
+
+    /** Clear any pending-update state (user dismissed or install completed). */
+    suspend fun clearPendingUpdate() = context.dataStore.edit { p ->
+        p.remove(Keys.PENDING_UPDATE_VERSION)
+        p.remove(Keys.PENDING_UPDATE_URL)
+        p.remove(Keys.PENDING_UPDATE_FILENAME)
+        p.remove(Keys.PENDING_UPDATE_NOTES)
+        p.remove(Keys.PENDING_UPDATE_SIZE)
+    }
+
     /**
      * IIC round-trip: persist a pending session delivered by the GameNative fork
      * broadcast. [gameId] is the IIC-internal game id (from [GameEntity.id]).
@@ -136,6 +176,14 @@ class UserPreferences @Inject constructor(
         val pendingSessionShowedFps: Boolean = false,
         /** v0.11: true once the user dismisses the Windows quick-start onboarding card. */
         val windowsQuickStartDismissed: Boolean = false,
+        // self-update
+        val lastUpdateCheckMs: Long = 0L,
+        val updateAutoCheckEnabled: Boolean = true,
+        val pendingUpdateVersion: String? = null,
+        val pendingUpdateUrl: String? = null,
+        val pendingUpdateFilename: String? = null,
+        val pendingUpdateNotes: String? = null,
+        val pendingUpdateSize: Long = 0L,
     )
 
     private object Keys {
@@ -152,5 +200,13 @@ class UserPreferences @Inject constructor(
         val PENDING_SESSION_SHOWED_FPS = booleanPreferencesKey("pending_session_showed_fps")
         // v0.11: Windows quick-start onboarding card.
         val WINDOWS_QUICK_START_DISMISSED = booleanPreferencesKey("windows_quick_start_dismissed")
+        // self-update
+        val LAST_UPDATE_CHECK_MS = longPreferencesKey("last_update_check_ms")
+        val UPDATE_AUTO_CHECK_ENABLED = booleanPreferencesKey("update_auto_check_enabled")
+        val PENDING_UPDATE_VERSION = stringPreferencesKey("pending_update_version")
+        val PENDING_UPDATE_URL = stringPreferencesKey("pending_update_url")
+        val PENDING_UPDATE_FILENAME = stringPreferencesKey("pending_update_filename")
+        val PENDING_UPDATE_NOTES = stringPreferencesKey("pending_update_notes")
+        val PENDING_UPDATE_SIZE = longPreferencesKey("pending_update_size")
     }
 }
