@@ -12,6 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.mayusi.isitcompatible.data.UserPreferences
 import io.github.mayusi.isitcompatible.getit.AppUpdateChecker
 import io.github.mayusi.isitcompatible.getit.InstallPermission
+import io.github.mayusi.isitcompatible.getit.SignatureVerifier
 import io.github.mayusi.isitcompatible.getit.UpdateCheckResult
 import io.github.mayusi.isitcompatible.getit.download.ApkDownloader
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,6 +60,7 @@ class AppUpdateViewModel @Inject constructor(
                         apkUrl = snap.pendingUpdateUrl,
                         apkFilename = snap.pendingUpdateFilename,
                         apkSizeBytes = snap.pendingUpdateSize,
+                        sha256 = snap.pendingUpdateSha256,
                     )
                 } else null
             }
@@ -93,6 +95,7 @@ class AppUpdateViewModel @Inject constructor(
                         filename = result.apkFilename,
                         notes = result.patchNotes,
                         sizeBytes = result.apkSizeBytes,
+                        sha256 = result.sha256,
                     )
                     _state.update { it.copy(checkInProgress = false, lastCheckMessage = null) }
                 }
@@ -144,7 +147,7 @@ class AppUpdateViewModel @Inject constructor(
 
         viewModelScope.launch {
             _state.update { it.copy(installState = AppInstallState.Resolving) }
-            downloader.download(pending.apkUrl, pending.apkFilename)
+            downloader.download(pending.apkUrl, pending.apkFilename, pending.sha256)
                 .collect { progress ->
                     when (progress) {
                         is ApkDownloader.Progress.Started ->
@@ -156,6 +159,45 @@ class AppUpdateViewModel @Inject constructor(
                             _state.update { it.copy(installState = AppInstallState.Downloading(pct)) }
                         }
                         is ApkDownloader.Progress.Done -> {
+                            // Signature pin: the self-update APK must be signed with the
+                            // same cert as the currently running app.
+                            val sigResult = SignatureVerifier.verifyApkSignature(
+                                context = context,
+                                apkPath = progress.file.absolutePath,
+                                expectedPackageName = context.packageName,
+                                isSelfUpdate = true,
+                            )
+                            when (sigResult) {
+                                is SignatureVerifier.VerifyResult.Mismatch -> {
+                                    progress.file.delete()
+                                    _state.update {
+                                        it.copy(
+                                            installState = AppInstallState.Failed(
+                                                "This update couldn't be verified and was not installed, to keep you safe. " +
+                                                    "The APK's signing certificate doesn't match this app's certificate."
+                                            )
+                                        )
+                                    }
+                                    return@collect
+                                }
+                                is SignatureVerifier.VerifyResult.CannotVerify -> {
+                                    // Shouldn't happen for self-update (our own cert is always readable),
+                                    // but if it does, block as a precaution.
+                                    if (!sigResult.fresh) {
+                                        progress.file.delete()
+                                        _state.update {
+                                            it.copy(
+                                                installState = AppInstallState.Failed(
+                                                    "This update couldn't be verified and was not installed, to keep you safe. " +
+                                                        "Could not read the APK's signing certificate."
+                                                )
+                                            )
+                                        }
+                                        return@collect
+                                    }
+                                }
+                                SignatureVerifier.VerifyResult.Ok -> { /* proceed */ }
+                            }
                             val ok = launchInstaller(progress.file)
                             if (ok) {
                                 _state.update { it.copy(installState = AppInstallState.ReadyToInstall) }
@@ -169,10 +211,17 @@ class AppUpdateViewModel @Inject constructor(
                                 }
                             }
                         }
-                        is ApkDownloader.Progress.Failed ->
-                            _state.update {
-                                it.copy(installState = AppInstallState.Failed(progress.message))
+                        is ApkDownloader.Progress.Failed -> {
+                            val userMsg = if (progress.message.startsWith("SHA256 mismatch")) {
+                                "This update couldn't be verified and was not installed, to keep you safe. " +
+                                    "The downloaded file's checksum didn't match the published value."
+                            } else {
+                                progress.message
                             }
+                            _state.update {
+                                it.copy(installState = AppInstallState.Failed(userMsg))
+                            }
+                        }
                     }
                 }
         }
@@ -229,6 +278,8 @@ data class PendingUpdate(
     val apkUrl: String,
     val apkFilename: String,
     val apkSizeBytes: Long,
+    /** SHA-256 hex parsed from the release body, or null if unpublished. */
+    val sha256: String? = null,
 )
 
 sealed interface AppInstallState {

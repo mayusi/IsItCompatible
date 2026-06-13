@@ -61,6 +61,7 @@ class UserPreferences @Inject constructor(
             pendingUpdateFilename = p[Keys.PENDING_UPDATE_FILENAME],
             pendingUpdateNotes = p[Keys.PENDING_UPDATE_NOTES],
             pendingUpdateSize = p[Keys.PENDING_UPDATE_SIZE] ?: 0L,
+            pendingUpdateSha256 = p[Keys.PENDING_UPDATE_SHA256],
         )
     }
 
@@ -118,12 +119,15 @@ class UserPreferences @Inject constructor(
         filename: String,
         notes: String,
         sizeBytes: Long,
+        sha256: String? = null,
     ) = context.dataStore.edit { p ->
         p[Keys.PENDING_UPDATE_VERSION] = version
         p[Keys.PENDING_UPDATE_URL] = url
         p[Keys.PENDING_UPDATE_FILENAME] = filename
         p[Keys.PENDING_UPDATE_NOTES] = notes
         p[Keys.PENDING_UPDATE_SIZE] = sizeBytes
+        if (sha256 != null) p[Keys.PENDING_UPDATE_SHA256] = sha256
+        else p.remove(Keys.PENDING_UPDATE_SHA256)
     }
 
     /** Clear any pending-update state (user dismissed or install completed). */
@@ -133,6 +137,7 @@ class UserPreferences @Inject constructor(
         p.remove(Keys.PENDING_UPDATE_FILENAME)
         p.remove(Keys.PENDING_UPDATE_NOTES)
         p.remove(Keys.PENDING_UPDATE_SIZE)
+        p.remove(Keys.PENDING_UPDATE_SHA256)
     }
 
     /**
@@ -184,6 +189,8 @@ class UserPreferences @Inject constructor(
         val pendingUpdateFilename: String? = null,
         val pendingUpdateNotes: String? = null,
         val pendingUpdateSize: Long = 0L,
+        /** SHA-256 hex of the pending APK, or null if the release didn't publish one. */
+        val pendingUpdateSha256: String? = null,
     )
 
     private object Keys {
@@ -208,5 +215,6 @@ class UserPreferences @Inject constructor(
         val PENDING_UPDATE_FILENAME = stringPreferencesKey("pending_update_filename")
         val PENDING_UPDATE_NOTES = stringPreferencesKey("pending_update_notes")
         val PENDING_UPDATE_SIZE = longPreferencesKey("pending_update_size")
+        val PENDING_UPDATE_SHA256 = stringPreferencesKey("pending_update_sha256")
     }
 }

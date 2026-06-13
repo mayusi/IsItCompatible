@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.mayusi.isitcompatible.getit.download.ApkDownloader
 import io.github.mayusi.isitcompatible.getit.manifest.EmulatorManifestRepository
 import io.github.mayusi.isitcompatible.getit.source.AppSourceRouter
+import io.github.mayusi.isitcompatible.getit.source.AssetKind
 import io.github.mayusi.isitcompatible.getit.source.ResolveResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -76,7 +77,15 @@ class EmulatorInstaller @Inject constructor(
                                 emit(InstallProgress.Downloading(displayName, pct))
                             }
                             is ApkDownloader.Progress.Done -> { localFile = p.file }
-                            is ApkDownloader.Progress.Failed -> emit(InstallProgress.Failed(p.message))
+                            is ApkDownloader.Progress.Failed -> {
+                                val userMsg = if (p.message.startsWith("SHA256 mismatch")) {
+                                    "This download couldn't be verified and was not installed, to keep you safe. " +
+                                        "The file's checksum didn't match the published value."
+                                } else {
+                                    p.message
+                                }
+                                emit(InstallProgress.Failed(userMsg))
+                            }
                         }
                     }
                 }
@@ -84,6 +93,39 @@ class EmulatorInstaller @Inject constructor(
         )
 
         val file = localFile ?: return@flow // a Failed was already emitted
+
+        // Signature pinning: only APKs need the cert check. Driver ZIPs go to staging.
+        if (resolved.kind == AssetKind.APK) {
+            val sigResult = SignatureVerifier.verifyApkSignature(
+                context = context,
+                apkPath = file.absolutePath,
+                expectedPackageName = packageId,
+                isSelfUpdate = false,
+            )
+            when (sigResult) {
+                is SignatureVerifier.VerifyResult.Mismatch -> {
+                    file.delete()
+                    emit(
+                        InstallProgress.Failed(
+                            "This update couldn't be verified and was not installed, to keep you safe. " +
+                                "$displayName's signing certificate changed — this could indicate a tampered download."
+                        )
+                    )
+                    return@flow
+                }
+                is SignatureVerifier.VerifyResult.CannotVerify -> {
+                    if (sigResult.fresh) {
+                        // Package not installed yet — no baseline. Proceed with a note.
+                        Log.i(TAG, "Fresh install of $packageId — no cert baseline, proceeding.")
+                    } else {
+                        // APK cert unreadable — proceed but log the anomaly.
+                        Log.w(TAG, "Could not read cert from downloaded APK for $packageId: ${sigResult.reason}")
+                    }
+                }
+                SignatureVerifier.VerifyResult.Ok -> { /* proceed */ }
+            }
+        }
+
         // Hand off to the system installer via FileProvider.
         val ok = launchInstaller(file)
         if (ok) emit(InstallProgress.ReadyToInstall(displayName))
