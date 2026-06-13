@@ -1,5 +1,6 @@
 package io.github.mayusi.isitcompatible.getit.source
 
+import android.util.Log
 import io.github.mayusi.isitcompatible.getit.manifest.AppEntry
 import io.github.mayusi.isitcompatible.getit.manifest.SourceKind
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +42,10 @@ class GitHubReleasesSource @Inject constructor(
 
     private val json = Json { ignoreUnknownKeys = true }
 
+    private companion object {
+        private const val TAG = "GitHubReleasesSource"
+    }
+
     override suspend fun resolve(entry: AppEntry): ResolveResult = withContext(Dispatchers.IO) {
         if (entry.source != SourceKind.GITHUB) return@withContext ResolveResult.Unsupported
 
@@ -75,10 +80,19 @@ class GitHubReleasesSource @Inject constructor(
                     return@withContext parseAndPick(cached.body, entry, ownerRepo, needsBroaderList)
                 }
                 if (!response.isSuccessful) {
-                    return@withContext ResolveResult.Failed("GitHub ${response.code} on $ownerRepo")
+                    val code = response.code
+                    Log.w(TAG, "GitHub HTTP $code fetching releases for $ownerRepo")
+                    val friendly = when {
+                        code == 404 -> "No releases available yet — check back soon."
+                        code == 403 || response.header("X-RateLimit-Remaining") == "0" ->
+                            "GitHub is rate-limiting requests. Try again in a few minutes."
+                        code in 500..599 -> "GitHub is having issues. Try again later."
+                        else -> "Couldn't reach GitHub (code $code). Check your connection."
+                    }
+                    return@withContext ResolveResult.Failed(friendly)
                 }
                 val body = response.body?.string()
-                    ?: return@withContext ResolveResult.Failed("Empty body from $ownerRepo")
+                    ?: return@withContext ResolveResult.Failed("Couldn't reach GitHub. Check your connection.")
 
                 // Save the ETag if GitHub gave one — they always do.
                 response.header("ETag")?.let { etag ->
@@ -88,7 +102,8 @@ class GitHubReleasesSource @Inject constructor(
                 parseAndPick(body, entry, ownerRepo, needsBroaderList)
             }
         } catch (t: Throwable) {
-            ResolveResult.Failed(t.message ?: t.javaClass.simpleName)
+            Log.w(TAG, "Network error fetching releases for $ownerRepo", t)
+            ResolveResult.Failed("Couldn't reach GitHub. Check your connection.")
         }
     }
 

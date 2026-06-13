@@ -73,6 +73,23 @@
         </provider>
 
         <!--
+          The app initializes WorkManager on-demand via Configuration.Provider in
+          IsItCompatibleApplication (with HiltWorkerFactory). Remove the default
+          WorkManagerInitializer node merged in from the androidx.work library so
+          the two don't conflict (required for release lintVital to pass).
+        -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
+        <!--
           IIC round-trip: receives GAME_SESSION_ENDED broadcast from the
           GameNative IIC fork (app.gamenative.iic) when a game session ends.
           exported=true is required because the broadcast comes from a different

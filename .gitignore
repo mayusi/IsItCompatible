@@ -42,3 +42,7 @@ tools/ingest/_*.json
 tools/ingest/raw/
 tools/ingest/.cache/
 tools/scrape-guides/drafts/
+
+# Release build artifacts (attached to GitHub releases, not committed)
+*.apk
+release-notes-*.md
