@@ -97,14 +97,13 @@ fun SearchScreen(
             // BUGFIX 6b: also gate on at least one Windows game existing in the DB
             // so the card never shows with broken quick-start links on an empty /
             // Android-only database.
-            val hasWindowsGames = s.allSummaries.any {
-                it.game.platform.equals("WINDOWS", ignoreCase = true)
-            }
+            // hasWindowsGames is pre-computed in SearchViewModel (once, when
+            // summaries load) to avoid scanning up to 1089 items on every recompose.
             val showQuickStart = s.wizardComplete &&
                 !s.windowsQuickStartDismissed &&
                 s.query.isBlank() &&
                 s.platformFilter == null &&
-                hasWindowsGames
+                s.hasWindowsGames
             LazyColumn(
                 Modifier.fillMaxSize().padding(horizontal = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),

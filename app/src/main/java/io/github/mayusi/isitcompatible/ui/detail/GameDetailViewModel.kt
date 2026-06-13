@@ -154,7 +154,9 @@ class GameDetailViewModel @Inject constructor(
             // compute per-step "you already have this" status (installed
             // emulator, dumped BIOS) so the guide adapts to the user's device.
             val detection = if (io.github.mayusi.isitcompatible.autodetect.AllFilesAccess.isGranted(context)) {
-                runCatching { deviceScanner.scan() }.getOrNull()
+                withContext(kotlinx.coroutines.Dispatchers.IO) {
+                    runCatching { deviceScanner.scan() }.getOrNull()
+                }
             } else null
             val stepStatuses: Map<Int, GuideStepStatus> =
                 if (guide != null && detection != null)
@@ -389,7 +391,7 @@ class GameDetailViewModel @Inject constructor(
         }
     }
 
-    /** Persist a new journal entry then refresh the screen. */
+    /** Persist a new journal entry then refresh only the journal entries in state. */
     fun saveJournal(entry: JournalEntryEntity) {
         viewModelScope.launch {
             journalDao.upsert(entry)
@@ -407,8 +409,11 @@ class GameDetailViewModel @Inject constructor(
                     fp = snap.fingerprint,
                 )
             }
-            // Cheap: re-run load to surface the new entry without bespoke state plumbing.
-            load()
+            // Targeted refresh: reload only the journal entries for this game so
+            // we don't trigger a full load() (which flashes loading=true, re-runs
+            // the blocking deviceScanner.scan(), and re-fetches the recommender).
+            val fresh = journalDao.forGame(gameId)
+            _state.update { it.copy(journalEntries = fresh, journalFormOpen = false) }
         }
     }
 

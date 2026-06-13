@@ -10,6 +10,7 @@ import io.github.mayusi.isitcompatible.compatdb.room.ReportDao
 import io.github.mayusi.isitcompatible.data.UserPreferences
 import io.github.mayusi.isitcompatible.hardware.DeviceFingerprint
 import io.github.mayusi.isitcompatible.library.LibraryScanner
+import io.github.mayusi.isitcompatible.compatdb.room.ReportEntity
 import io.github.mayusi.isitcompatible.library.ScannedGame
 import io.github.mayusi.isitcompatible.recommend.Bucket
 import io.github.mayusi.isitcompatible.recommend.Recommender
@@ -55,8 +56,18 @@ class LibraryViewModel @Inject constructor(
                     pc?.let { addAll(scanner.scanPcGames(it)) }
                 }
 
+                // Batch-fetch all reports for matched games in one pass (O(1) DB
+                // round-trips, chunked ≤500 to respect SQLite's IN-clause limit).
+                // Previously this was O(N) — one reportDao.byGame() per scanned game.
+                val gameIds = games.mapNotNull { it.gameId }
+                val reportsByGame = HashMap<String, List<ReportEntity>>()
+                gameIds.chunked(500).forEach { chunk ->
+                    val rows = reportDao.byGameIds(chunk)
+                    rows.groupBy { it.gameId }.forEach { (k, v) -> reportsByGame[k] = v }
+                }
+
                 val withDots = games.map { sg ->
-                    sg to dotFor(sg, fp)
+                    sg to dotFor(sg, fp, reportsByGame[sg.gameId].orEmpty())
                 }
                 _state.update {
                     it.copy(
@@ -73,9 +84,17 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private suspend fun dotFor(g: ScannedGame, fp: DeviceFingerprint?): DotColor {
+    /**
+     * Compute the library-dot color for a scanned game from pre-fetched reports.
+     * No DB access — all reports have already been batched by [rescan].
+     * Color logic is identical to the previous per-game version.
+     */
+    private fun dotFor(
+        g: ScannedGame,
+        fp: DeviceFingerprint?,
+        rawReports: List<ReportEntity>,
+    ): DotColor {
         if (g.gameId == null || fp == null) return DotColor.GRAY
-        val rawReports = reportDao.byGame(g.gameId)
         if (rawReports.isEmpty()) return DotColor.GRAY
         // Policy: Windows games are GameNative-only.
         val isWindows = g.platformGuess.equals("Windows", ignoreCase = true) ||

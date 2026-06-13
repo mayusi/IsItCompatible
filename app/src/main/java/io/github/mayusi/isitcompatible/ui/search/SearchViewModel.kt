@@ -55,6 +55,11 @@ class SearchViewModel @Inject constructor(
     val state: StateFlow<SearchState> = _state.asStateFlow()
     private var searchJob: Job? = null
 
+    companion object {
+        /** Pre-compiled once; recompiling on every keystroke was waste for a static pattern. */
+        private val WHITESPACE_REGEX = Regex("\\s+")
+    }
+
     init {
         // Observe prefs for the quick-start card gating (wizard + dismissed flag).
         prefs.data
@@ -117,12 +122,16 @@ class SearchViewModel @Inject constructor(
             }
 
             val platforms = allGames.map { it.platform }.toSortedSet().toList()
+            // Compute once here so the composable doesn't scan up to 1089 items on
+            // every recompose (every keystroke / scroll invalidation).
+            val hasWindowsGames = allGames.any { it.platform.equals("WINDOWS", ignoreCase = true) }
             _state.update {
                 it.copy(
                     allSummaries = summaries,
                     platforms = platforms,
                     results = summaries.sortedBy { s -> s.game.title },
                     loaded = true,
+                    hasWindowsGames = hasWindowsGames,
                 )
             }
         }
@@ -171,7 +180,9 @@ class SearchViewModel @Inject constructor(
             delay(60)
             val s = _state.value
             val needle = s.query.trim().lowercase()
-            val tokens = needle.split("\\s+".toRegex()).filter { it.isNotEmpty() }
+            // Use the pre-compiled companion WHITESPACE_REGEX — avoids recompiling
+            // "\\s+" on every keystroke (was Regex(…) inline here before this fix).
+            val tokens = needle.split(WHITESPACE_REGEX).filter { it.isNotEmpty() }
             val comparator: Comparator<GameSummary> = when (s.sortOrder) {
                 SortOrder.ALPHA -> compareBy { it.game.title }
                 SortOrder.FPS_DESC -> Comparator<GameSummary> { a, b ->
@@ -194,22 +205,25 @@ class SearchViewModel @Inject constructor(
                     }
                 }
             }
-            val filtered = s.allSummaries
-                .asSequence()
-                .filter { s.platformFilter == null || it.game.platform == s.platformFilter }
-                .filter {
-                    if (tokens.isEmpty()) true
-                    else {
-                        val haystack = "${it.game.title} ${it.game.titleSlug}".lowercase()
-                        tokens.all { token -> token in haystack }
+            // Move the filter+sort over up to 1089 items off the main thread.
+            val filtered = withContext(Dispatchers.Default) {
+                s.allSummaries
+                    .asSequence()
+                    .filter { s.platformFilter == null || it.game.platform == s.platformFilter }
+                    .filter {
+                        if (tokens.isEmpty()) true
+                        else {
+                            val haystack = "${it.game.title} ${it.game.titleSlug}".lowercase()
+                            tokens.all { token -> token in haystack }
+                        }
                     }
-                }
-                .filter {
-                    s.stabilityFilter == null ||
-                        it.bestStability?.uppercase() in listOf("PERFECT", "PLAYABLE")
-                }
-                .sortedWith(comparator)
-                .toList()
+                    .filter {
+                        s.stabilityFilter == null ||
+                            it.bestStability?.uppercase() in listOf("PERFECT", "PLAYABLE")
+                    }
+                    .sortedWith(comparator)
+                    .toList()
+            }
             _state.update { it.copy(results = filtered) }
         }
     }
@@ -256,4 +270,10 @@ data class SearchState(
     val sortOrder: SortOrder = SortOrder.ALPHA,
     /** When non-null, filter to only PERFECT/PLAYABLE stability results. */
     val stabilityFilter: String? = null,
+    /**
+     * True when the DB contains at least one WINDOWS game. Computed once when
+     * summaries load so the composable doesn't scan allSummaries (up to 1089
+     * items) on every recompose.
+     */
+    val hasWindowsGames: Boolean = false,
 )
