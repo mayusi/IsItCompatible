@@ -98,6 +98,9 @@ class ApkDownloader @Inject constructor(
             // Catch network exceptions (UnknownHostException, SSL, cleartext
             // policy, etc.) so the coroutine surfaces a Failed state instead
             // of crashing the app.
+            // BUGFIX 6a: delete any partial file left behind by a mid-download
+            // failure so it is never mistaken for a complete APK on a retry.
+            if (outFile.exists()) outFile.delete()
             emit(Progress.Failed(t.message ?: t.javaClass.simpleName))
         }
     }.flowOn(Dispatchers.IO)

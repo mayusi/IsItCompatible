@@ -10,6 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.mayusi.isitcompatible.data.UserPreferences
 import io.github.mayusi.isitcompatible.hardware.DeviceFingerprint
 import io.github.mayusi.isitcompatible.hardware.HardwareFingerprinter
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -70,7 +71,13 @@ class WizardViewModel @Inject constructor(
             prefs.setRomFolderUri(s.romFolderUri)
             prefs.setPcFolderUri(s.pcFolderUri)
             prefs.setStagingFolderUri(s.stagingFolderUri)
-            s.fingerprint?.let { prefs.setFingerprint(it) }
+            if (s.fingerprint != null) {
+                prefs.setFingerprint(s.fingerprint)
+            } else {
+                // BUGFIX 6c: log when fingerprint is null so silent degradation
+                // (recommender has no device data) is at least diagnosable in logcat.
+                Log.w(TAG, "finish() called with null fingerprint — device hardware not fingerprinted yet")
+            }
             prefs.setWizardComplete(true)
             onDone()
         }
@@ -79,6 +86,10 @@ class WizardViewModel @Inject constructor(
     private fun persistGrant(uri: Uri) {
         val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         runCatching { appContext.contentResolver.takePersistableUriPermission(uri, flags) }
+    }
+
+    private companion object {
+        private const val TAG = "WizardViewModel"
     }
 }
 

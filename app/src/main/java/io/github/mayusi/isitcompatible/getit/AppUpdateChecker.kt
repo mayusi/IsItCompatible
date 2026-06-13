@@ -12,6 +12,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -46,8 +47,11 @@ class AppUpdateChecker @Inject constructor(
     private val json = Json { ignoreUnknownKeys = true }
 
     // In-memory ETag cache (resets on process restart, which is fine).
-    private var cachedEtag: String? = null
-    private var cachedBody: String? = null
+    // BUGFIX: stored as an atomic pair so concurrent coroutines (checkIfDue +
+    // manual checkNow) always see a consistent etag+body snapshot and can never
+    // observe one updated without the other (race that produced "304 but no
+    // cached body").
+    private val etagCache = AtomicReference<Pair<String, String>?>(null)
 
     companion object {
         private const val TAG = "AppUpdateChecker"
@@ -70,19 +74,23 @@ class AppUpdateChecker @Inject constructor(
             return@withContext UpdateCheckResult.UpToDate
         }
 
+        val cached = etagCache.get()
         val reqBuilder = Request.Builder()
             .url(RELEASES_LATEST_URL)
             .header("Accept", "application/vnd.github+json")
             .header("X-GitHub-Api-Version", "2022-11-28")
             .header("User-Agent", "IsItCompatible-app/${BuildConfig.VERSION_NAME}")
-        cachedEtag?.let { reqBuilder.header("If-None-Match", it) }
+        cached?.let { reqBuilder.header("If-None-Match", it.first) }
 
         try {
             http.newCall(reqBuilder.build()).execute().use { response ->
                 when (response.code) {
                     304 -> {
                         // Cache hit — parse the body we saved last time.
-                        val body = cachedBody
+                        // Read the snapshot atomically: if it's null here the race
+                        // that cleared it between our send and the 304 is extremely
+                        // unlikely but handled gracefully.
+                        val body = etagCache.get()?.second
                             ?: return@withContext UpdateCheckResult.Failed("304 but no cached body")
                         parseRelease(body)
                     }
@@ -94,10 +102,10 @@ class AppUpdateChecker @Inject constructor(
                     200 -> {
                         val body = response.body?.string()
                             ?: return@withContext UpdateCheckResult.Failed("Empty response body")
-                        // Store ETag + body for the next check.
-                        response.header("ETag")?.let {
-                            cachedEtag = it
-                            cachedBody = body
+                        // Store ETag + body atomically so concurrent readers always
+                        // see a consistent pair (never an updated etag with a stale body).
+                        response.header("ETag")?.let { etag ->
+                            etagCache.set(etag to body)
                         }
                         parseRelease(body)
                     }

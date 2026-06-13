@@ -121,6 +121,8 @@ class GitHubReleasesSource @Inject constructor(
         }
 
         for (release in releases) {
+            // BUGFIX: skip draft releases — they may be incomplete APKs.
+            if (release.draft) continue
             if (!entry.includePrereleases && release.prerelease) continue
             val assetNames = release.assets.map { it.name }
             val picked = ApkAssetFilter.pick(assetNames, entry) ?: continue

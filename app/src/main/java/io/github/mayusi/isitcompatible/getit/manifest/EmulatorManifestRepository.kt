@@ -51,8 +51,10 @@ class EmulatorManifestRepository @Inject constructor(
      */
     suspend fun findByPackageId(packageId: String): AppEntry? {
         val entries = all()
+        // BUGFIX: use exact equality only. A contains-match can pick the wrong
+        // emulator if one package id is a substring of another (e.g.
+        // "org.ppsspp.ppsspp" matches inside "org.ppsspp.ppssppgold").
         return entries.firstOrNull { it.id.equals(packageId, ignoreCase = true) }
-            ?: entries.firstOrNull { it.id.contains(packageId, ignoreCase = true) }
     }
 
     private fun RawAppEntry.toAppEntry(json: Json): AppEntry {

@@ -64,6 +64,10 @@ class CompatDbRepository @Inject constructor(
             // Stamp the attempt so the Updates screen can show "tried at <date>"
             // even when nothing came back. remoteReached stays false.
             runCatching { userPrefs.setLastSync(System.currentTimeMillis(), remoteReached = false) }
+            // BUGFIX: always mark ready so SearchViewModel / GameDetailViewModel
+            // don't suspend forever on compatDb.ready.first { it } when all
+            // sources returned empty (e.g. on first cold start with no network).
+            _ready.value = true
             return SyncResult(0, 0, 0, 0, 0, emptyList(), remoteReached = false)
         }
 
