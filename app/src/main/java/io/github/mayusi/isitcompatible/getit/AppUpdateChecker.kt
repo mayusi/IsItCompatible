@@ -6,8 +6,6 @@ import io.github.mayusi.isitcompatible.data.UserPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -256,24 +254,6 @@ class AppUpdateChecker @Inject constructor(
         return false // equal
     }
 
-    // ── DTOs ──────────────────────────────────────────────────────────────────
-
-    @Serializable
-    private data class GhRelease(
-        @SerialName("tag_name") val tagName: String? = null,
-        val name: String? = null,
-        val body: String? = null,
-        val prerelease: Boolean = false,
-        val draft: Boolean = false,
-        val assets: List<GhAsset> = emptyList(),
-    )
-
-    @Serializable
-    private data class GhAsset(
-        val name: String,
-        val size: Long = 0L,
-        @SerialName("browser_download_url") val browserDownloadUrl: String,
-    )
 }
 
 /** Result type returned by [AppUpdateChecker.check]. */

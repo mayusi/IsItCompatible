@@ -44,9 +44,8 @@ class AutoDetectViewModel @Inject constructor(
     private val gameDao: GameDao,
     private val reportDao: ReportDao,
     private val compatDb: CompatDbRepository,
+    private val recommender: Recommender,
 ) : ViewModel() {
-
-    private val recommender = Recommender()
     private val _state = MutableStateFlow(AutoDetectState())
     val state: StateFlow<AutoDetectState> = _state.asStateFlow()
 

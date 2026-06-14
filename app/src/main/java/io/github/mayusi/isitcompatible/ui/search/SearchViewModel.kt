@@ -6,6 +6,8 @@ import android.content.Context
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.mayusi.isitcompatible.compatdb.CompatDbRepository
+import io.github.mayusi.isitcompatible.compatdb.filterForWindowsGame
+import io.github.mayusi.isitcompatible.compatdb.isWindowsPlatform
 import io.github.mayusi.isitcompatible.getit.GameNativeLaunch
 import io.github.mayusi.isitcompatible.compatdb.room.EmulatorDao
 import io.github.mayusi.isitcompatible.compatdb.room.FavoriteDao
@@ -50,9 +52,8 @@ class SearchViewModel @Inject constructor(
     private val favoriteDao: FavoriteDao,
     private val prefs: UserPreferences,
     private val compatDb: CompatDbRepository,
+    private val recommender: Recommender,
 ) : ViewModel() {
-
-    private val recommender = Recommender()
     private val _state = MutableStateFlow(SearchState())
     val state: StateFlow<SearchState> = _state.asStateFlow()
     private var searchJob: Job? = null
@@ -106,9 +107,7 @@ class SearchViewModel @Inject constructor(
                     // they never out-score GameNative in the recommender — even
                     // if the seed still contains older OUR_GITHUB / EMUREADY_SNAPSHOT
                     // entries referencing those runners.
-                    val reports = if (game.platform.equals("WINDOWS", ignoreCase = true)) {
-                        rawReports.filter { it.emulatorId.equals("gamenative", ignoreCase = true) }
-                    } else rawReports
+                    val reports = rawReports.filterForWindowsGame(game)
                     val top = if (fp != null && reports.isNotEmpty())
                         recommender.rank(reports, fp, topK = 1).firstOrNull()
                     else null
@@ -126,7 +125,7 @@ class SearchViewModel @Inject constructor(
             val platforms = allGames.map { it.platform }.toSortedSet().toList()
             // Compute once here so the composable doesn't scan up to 1089 items on
             // every recompose (every keystroke / scroll invalidation).
-            val hasWindowsGames = allGames.any { it.platform.equals("WINDOWS", ignoreCase = true) }
+            val hasWindowsGames = allGames.any { it.isWindowsPlatform() }
             _state.update {
                 it.copy(
                     allSummaries = summaries,

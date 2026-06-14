@@ -1,15 +1,15 @@
 package io.github.mayusi.isitcompatible.getit.source
 
 import android.util.Log
+import io.github.mayusi.isitcompatible.getit.GhAsset
+import io.github.mayusi.isitcompatible.getit.GhRelease
 import io.github.mayusi.isitcompatible.getit.manifest.AppEntry
 import io.github.mayusi.isitcompatible.getit.manifest.SourceKind
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,14 +31,8 @@ import javax.inject.Singleton
 @Singleton
 class GitHubReleasesSource @Inject constructor(
     private val cache: HttpCache,
+    private val client: OkHttpClient,
 ) : AppSource {
-
-    private val client: OkHttpClient = OkHttpClient.Builder()
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .followRedirects(true)
-        .followSslRedirects(true)
-        .build()
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -148,19 +142,4 @@ class GitHubReleasesSource @Inject constructor(
         return "${match.groupValues[1]}/${match.groupValues[2]}"
     }
 
-    @Serializable
-    private data class GhRelease(
-        @kotlinx.serialization.SerialName("tag_name") val tagName: String? = null,
-        val name: String? = null,
-        val prerelease: Boolean = false,
-        val draft: Boolean = false,
-        val assets: List<GhAsset> = emptyList(),
-    )
-
-    @Serializable
-    private data class GhAsset(
-        val name: String,
-        val size: Long = 0,
-        @kotlinx.serialization.SerialName("browser_download_url") val browserDownloadUrl: String,
-    )
 }

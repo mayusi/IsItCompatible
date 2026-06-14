@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.mayusi.isitcompatible.compatdb.CompatDbRepository
+import io.github.mayusi.isitcompatible.compatdb.GAMENATIVE_EMULATOR_ID
 import io.github.mayusi.isitcompatible.compatdb.room.EmulatorDao
 import io.github.mayusi.isitcompatible.compatdb.room.GameDao
 import io.github.mayusi.isitcompatible.compatdb.room.ReportDao
@@ -35,9 +36,8 @@ class LibraryViewModel @Inject constructor(
     private val reportDao: ReportDao,
     private val emulatorDao: EmulatorDao,
     private val compatDb: CompatDbRepository,
+    private val recommender: Recommender,
 ) : ViewModel() {
-
-    private val recommender = Recommender()
 
     private val _state = MutableStateFlow(LibraryState())
     val state: StateFlow<LibraryState> = _state.asStateFlow()
@@ -93,8 +93,9 @@ class LibraryViewModel @Inject constructor(
                         pcPicked = pc != null,
                     )
                 }
-            } catch (t: Throwable) {
-                _state.update { it.copy(loading = false, error = t.message ?: "Scan failed") }
+            } catch (e: Exception) {
+                if (e is kotlinx.coroutines.CancellationException) throw e
+                _state.update { it.copy(loading = false, error = e.message ?: "Scan failed") }
             }
         }
     }
@@ -139,10 +140,12 @@ class LibraryViewModel @Inject constructor(
             return LibraryGameItem(game = g, dot = DotColor.GRAY)
         }
         // Policy: Windows games are GameNative-only.
+        // LibraryScanner uses platformGuess (from scanned exe/folder) rather than a GameEntity,
+        // so we replicate the same Windows check using the platform guess + gameId prefix.
         val isWindows = g.platformGuess.equals("Windows", ignoreCase = true) ||
             g.gameId.startsWith("win:", ignoreCase = true)
         val reports = if (isWindows) {
-            rawReports.filter { it.emulatorId.equals("gamenative", ignoreCase = true) }
+            rawReports.filter { it.emulatorId.equals(GAMENATIVE_EMULATOR_ID, ignoreCase = true) }
         } else rawReports
         if (reports.isEmpty()) return LibraryGameItem(game = g, dot = DotColor.GRAY)
 

@@ -2,15 +2,14 @@ package io.github.mayusi.isitcompatible.ui.appupdate
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
-import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.mayusi.isitcompatible.data.UserPreferences
 import io.github.mayusi.isitcompatible.getit.AppUpdateChecker
+import io.github.mayusi.isitcompatible.getit.launchApkInstaller
 import io.github.mayusi.isitcompatible.getit.InstallPermission
 import io.github.mayusi.isitcompatible.getit.SignatureVerifier
 import io.github.mayusi.isitcompatible.getit.UpdateCheckResult
@@ -198,10 +197,11 @@ class AppUpdateViewModel @Inject constructor(
                                 }
                                 SignatureVerifier.VerifyResult.Ok -> { /* proceed */ }
                             }
-                            val ok = launchInstaller(progress.file)
-                            if (ok) {
+                            val launchResult = launchApkInstaller(context, progress.file)
+                            if (launchResult.isSuccess) {
                                 _state.update { it.copy(installState = AppInstallState.ReadyToInstall) }
                             } else {
+                                Log.w("AppUpdateViewModel", "Installer launch failed", launchResult.exceptionOrNull())
                                 _state.update {
                                     it.copy(
                                         installState = AppInstallState.Failed(
@@ -243,23 +243,6 @@ class AppUpdateViewModel @Inject constructor(
 
     fun installPermissionIntent(): Intent? = InstallPermission.settingsIntent(context)
 
-    // ── private helpers ────────────────────────────────────────────────────────
-
-    private fun launchInstaller(file: File): Boolean = runCatching {
-        val uri: Uri = FileProvider.getUriForFile(
-            context, "${context.packageName}.fileprovider", file,
-        )
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(uri, "application/vnd.android.package-archive")
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        context.startActivity(intent)
-        true
-    }.getOrElse {
-        Log.w("AppUpdateViewModel", "Installer launch failed", it)
-        false
-    }
 }
 
 // ── State types ────────────────────────────────────────────────────────────────

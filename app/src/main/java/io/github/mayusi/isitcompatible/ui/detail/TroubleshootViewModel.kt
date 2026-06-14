@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.mayusi.isitcompatible.compatdb.BaseFixes
 import io.github.mayusi.isitcompatible.compatdb.CompatDbRepository
+import io.github.mayusi.isitcompatible.compatdb.GAMENATIVE_EMULATOR_ID
 import io.github.mayusi.isitcompatible.compatdb.GuideResolver
+import io.github.mayusi.isitcompatible.compatdb.isWindowsPlatform
 import io.github.mayusi.isitcompatible.compatdb.room.DriverDao
 import io.github.mayusi.isitcompatible.compatdb.room.DriverEntity
 import io.github.mayusi.isitcompatible.compatdb.room.GameDao
@@ -14,13 +16,13 @@ import io.github.mayusi.isitcompatible.compatdb.room.JournalDao
 import io.github.mayusi.isitcompatible.compatdb.room.ReportDao
 import io.github.mayusi.isitcompatible.data.UserPreferences
 import io.github.mayusi.isitcompatible.recommend.Recommender
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * Drives the "It didn't work" interactive troubleshooter for one game.
@@ -48,11 +50,11 @@ class TroubleshootViewModel @Inject constructor(
     private val compatDb: CompatDbRepository,
     private val journalDao: JournalDao,
     private val driverDao: DriverDao,
+    private val recommender: Recommender,
     handle: SavedStateHandle,
 ) : ViewModel() {
 
     private val gameId: String = handle["gameId"] ?: error("gameId required")
-    private val recommender = Recommender()
 
     private val _state = MutableStateFlow(TroubleshootState())
     val state: StateFlow<TroubleshootState> = _state.asStateFlow()
@@ -67,12 +69,12 @@ class TroubleshootViewModel @Inject constructor(
         viewModelScope.launch {
             compatDb.ready.first { it }
             val game = gameDao.byId(gameId)
-            isWindows = game?.platform.equals("WINDOWS", ignoreCase = true)
+            isWindows = game?.isWindowsPlatform() ?: false
             val fp = prefs.data.first().fingerprint
             val rawReports = reportDao.byGame(gameId)
             // Policy: Windows games are GameNative-only.
             val reports = if (isWindows) {
-                rawReports.filter { it.emulatorId.equals("gamenative", ignoreCase = true) }
+                rawReports.filter { it.emulatorId.equals(GAMENATIVE_EMULATOR_ID, ignoreCase = true) }
             } else rawReports
             // Same emulator the detail screen recommends: top of the source-aware
             // ranking (real first, then generated). The troubleshooter's

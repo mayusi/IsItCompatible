@@ -14,7 +14,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.mayusi.isitcompatible.apply.ApplyJobState
 import io.github.mayusi.isitcompatible.apply.PresetStager
 import io.github.mayusi.isitcompatible.compatdb.CompatDbRepository
+import io.github.mayusi.isitcompatible.compatdb.filterForWindowsGame
 import io.github.mayusi.isitcompatible.compatdb.GuideResolver
+import io.github.mayusi.isitcompatible.compatdb.isWindowsPlatform
 import io.github.mayusi.isitcompatible.compatdb.JournalShareIntent
 import io.github.mayusi.isitcompatible.compatdb.ResolvedGuide
 import io.github.mayusi.isitcompatible.compatdb.VerifiedGuideImporter
@@ -67,11 +69,11 @@ class GameDetailViewModel @Inject constructor(
     private val compatDb: CompatDbRepository,
     private val favoriteDao: FavoriteDao,
     private val verifiedGuideImporter: VerifiedGuideImporter,
+    private val recommender: Recommender,
     handle: SavedStateHandle,
 ) : ViewModel() {
 
     private val gameId: String = handle["gameId"] ?: error("gameId required")
-    private val recommender = Recommender()
 
     private companion object {
         /** Android package id of the EmuHelper companion app; must match the manifest entry id. */
@@ -171,10 +173,8 @@ class GameDetailViewModel @Inject constructor(
             // Policy: Windows games are GameNative-only. Filter out any reports
             // for other runners (winlator/cmod/mobox/gamehub) so the recommender
             // never surfaces them — even if the seed still contains older entries.
-            val isWindowsForFilter = game?.platform.equals("WINDOWS", ignoreCase = true)
-            val reports = if (isWindowsForFilter) {
-                rawReports.filter { it.emulatorId.equals(GAMENATIVE_EMULATOR_ID, ignoreCase = true) }
-            } else rawReports
+            val isWindowsGame = game != null && game.isWindowsPlatform()
+            val reports = if (game != null) rawReports.filterForWindowsGame(game) else rawReports
             // v0.5: split recommendations by source so the UI can render real
             // user reports separately from heuristic estimates.
             val bySource: RecommendationsBySource = if (game != null && fp != null) {
@@ -234,9 +234,9 @@ class GameDetailViewModel @Inject constructor(
             // GameNative's own guide. Crucially this keys ONLY off the tier-1 guide
             // and its config payload, NEVER off report source, so mislabeled
             // OUR_GITHUB "estimate" reports cannot unlock a confident config.
-            val isWindowsGame = game?.platform.equals("WINDOWS", ignoreCase = true)
-            val gameNativeGuide = if (isWindowsGame && game != null) {
-                runCatching { guideResolver.resolve(game.id, GAMENATIVE_EMULATOR_ID) }.getOrNull()
+            // isWindowsGame already implies game != null (computed above as: game != null && game.isWindowsPlatform())
+            val gameNativeGuide = if (isWindowsGame) {
+                runCatching { guideResolver.resolve(game!!.id, GAMENATIVE_EMULATOR_ID) }.getOrNull()
             } else null
             val verifiedGameNativeConfig =
                 gameNativeGuide != null &&
@@ -376,18 +376,19 @@ class GameDetailViewModel @Inject constructor(
     }
 
     /**
-     * v0.10: download + install the recommended emulator for this guide,
-     * straight from the guide's GET_APP step. Looks up the emulator's package
-     * id from the hydrated map, then runs the same getit flow as Auto-Detect.
+     * Shared install flow: resolve + download via [emulatorInstaller], map
+     * [InstallProgress] to [GuideInstallStatus], and update the relevant
+     * state field via [setStatus]. All three public install entry-points
+     * delegate here so the progress-mapping is never duplicated.
      */
-    fun installGuideEmulator() {
-        val guide = _state.value.guide ?: return
-        val emu = _state.value.emulatorsById[guide.emulatorId] ?: return
-        val pkg = emu.packageId ?: return
-        if (_state.value.emulatorInstallStatus is GuideInstallStatus.Working) return
+    private fun installApp(
+        packageId: String,
+        displayName: String,
+        setStatus: (GuideInstallStatus?) -> Unit,
+    ) {
         viewModelScope.launch {
-            emulatorInstaller.install(pkg, emu.name).collect { p ->
-                val status = when (p) {
+            emulatorInstaller.install(packageId, displayName).collect { p ->
+                val status: GuideInstallStatus = when (p) {
                     is io.github.mayusi.isitcompatible.getit.InstallProgress.Resolving ->
                         GuideInstallStatus.Working("Finding latest…")
                     is io.github.mayusi.isitcompatible.getit.InstallProgress.Downloading ->
@@ -397,8 +398,23 @@ class GameDetailViewModel @Inject constructor(
                     is io.github.mayusi.isitcompatible.getit.InstallProgress.Failed ->
                         GuideInstallStatus.Failed(p.message)
                 }
-                _state.update { it.copy(emulatorInstallStatus = status) }
+                setStatus(status)
             }
+        }
+    }
+
+    /**
+     * v0.10: download + install the recommended emulator for this guide,
+     * straight from the guide's GET_APP step. Looks up the emulator's package
+     * id from the hydrated map, then runs the same getit flow as Auto-Detect.
+     */
+    fun installGuideEmulator() {
+        val guide = _state.value.guide ?: return
+        val emu = _state.value.emulatorsById[guide.emulatorId] ?: return
+        val pkg = emu.packageId ?: return
+        if (_state.value.emulatorInstallStatus is GuideInstallStatus.Working) return
+        installApp(pkg, emu.name) { status ->
+            _state.update { it.copy(emulatorInstallStatus = status) }
         }
     }
 
@@ -410,20 +426,8 @@ class GameDetailViewModel @Inject constructor(
      */
     fun installEmuHelper() {
         if (_state.value.emuHelperInstallStatus is GuideInstallStatus.Working) return
-        viewModelScope.launch {
-            emulatorInstaller.install(EMUHELPER_PACKAGE_ID, "EmuHelper").collect { p ->
-                val status = when (p) {
-                    is io.github.mayusi.isitcompatible.getit.InstallProgress.Resolving ->
-                        GuideInstallStatus.Working("Finding latest…")
-                    is io.github.mayusi.isitcompatible.getit.InstallProgress.Downloading ->
-                        GuideInstallStatus.Working("Downloading ${p.percent}%")
-                    is io.github.mayusi.isitcompatible.getit.InstallProgress.ReadyToInstall ->
-                        GuideInstallStatus.Done
-                    is io.github.mayusi.isitcompatible.getit.InstallProgress.Failed ->
-                        GuideInstallStatus.Failed(p.message)
-                }
-                _state.update { it.copy(emuHelperInstallStatus = status) }
-            }
+        installApp(EMUHELPER_PACKAGE_ID, "EmuHelper") { status ->
+            _state.update { it.copy(emuHelperInstallStatus = status) }
         }
     }
 
@@ -436,20 +440,8 @@ class GameDetailViewModel @Inject constructor(
      */
     fun installIicFork() {
         if (_state.value.iicInstallStatus is GuideInstallStatus.Working) return
-        viewModelScope.launch {
-            emulatorInstaller.install(GAMENATIVE_IIC_PACKAGE_ID, GAMENATIVE_IIC_DISPLAY_NAME).collect { p ->
-                val status = when (p) {
-                    is io.github.mayusi.isitcompatible.getit.InstallProgress.Resolving ->
-                        GuideInstallStatus.Working("Finding latest…")
-                    is io.github.mayusi.isitcompatible.getit.InstallProgress.Downloading ->
-                        GuideInstallStatus.Working("Downloading ${p.percent}%")
-                    is io.github.mayusi.isitcompatible.getit.InstallProgress.ReadyToInstall ->
-                        GuideInstallStatus.Done
-                    is io.github.mayusi.isitcompatible.getit.InstallProgress.Failed ->
-                        GuideInstallStatus.Failed(p.message)
-                }
-                _state.update { it.copy(iicInstallStatus = status) }
-            }
+        installApp(GAMENATIVE_IIC_PACKAGE_ID, GAMENATIVE_IIC_DISPLAY_NAME) { status ->
+            _state.update { it.copy(iicInstallStatus = status) }
         }
     }
 

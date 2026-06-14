@@ -5,15 +5,19 @@ import io.github.mayusi.isitcompatible.compatdb.room.PresetEntity
 import io.github.mayusi.isitcompatible.compatdb.room.ReportEntity
 import io.github.mayusi.isitcompatible.hardware.DeviceFingerprint
 import io.github.mayusi.isitcompatible.hardware.GpuVendor
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Pure ranker. Given a list of [ReportEntity] for a game + the user's
  * [DeviceFingerprint], picks the best emulator+preset combinations with a
  * confidence rating based on how loose the device-similarity bucket had to be.
  *
- * No Android dependencies — trivially unit-testable.
+ * No Android dependencies — trivially unit-testable. Singleton so all VMs
+ * share one instance (stateless, so sharing is safe).
  */
-class Recommender {
+@Singleton
+class Recommender @Inject constructor() {
 
     /**
      * @param reports all reports for the target game.

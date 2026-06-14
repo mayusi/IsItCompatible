@@ -1,10 +1,7 @@
 package io.github.mayusi.isitcompatible.getit
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.util.Log
-import androidx.core.content.FileProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.mayusi.isitcompatible.getit.download.ApkDownloader
 import io.github.mayusi.isitcompatible.getit.manifest.EmulatorManifestRepository
@@ -127,26 +124,13 @@ class EmulatorInstaller @Inject constructor(
         }
 
         // Hand off to the system installer via FileProvider.
-        val ok = launchInstaller(file)
-        if (ok) emit(InstallProgress.ReadyToInstall(displayName))
-        else emit(InstallProgress.Failed("Downloaded, but couldn't open the installer. File is at ${file.name}."))
-    }.flowOn(Dispatchers.IO)
-
-    private fun launchInstaller(file: java.io.File): Boolean = runCatching {
-        val uri: Uri = FileProvider.getUriForFile(
-            context, "${context.packageName}.fileprovider", file,
-        )
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(uri, "application/vnd.android.package-archive")
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val result = launchApkInstaller(context, file)
+        if (result.isSuccess) emit(InstallProgress.ReadyToInstall(displayName))
+        else {
+            Log.w(TAG, "Installer launch failed", result.exceptionOrNull())
+            emit(InstallProgress.Failed("Downloaded, but couldn't open the installer. File is at ${file.name}."))
         }
-        context.startActivity(intent)
-        true
-    }.getOrElse {
-        Log.w(TAG, "Installer launch failed", it)
-        false
-    }
+    }.flowOn(Dispatchers.IO)
 
     private companion object { const val TAG = "EmulatorInstaller" }
 }

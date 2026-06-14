@@ -20,6 +20,8 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import io.github.mayusi.isitcompatible.compatdb.GAMENATIVE_EMULATOR_ID
+import io.github.mayusi.isitcompatible.compatdb.WINDOWS_PLATFORM
 import io.github.mayusi.isitcompatible.compatdb.room.FavoriteDao
 import io.github.mayusi.isitcompatible.compatdb.room.GameDao
 import io.github.mayusi.isitcompatible.compatdb.room.ReportDao
@@ -49,9 +51,8 @@ class CompatDbSyncWorker @AssistedInject constructor(
     private val gameDao: GameDao,
     private val reportDao: ReportDao,
     private val prefs: UserPreferences,
+    private val recommender: Recommender,
 ) : CoroutineWorker(appContext, params) {
-
-    private val recommender = Recommender()
 
     override suspend fun doWork(): Result {
         return try {
@@ -60,8 +61,9 @@ class CompatDbSyncWorker @AssistedInject constructor(
             // Feature B: check favorited games for compatibility improvements.
             checkFavoriteAlerts()
             Result.success()
-        } catch (t: Throwable) {
-            Log.w(TAG, "Sync failed", t)
+        } catch (e: Exception) {
+            if (e is kotlinx.coroutines.CancellationException) throw e
+            Log.w(TAG, "Sync failed", e)
             Result.retry()
         }
     }
@@ -85,8 +87,8 @@ class CompatDbSyncWorker @AssistedInject constructor(
                 val reports = reportDao.byGame(fav.gameId)
                     .filter { r ->
                         // Policy: Windows games are GameNative-only.
-                        if (game.platform.equals("WINDOWS", ignoreCase = true))
-                            r.emulatorId.equals("gamenative", ignoreCase = true)
+                        if (game.platform.equals(WINDOWS_PLATFORM, ignoreCase = true))
+                            r.emulatorId.equals(GAMENATIVE_EMULATOR_ID, ignoreCase = true)
                         else true
                     }
                     // Only real reports for alerts — no GENERATED_HEURISTIC noise.
