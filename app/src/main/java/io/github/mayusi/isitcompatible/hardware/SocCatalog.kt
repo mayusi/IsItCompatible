@@ -6,7 +6,7 @@ enum class SocTier(val label: String) {
     HIGH_END("High-end"),
     MID_RANGE("Mid-range"),
     BUDGET("Budget"),
-    UNKNOWN("Unknown"),
+    UNKNOWN("Unlisted chip"),
 }
 
 /**

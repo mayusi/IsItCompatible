@@ -176,7 +176,7 @@ fun AutoDetectScreen(
             Section(
                 title = "Games found (${result.gamesBySystem.size} systems)",
                 isEmpty = result.gamesBySystem.isEmpty(),
-                emptyText = "No games found under Emulation/roms/.",
+                emptyText = "No games found under Emulation/roms/. Check Settings to pick your ROM folder.",
             ) {
                 result.gamesBySystem.forEach { systemGames ->
                     Column(Modifier.padding(vertical = 8.dp)) {
@@ -643,18 +643,22 @@ private fun HardwareSummaryCard(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
-                Box(
-                    Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(tierColor.copy(alpha = 0.18f))
-                        .padding(horizontal = 10.dp, vertical = 4.dp),
-                ) {
-                    Text(
-                        tier.label,
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = tierColor,
-                    )
+                // For unknown/unlisted chips, omit the tier badge and show a softer label
+                // instead so the device doesn't feel unsupported.
+                if (tier != SocTier.UNKNOWN) {
+                    Box(
+                        Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(tierColor.copy(alpha = 0.18f))
+                            .padding(horizontal = 10.dp, vertical = 4.dp),
+                    ) {
+                        Text(
+                            tier.label,
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = tierColor,
+                        )
+                    }
                 }
             }
             Text(
@@ -662,6 +666,14 @@ private fun HardwareSummaryCard(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            // For unknown chips, show a reassurance line explaining detection still works.
+            if (tier == SocTier.UNKNOWN) {
+                Text(
+                    "SoC not in our catalog yet — we'll match you to compatible reports using your GPU (${fp.gpuModel}) and ${fp.totalRamMb / 1024} GB RAM.",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             if (stats != null) {
                 val total = stats.real + stats.estimated
                 val fraction = if (total > 0) stats.real.toFloat() / total else 0f
@@ -671,17 +683,24 @@ private fun HardwareSummaryCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
+                    val coverageText = if (stats.real == 0) {
+                        "No chip-specific data yet — ${stats.estimated} games have estimated compatibility for similar hardware"
+                    } else {
+                        "${stats.real} games have data for your chip"
+                    }
                     Text(
-                        "${stats.real} games have data for your chip",
+                        coverageText,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.weight(1f),
                     )
-                    Text(
-                        "${stats.estimated} estimated",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    if (stats.real > 0) {
+                        Text(
+                            "${stats.estimated} estimated",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
                 LinearProgressIndicator(
                     progress = { fraction },

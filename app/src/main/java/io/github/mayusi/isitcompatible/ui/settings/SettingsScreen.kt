@@ -293,6 +293,12 @@ private fun AboutCard(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "Developed and tested on AYN Odin 3 and AYN Thor. Works on any Android gaming handheld — coverage grows as more devices report results.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

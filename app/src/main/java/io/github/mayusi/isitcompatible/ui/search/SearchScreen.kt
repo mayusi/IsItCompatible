@@ -140,13 +140,23 @@ fun SearchScreen(
 
 /** Builds the encouraging device line from the detected fingerprint, or a generic fallback. */
 private fun quickStartDeviceLine(fp: io.github.mayusi.isitcompatible.hardware.DeviceFingerprint?): String {
-    if (fp == null) return "Your device is ready for Windows games."
+    if (fp == null) return "Your device is ready to look up game compatibility."
     val parts = listOfNotNull(
         fp.socFamily.takeIf { it.isNotBlank() },
         fp.gpuModel.takeIf { it.isNotBlank() },
     )
-    return if (parts.isEmpty()) "Your device is ready for Windows games."
-    else parts.joinToString(" · ") + " — great for Windows games"
+    val prefix = if (parts.isEmpty()) "" else parts.joinToString(" · ") + " — "
+    val tier = io.github.mayusi.isitcompatible.hardware.SocCatalog.tier(fp.socFamily)
+    val suffix = when (tier) {
+        io.github.mayusi.isitcompatible.hardware.SocTier.FLAGSHIP,
+        io.github.mayusi.isitcompatible.hardware.SocTier.HIGH_END,
+        io.github.mayusi.isitcompatible.hardware.SocTier.MID_RANGE -> "ready for Windows games"
+        io.github.mayusi.isitcompatible.hardware.SocTier.BUDGET -> "may run lighter Windows games"
+        io.github.mayusi.isitcompatible.hardware.SocTier.UNKNOWN -> {
+            return "Your device is ready to look up game compatibility."
+        }
+    }
+    return if (prefix.isEmpty()) suffix else "$prefix$suffix"
 }
 
 private data class QuickStartPick(val id: String, val title: String)
@@ -187,9 +197,9 @@ private fun WindowsQuickStartCard(
         Spacer(Modifier.height(10.dp))
         Text(
             if (iicInstalled)
-                "GameNative (IIC) is installed. Pick a game to set it up and play:"
+                "GameNative (IIC) is ready. Pick a game to see the best config for your device:"
             else
-                "Open a Windows game below to install GameNative (IIC) and play. Start with one of these:",
+                "Pick a game below to see which emulator, driver, and settings work best on your device. Start with one of these:",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f),
         )

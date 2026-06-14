@@ -822,9 +822,12 @@ private fun VerdictCard(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         ConfidenceBadge(rec.bucket.confidence)
                         Spacer(Modifier.width(8.dp))
+                        // Use title-case bucket label directly ("Same SoC + RAM", etc.)
+                        // for instant scannability — avoid lowercasing it.
                         Text(
-                            "matched on ${rec.bucket.label.lowercase()} · ${rec.reportCount} report${if (rec.reportCount == 1) "" else "s"}",
+                            "Matched: ${rec.bucket.label} · ${rec.reportCount} report${if (rec.reportCount == 1) "" else "s"}",
                             style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.SemiBold,
                             color = onContainer.copy(alpha = 0.7f),
                         )
                     }
@@ -983,7 +986,7 @@ private fun friendlyConfidenceLabel(b: Bucket): String = when (b) {
     Bucket.SAME_SOC_AND_RAM -> "Reports are from the same chip and RAM as yours — high accuracy."
     Bucket.SAME_SOC_FAMILY -> "Same chip family, different RAM — result may vary."
     Bucket.SAME_GPU_VENDOR -> "Same GPU brand only — rough estimate."
-    Bucket.ANY_DEVICE -> "No reports for your hardware — best-guess from other devices."
+    Bucket.ANY_DEVICE -> "No reports for your exact hardware yet — showing what works on similar handhelds. Results may vary."
 }
 
 @Composable
