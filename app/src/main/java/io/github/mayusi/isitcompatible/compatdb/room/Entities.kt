@@ -309,6 +309,33 @@ data class GuideProgressEntity(
     val done: Boolean,
 )
 
+/**
+ * Feature B: user's watchlist / favorites.
+ *
+ * Local-only — never synced. Survives any DB refresh because [CompatDbWriteDao.replaceAll]
+ * never touches this table (like journal_entries and local_verified_guides).
+ * One row per gameId — toggleing a second time removes it.
+ */
+@Entity(
+    tableName = "favorites",
+    indices = [Index("gameId", unique = true)],
+)
+data class FavoriteEntity(
+    @PrimaryKey val id: String,      // UUID
+    val gameId: String,
+    val createdAt: Long,             // epoch ms
+    /**
+     * Snapshot of the best-compatibility state at the time this favorite was last
+     * seen during a sync. The [CompatDbSyncWorker] extension stores a compact
+     * summary here so the next sync can diff "before vs after" to decide whether
+     * a notification is warranted.
+     *
+     * Format: "<stability>|<avgFps>|<confidence>" — e.g. "PERFECT|60|STRONG"
+     * or "" when no data existed at the time of the last check.
+     */
+    val lastKnownBestState: String = "",
+)
+
 /** A downloadable GPU driver (Adreno/Turnip variants). */
 @Entity(tableName = "drivers")
 data class DriverEntity(

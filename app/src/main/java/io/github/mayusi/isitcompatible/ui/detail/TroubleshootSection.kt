@@ -18,8 +18,10 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.FileUpload
+import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -30,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
@@ -67,6 +70,7 @@ fun TroubleshootSection(
         Outcome.TRYING -> FixStep(state, accent, onWorked, onNextFix, onReset)
         Outcome.SOLVED -> SolvedState(state, accent, onLogResult, onImportConfig, onReset)
         Outcome.EXHAUSTED -> ExhaustedState(state, accent, onLogResult, onImportConfig, onReset)
+        Outcome.ROLLBACK_LOOKUP -> RollbackSection(state, accent, onReset)
     }
 }
 
@@ -252,6 +256,159 @@ private fun ExhaustedState(
         }
         Spacer(Modifier.height(8.dp))
         TextButton(onClick = onReset) { Text("Try a different symptom") }
+    }
+}
+
+/**
+ * Feature A: rollback guidance section for "It worked before, now it doesn't".
+ *
+ * Only surfaces a driver-regression conclusion when journal evidence backs it
+ * (a PERFECT/PLAYABLE entry with driverIdAtTimeOfRun recorded). Otherwise
+ * shows an honest "can't tell" or "same driver" message.
+ */
+@Composable
+private fun RollbackSection(
+    state: TroubleshootState,
+    accent: Color,
+    onReset: () -> Unit,
+) {
+    val uriHandler = LocalUriHandler.current
+    Column(Modifier.fillMaxWidth()) {
+        // Symptom label + back button
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                state.symptom?.label ?: "",
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = accent,
+                modifier = Modifier.weight(1f),
+            )
+        }
+        Spacer(Modifier.height(12.dp))
+
+        when (val rb = state.rollback) {
+            null, RollbackState.Loading -> {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                    Spacer(Modifier.width(10.dp))
+                    Text(
+                        "Checking your journal history…",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+
+            is RollbackState.Regression -> {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFFFFECB3))
+                        .padding(14.dp),
+                ) {
+                    Column {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Outlined.History,
+                                null,
+                                tint = Color(0xFF7B5800),
+                                modifier = Modifier.size(20.dp),
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                "Possible driver regression detected",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF7B5800),
+                            )
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            "Your last working run on ${rb.lastWorkingDate} used driver " +
+                                "${rb.workingDriverName}. A newer driver (${rb.currentDriverName}) " +
+                                "may have caused this regression.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color(0xFF7B5800),
+                        )
+                    }
+                }
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    "Consider rolling back to ${rb.workingDriverName} to confirm.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                )
+                Spacer(Modifier.height(10.dp))
+                if (!rb.workingDriverUrl.isNullOrBlank()) {
+                    Button(
+                        onClick = { uriHandler.openUri(rb.workingDriverUrl) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Icon(Icons.Outlined.History, null, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text("Download ${rb.workingDriverName}")
+                    }
+                } else {
+                    OutlinedButton(
+                        onClick = {},
+                        enabled = false,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("No download URL for ${rb.workingDriverName}")
+                    }
+                }
+            }
+
+            is RollbackState.SameDriver -> {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(14.dp),
+                ) {
+                    Column {
+                        Text(
+                            "Driver hasn't changed",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            "Your last working run (${rb.lastWorkingDate}) also used " +
+                                "${rb.driverName} — the same driver you're on now. " +
+                                "The issue is likely elsewhere (emulator update, game files, settings).",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+
+            is RollbackState.NoEvidence -> {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(14.dp),
+                ) {
+                    Text(
+                        rb.message,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(10.dp))
+        TextButton(onClick = onReset) {
+            Icon(Icons.Outlined.Close, null, modifier = Modifier.size(14.dp))
+            Spacer(Modifier.width(4.dp))
+            Text("Different problem")
+        }
     }
 }
 

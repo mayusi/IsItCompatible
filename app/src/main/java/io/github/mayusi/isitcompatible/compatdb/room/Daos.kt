@@ -235,6 +235,36 @@ interface DriverDao {
     suspend fun deleteAll()
 }
 
+/**
+ * Feature B: favorites / watchlist DAO.
+ *
+ * Local-only, durable — [CompatDbWriteDao.replaceAll] never touches this table.
+ * Used by [CompatDbSyncWorker] extension to diff compatibility state for alert notifications.
+ */
+@Dao
+interface FavoriteDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(row: FavoriteEntity)
+
+    @Query("DELETE FROM favorites WHERE gameId = :gameId")
+    suspend fun removeByGameId(gameId: String)
+
+    @Query("SELECT EXISTS(SELECT 1 FROM favorites WHERE gameId = :gameId)")
+    suspend fun isFavorite(gameId: String): Boolean
+
+    @Query("SELECT EXISTS(SELECT 1 FROM favorites WHERE gameId = :gameId)")
+    fun isFavoriteFlow(gameId: String): Flow<Boolean>
+
+    @Query("SELECT * FROM favorites ORDER BY createdAt DESC")
+    fun observeAll(): Flow<List<FavoriteEntity>>
+
+    @Query("SELECT * FROM favorites")
+    suspend fun all(): List<FavoriteEntity>
+
+    @Query("UPDATE favorites SET lastKnownBestState = :state WHERE gameId = :gameId")
+    suspend fun updateLastKnownBestState(gameId: String, state: String)
+}
+
 /** Aggregate ops that run as one transaction so partial sync failures don't tear the DB. */
 @Dao
 interface CompatDbWriteDao {

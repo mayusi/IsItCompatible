@@ -3,6 +3,7 @@ package io.github.mayusi.isitcompatible.ui
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material.icons.outlined.EditNote
+import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Smartphone
@@ -35,6 +36,7 @@ import io.github.mayusi.isitcompatible.ui.autodetect.AutoDetectScreen
 import io.github.mayusi.isitcompatible.ui.common.AppUpdateDialog
 import io.github.mayusi.isitcompatible.ui.detail.GameDetailScreen
 import io.github.mayusi.isitcompatible.ui.journal.JournalScreen
+import io.github.mayusi.isitcompatible.ui.library.LibraryScreen
 import io.github.mayusi.isitcompatible.ui.search.SearchScreen
 import io.github.mayusi.isitcompatible.ui.settings.SettingsScreen
 import io.github.mayusi.isitcompatible.ui.updates.UpdatesScreen
@@ -49,6 +51,7 @@ import io.github.mayusi.isitcompatible.ui.updates.UpdatesScreen
  */
 private enum class Tab(val route: String, val labelRes: Int, val icon: ImageVector) {
     BROWSE("browse", R.string.tab_browse, Icons.Outlined.Search),
+    LIBRARY("library", R.string.tab_library, Icons.Outlined.FolderOpen),
     JOURNAL("journal", R.string.tab_journal, Icons.Outlined.EditNote),
     AUTODETECT("autodetect", R.string.tab_autodetect, Icons.Outlined.Smartphone),
     UPDATES("updates", R.string.tab_updates, Icons.Outlined.CloudDownload),
@@ -124,6 +127,12 @@ fun MainScaffold(
         ) {
             composable(Tab.BROWSE.route) {
                 SearchScreen(
+                    contentPadding = padding,
+                    onOpenGame = { gameId -> nav.navigate(detailRoute(gameId)) },
+                )
+            }
+            composable(Tab.LIBRARY.route) {
+                LibraryScreen(
                     contentPadding = padding,
                     onOpenGame = { gameId -> nav.navigate(detailRoute(gameId)) },
                 )

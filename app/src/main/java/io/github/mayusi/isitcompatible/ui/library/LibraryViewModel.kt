@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.mayusi.isitcompatible.compatdb.CompatDbRepository
+import io.github.mayusi.isitcompatible.compatdb.room.EmulatorDao
 import io.github.mayusi.isitcompatible.compatdb.room.GameDao
 import io.github.mayusi.isitcompatible.compatdb.room.ReportDao
 import io.github.mayusi.isitcompatible.data.UserPreferences
@@ -13,13 +14,17 @@ import io.github.mayusi.isitcompatible.library.LibraryScanner
 import io.github.mayusi.isitcompatible.compatdb.room.ReportEntity
 import io.github.mayusi.isitcompatible.library.ScannedGame
 import io.github.mayusi.isitcompatible.recommend.Bucket
+import io.github.mayusi.isitcompatible.recommend.Confidence
+import io.github.mayusi.isitcompatible.recommend.Recommendation
 import io.github.mayusi.isitcompatible.recommend.Recommender
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,6 +33,7 @@ class LibraryViewModel @Inject constructor(
     private val scanner: LibraryScanner,
     private val gameDao: GameDao,
     private val reportDao: ReportDao,
+    private val emulatorDao: EmulatorDao,
     private val compatDb: CompatDbRepository,
 ) : ViewModel() {
 
@@ -56,23 +62,32 @@ class LibraryViewModel @Inject constructor(
                     pc?.let { addAll(scanner.scanPcGames(it)) }
                 }
 
-                // Batch-fetch all reports for matched games in one pass (O(1) DB
-                // round-trips, chunked ≤500 to respect SQLite's IN-clause limit).
-                // Previously this was O(N) — one reportDao.byGame() per scanned game.
-                val gameIds = games.mapNotNull { it.gameId }
-                val reportsByGame = HashMap<String, List<ReportEntity>>()
-                gameIds.chunked(500).forEach { chunk ->
-                    val rows = reportDao.byGameIds(chunk)
-                    rows.groupBy { it.gameId }.forEach { (k, v) -> reportsByGame[k] = v }
+                // Batch-fetch reports and emulators on IO dispatcher.
+                val (reportsByGame, emusById) = withContext(Dispatchers.IO) {
+                    val gameIds = games.mapNotNull { it.gameId }
+                    val byGame = HashMap<String, List<ReportEntity>>()
+                    gameIds.chunked(500).forEach { chunk ->
+                        val rows = reportDao.byGameIds(chunk)
+                        rows.groupBy { it.gameId }.forEach { (k, v) -> byGame[k] = v }
+                    }
+                    val emus = emulatorDao.all().associateBy { it.id }
+                    byGame to emus
                 }
 
-                val withDots = games.map { sg ->
-                    sg to dotFor(sg, fp, reportsByGame[sg.gameId].orEmpty())
+                // Compute compatibility summaries on the Default dispatcher (CPU-bound).
+                val items = withContext(Dispatchers.Default) {
+                    games.map { sg ->
+                        val rawReports = reportsByGame[sg.gameId].orEmpty()
+                        summaryFor(sg, fp, rawReports, emusById)
+                    }
                 }
+
+                val sorted = sortItems(items, _state.value.sortOrder)
                 _state.update {
                     it.copy(
                         loading = false,
-                        games = withDots,
+                        allItems = items,
+                        items = sorted,
                         fingerprint = fp,
                         romPicked = rom != null,
                         pcPicked = pc != null,
@@ -84,27 +99,57 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
+    fun setSortOrder(order: LibrarySortOrder) {
+        _state.update { s ->
+            s.copy(sortOrder = order, items = sortItems(s.allItems, order))
+        }
+    }
+
+    private fun sortItems(
+        items: List<LibraryGameItem>,
+        order: LibrarySortOrder,
+    ): List<LibraryGameItem> = when (order) {
+        LibrarySortOrder.ALPHA -> items.sortedBy { it.game.displayName }
+        LibrarySortOrder.FPS_DESC -> items.sortedWith(
+            Comparator { a, b ->
+                val fa = a.bestFps; val fb = b.bestFps
+                when {
+                    fa == null && fb == null -> a.game.displayName.compareTo(b.game.displayName)
+                    fa == null -> 1
+                    fb == null -> -1
+                    else -> if (fb != fa) fb.compareTo(fa) else a.game.displayName.compareTo(b.game.displayName)
+                }
+            },
+        )
+    }
+
     /**
-     * Compute the library-dot color for a scanned game from pre-fetched reports.
-     * No DB access — all reports have already been batched by [rescan].
-     * Color logic is identical to the previous per-game version.
+     * Compute the full compatibility summary for a scanned game from pre-fetched
+     * reports. No DB access — all data has already been batched by [rescan].
+     * The dot color is derived from the same recommender pass that produces FPS/
+     * stability/emulator data, so it stays consistent.
      */
-    private fun dotFor(
+    private fun summaryFor(
         g: ScannedGame,
         fp: DeviceFingerprint?,
         rawReports: List<ReportEntity>,
-    ): DotColor {
-        if (g.gameId == null || fp == null) return DotColor.GRAY
-        if (rawReports.isEmpty()) return DotColor.GRAY
+        emusById: Map<String, io.github.mayusi.isitcompatible.compatdb.room.EmulatorEntity>,
+    ): LibraryGameItem {
+        if (g.gameId == null || fp == null || rawReports.isEmpty()) {
+            return LibraryGameItem(game = g, dot = DotColor.GRAY)
+        }
         // Policy: Windows games are GameNative-only.
         val isWindows = g.platformGuess.equals("Windows", ignoreCase = true) ||
             g.gameId.startsWith("win:", ignoreCase = true)
         val reports = if (isWindows) {
             rawReports.filter { it.emulatorId.equals("gamenative", ignoreCase = true) }
         } else rawReports
-        if (reports.isEmpty()) return DotColor.GRAY
-        val top = recommender.rank(reports, fp, topK = 1).firstOrNull() ?: return DotColor.GRAY
-        return when (top.bucket) {
+        if (reports.isEmpty()) return LibraryGameItem(game = g, dot = DotColor.GRAY)
+
+        val top: Recommendation = recommender.rank(reports, fp, topK = 1).firstOrNull()
+            ?: return LibraryGameItem(game = g, dot = DotColor.GRAY)
+
+        val dot = when (top.bucket) {
             Bucket.SAME_SOC_AND_RAM,
             Bucket.SAME_SOC_FAMILY -> when (top.stability.uppercase()) {
                 "PERFECT", "PLAYABLE" -> DotColor.GREEN
@@ -115,16 +160,45 @@ class LibraryViewModel @Inject constructor(
             Bucket.SAME_GPU_VENDOR -> DotColor.YELLOW
             Bucket.ANY_DEVICE -> DotColor.GRAY
         }
+
+        return LibraryGameItem(
+            game = g,
+            dot = dot,
+            bestFps = top.avgFps,
+            bestStability = top.stability,
+            bestEmulatorName = emusById[top.emulatorId]?.name ?: top.emulatorId,
+            bestConfidence = top.bucket.confidence,
+            reportCount = reports.size,
+        )
     }
+}
+
+/** A scanned game enriched with compatibility data for the Library UI. */
+data class LibraryGameItem(
+    val game: ScannedGame,
+    val dot: DotColor,
+    val bestFps: Int? = null,
+    val bestStability: String? = null,
+    val bestEmulatorName: String? = null,
+    val bestConfidence: Confidence? = null,
+    val reportCount: Int = 0,
+)
+
+enum class LibrarySortOrder(val label: String) {
+    ALPHA("A–Z"),
+    FPS_DESC("Best performance"),
 }
 
 data class LibraryState(
     val loading: Boolean = true,
-    val games: List<Pair<ScannedGame, DotColor>> = emptyList(),
+    /** Unsorted master list — re-sorted on demand without a rescan. */
+    val allItems: List<LibraryGameItem> = emptyList(),
+    val items: List<LibraryGameItem> = emptyList(),
     val fingerprint: DeviceFingerprint? = null,
     val romPicked: Boolean = false,
     val pcPicked: Boolean = false,
     val error: String? = null,
+    val sortOrder: LibrarySortOrder = LibrarySortOrder.ALPHA,
 )
 
 enum class DotColor { GREEN, YELLOW, RED, GRAY }

@@ -25,6 +25,7 @@
     <string name="tab_autodetect">My Device</string>
     <!-- tab_my_games retired in v0.5; folder scanning moved into Settings. -->
     <string name="tab_my_games">My Games</string>
+    <string name="tab_library">My Library</string>
     <string name="tab_updates">Database</string>
     <string name="tab_settings">Settings</string>
 

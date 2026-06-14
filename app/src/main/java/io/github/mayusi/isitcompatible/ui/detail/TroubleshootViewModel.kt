@@ -7,7 +7,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.mayusi.isitcompatible.compatdb.BaseFixes
 import io.github.mayusi.isitcompatible.compatdb.CompatDbRepository
 import io.github.mayusi.isitcompatible.compatdb.GuideResolver
+import io.github.mayusi.isitcompatible.compatdb.room.DriverDao
+import io.github.mayusi.isitcompatible.compatdb.room.DriverEntity
 import io.github.mayusi.isitcompatible.compatdb.room.GameDao
+import io.github.mayusi.isitcompatible.compatdb.room.JournalDao
 import io.github.mayusi.isitcompatible.compatdb.room.ReportDao
 import io.github.mayusi.isitcompatible.data.UserPreferences
 import io.github.mayusi.isitcompatible.recommend.Recommender
@@ -43,6 +46,8 @@ class TroubleshootViewModel @Inject constructor(
     private val baseFixes: BaseFixes,
     private val prefs: UserPreferences,
     private val compatDb: CompatDbRepository,
+    private val journalDao: JournalDao,
+    private val driverDao: DriverDao,
     handle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -81,6 +86,22 @@ class TroubleshootViewModel @Inject constructor(
 
     /** User picked a symptom — build the ordered fix list and show fix #0. */
     fun pickSymptom(symptom: TroubleshootSymptom) {
+        // Feature A: "It worked before" takes its own investigation path instead of
+        // the normal fix-list flow. The outcome is surfaced as ROLLBACK_LOOKUP in
+        // the state; the UI renders RollbackSection instead of FixStep.
+        if (symptom == TroubleshootSymptom.WORKED_BEFORE) {
+            _state.update {
+                it.copy(
+                    symptom = symptom,
+                    fixes = emptyList(),
+                    currentIndex = 0,
+                    outcome = Outcome.ROLLBACK_LOOKUP,
+                    rollback = null,
+                )
+            }
+            lookUpRollback()
+            return
+        }
         viewModelScope.launch {
             val emuId = recommendedEmulatorId
             // (a) the game's own guide troubleshooting, relevant entries first.
@@ -128,6 +149,99 @@ class TroubleshootViewModel @Inject constructor(
     fun reset() {
         _state.update { TroubleshootState(isWindowsGame = isWindows) }
     }
+
+    /**
+     * Feature A: "It worked before, now it doesn't" — look up journal history
+     * for this game to find the last PERFECT or PLAYABLE entry, compare its
+     * driver to the current driver for that family, and build honest rollback
+     * guidance. Only claims a regression when journal evidence supports it.
+     */
+    fun lookUpRollback() {
+        viewModelScope.launch {
+            _state.update { it.copy(rollback = RollbackState.Loading) }
+            val entries = journalDao.forGame(gameId)
+            // Find the last working run (PERFECT or PLAYABLE), newest-first
+            val lastWorking = entries.firstOrNull {
+                it.stability.uppercase() in listOf("PERFECT", "PLAYABLE")
+            }
+            if (lastWorking == null) {
+                _state.update {
+                    it.copy(
+                        rollback = RollbackState.NoEvidence(
+                            "No previous working run recorded for this game. " +
+                                "Log a run when you get it working — this section will improve over time.",
+                        ),
+                    )
+                }
+                return@launch
+            }
+
+            val workingDriverId = lastWorking.driverIdAtTimeOfRun
+            if (workingDriverId == null) {
+                _state.update {
+                    it.copy(
+                        rollback = RollbackState.NoEvidence(
+                            "Your last working run (${formatRollbackDate(lastWorking.createdAt)}) " +
+                                "didn't record which driver was active, so we can't compare versions. " +
+                                "Log future runs with the driver applied to enable this check.",
+                        ),
+                    )
+                }
+                return@launch
+            }
+
+            val workingDriver = driverDao.byId(workingDriverId)
+            // Look up ALL drivers to find what's currently available for the same GPU
+            val allDrivers = driverDao.all()
+            val currentDriver: DriverEntity? = if (workingDriver != null) {
+                // Find a newer driver in the same family (same gpuTargets overlap)
+                allDrivers
+                    .filter { it.id != workingDriverId }
+                    .filter { d ->
+                        d.gpuTargets.split('|').any { t ->
+                            workingDriver.gpuTargets.split('|').any { w ->
+                                t.trim().equals(w.trim(), ignoreCase = true)
+                            }
+                        }
+                    }
+                    .maxByOrNull { it.dataAsOf }
+            } else null
+
+            val workingDriverName = workingDriver?.name ?: workingDriverId
+            val currentDriverName = currentDriver?.name
+
+            if (currentDriver == null || currentDriverName == workingDriverName ||
+                currentDriverName.isNullOrBlank()) {
+                _state.update {
+                    it.copy(
+                        rollback = RollbackState.SameDriver(
+                            lastWorkingDate = formatRollbackDate(lastWorking.createdAt),
+                            driverName = workingDriverName,
+                        ),
+                    )
+                }
+                return@launch
+            }
+
+            _state.update {
+                it.copy(
+                    rollback = RollbackState.Regression(
+                        lastWorkingDate = formatRollbackDate(lastWorking.createdAt),
+                        workingDriverName = workingDriverName,
+                        workingDriverUrl = workingDriver?.downloadUrl,
+                        currentDriverName = currentDriverName,
+                        workingEmulatorId = lastWorking.emulatorId,
+                        workingPresetId = lastWorking.presetId,
+                    ),
+                )
+            }
+        }
+    }
+
+    private fun formatRollbackDate(epochMs: Long): String {
+        val fmt = java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM)
+        return fmt.format(java.util.Date(epochMs))
+    }
 }
 
 /** Immutable UI state for the troubleshooter flow. */
@@ -142,9 +256,41 @@ data class TroubleshootState(
     val outcome: Outcome = Outcome.PICKING,
     /** True for Windows/GameNative games — unlocks the "import working config" success CTA. */
     val isWindowsGame: Boolean = false,
+    /** Feature A: rollback analysis result, null = not yet requested. */
+    val rollback: RollbackState? = null,
 ) {
     val currentFix: RankedFix? get() = fixes.getOrNull(currentIndex)
     val stepLabel: String get() = "Fix ${currentIndex + 1} of ${fixes.size}"
+}
+
+/**
+ * Feature A: result of comparing the last-working-run driver to the current driver.
+ *
+ * Only surfaces a regression claim when journal evidence (a PERFECT/PLAYABLE entry
+ * with a recorded driverIdAtTimeOfRun) backs it up.
+ */
+sealed interface RollbackState {
+    /** Lookup in progress. */
+    data object Loading : RollbackState
+
+    /** A driver regression is the likely cause — real evidence. */
+    data class Regression(
+        val lastWorkingDate: String,
+        val workingDriverName: String,
+        val workingDriverUrl: String?,
+        val currentDriverName: String,
+        val workingEmulatorId: String?,
+        val workingPresetId: String?,
+    ) : RollbackState
+
+    /** Evidence says they're on the same driver → not a driver regression. */
+    data class SameDriver(
+        val lastWorkingDate: String,
+        val driverName: String,
+    ) : RollbackState
+
+    /** No working run recorded, or no driver was captured. Honest "can't tell" state. */
+    data class NoEvidence(val message: String) : RollbackState
 }
 
 /** One step in the ranked fix list, tagged with where it came from. */
@@ -164,6 +310,8 @@ enum class Outcome {
     SOLVED,
     /** Ran out of ranked fixes — honest end state. */
     EXHAUSTED,
+    /** Feature A: looking up journal+driver history for "worked before" regression analysis. */
+    ROLLBACK_LOOKUP,
 }
 
 /**
@@ -207,6 +355,11 @@ enum class TroubleshootSymptom(
         "wont-install",
         "Won't install / import",
         listOf("install", "import", "setup", "installer", "copy", "extract", "missing file"),
+    ),
+    WORKED_BEFORE(
+        "worked-before",
+        "It worked before, now it doesn't",
+        listOf("worked", "regression", "update", "broke", "broken", "used to", "stopped", "no longer"),
     );
 
     /** Does this game's free-text troubleshooting entry relate to this symptom? */

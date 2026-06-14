@@ -53,6 +53,9 @@ class UserPreferences @Inject constructor(
             pendingSessionShowedFps = p[Keys.PENDING_SESSION_SHOWED_FPS] ?: false,
             // v0.11: Windows quick-start onboarding card dismissed flag.
             windowsQuickStartDismissed = p[Keys.WINDOWS_QUICK_START_DISMISSED] ?: false,
+            // Feature B: true once we've shown the POST_NOTIFICATIONS rationale
+            // dialog at favorite-time so we never nag the user again.
+            notifPermAsked = p[Keys.NOTIF_PERM_ASKED] ?: false,
             // self-update
             lastUpdateCheckMs = p[Keys.LAST_UPDATE_CHECK_MS] ?: 0L,
             updateAutoCheckEnabled = p[Keys.UPDATE_AUTO_CHECK_ENABLED] ?: true,
@@ -103,6 +106,14 @@ class UserPreferences @Inject constructor(
     /** v0.11: dismiss the Windows quick-start onboarding card permanently. */
     suspend fun dismissWindowsQuickStart() =
         context.dataStore.edit { it[Keys.WINDOWS_QUICK_START_DISMISSED] = true }
+
+    /**
+     * Feature B: mark that we have already prompted (or decided not to prompt)
+     * for POST_NOTIFICATIONS at favorite-time. Call this regardless of whether
+     * the user granted or denied so we only ever ask once.
+     */
+    suspend fun markNotifPermAsked() =
+        context.dataStore.edit { it[Keys.NOTIF_PERM_ASKED] = true }
 
     // ── self-update prefs ──────────────────────────────────────────────────────
 
@@ -181,6 +192,12 @@ class UserPreferences @Inject constructor(
         val pendingSessionShowedFps: Boolean = false,
         /** v0.11: true once the user dismisses the Windows quick-start onboarding card. */
         val windowsQuickStartDismissed: Boolean = false,
+        /**
+         * Feature B: true once we have shown (or decided to skip) the contextual
+         * POST_NOTIFICATIONS rationale at favorite-time. Prevents repeated nags —
+         * we ask at most once no matter how many games the user favorites.
+         */
+        val notifPermAsked: Boolean = false,
         // self-update
         val lastUpdateCheckMs: Long = 0L,
         val updateAutoCheckEnabled: Boolean = true,
@@ -207,6 +224,8 @@ class UserPreferences @Inject constructor(
         val PENDING_SESSION_SHOWED_FPS = booleanPreferencesKey("pending_session_showed_fps")
         // v0.11: Windows quick-start onboarding card.
         val WINDOWS_QUICK_START_DISMISSED = booleanPreferencesKey("windows_quick_start_dismissed")
+        // Feature B: POST_NOTIFICATIONS contextual ask-once flag.
+        val NOTIF_PERM_ASKED = booleanPreferencesKey("notif_perm_asked")
         // self-update
         val LAST_UPDATE_CHECK_MS = longPreferencesKey("last_update_check_ms")
         val UPDATE_AUTO_CHECK_ENABLED = booleanPreferencesKey("update_auto_check_enabled")

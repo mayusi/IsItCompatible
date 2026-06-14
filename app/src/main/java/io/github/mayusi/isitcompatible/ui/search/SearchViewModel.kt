@@ -8,6 +8,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.mayusi.isitcompatible.compatdb.CompatDbRepository
 import io.github.mayusi.isitcompatible.getit.GameNativeLaunch
 import io.github.mayusi.isitcompatible.compatdb.room.EmulatorDao
+import io.github.mayusi.isitcompatible.compatdb.room.FavoriteDao
 import io.github.mayusi.isitcompatible.compatdb.room.GameDao
 import io.github.mayusi.isitcompatible.compatdb.room.GameEntity
 import io.github.mayusi.isitcompatible.compatdb.room.JournalDao
@@ -46,6 +47,7 @@ class SearchViewModel @Inject constructor(
     private val reportDao: ReportDao,
     private val emulatorDao: EmulatorDao,
     private val journalDao: JournalDao,
+    private val favoriteDao: FavoriteDao,
     private val prefs: UserPreferences,
     private val compatDb: CompatDbRepository,
 ) : ViewModel() {
@@ -142,6 +144,13 @@ class SearchViewModel @Inject constructor(
                 _state.update { it.copy(triedGameIds = ids.toSet()) }
             }
             .launchIn(viewModelScope)
+        // Feature B: observe favorited game ids so the Favorites chip filters live.
+        favoriteDao.observeAll()
+            .onEach { favs ->
+                _state.update { it.copy(favoriteGameIds = favs.map { f -> f.gameId }.toSet()) }
+                refilter()
+            }
+            .launchIn(viewModelScope)
     }
 
     /** Dismiss the Windows quick-start onboarding card — persisted, never shown again. */
@@ -171,6 +180,12 @@ class SearchViewModel @Inject constructor(
         _state.update {
             it.copy(stabilityFilter = if (it.stabilityFilter == null) "runs_great" else null)
         }
+        refilter()
+    }
+
+    /** Feature B: toggle the "Favorites only" filter chip. */
+    fun toggleFavoritesFilter() {
+        _state.update { it.copy(favoritesFilterActive = !it.favoritesFilterActive) }
         refilter()
     }
 
@@ -220,6 +235,10 @@ class SearchViewModel @Inject constructor(
                     .filter {
                         s.stabilityFilter == null ||
                             it.bestStability?.uppercase() in listOf("PERFECT", "PLAYABLE")
+                    }
+                    // Feature B: favorites-only filter chip
+                    .filter {
+                        !s.favoritesFilterActive || it.game.id in s.favoriteGameIds
                     }
                     .sortedWith(comparator)
                     .toList()
@@ -276,4 +295,8 @@ data class SearchState(
      * items) on every recompose.
      */
     val hasWindowsGames: Boolean = false,
+    /** Feature B: set of game ids the user has favorited. */
+    val favoriteGameIds: Set<String> = emptySet(),
+    /** Feature B: true when the "Favorites" chip filter is active. */
+    val favoritesFilterActive: Boolean = false,
 )

@@ -78,12 +78,19 @@ fun SearchScreen(
         SortAndFilterChips(
             sortOrder = s.sortOrder,
             stabilityFilterActive = s.stabilityFilter != null,
+            favoritesFilterActive = s.favoritesFilterActive,
+            hasFavorites = s.favoriteGameIds.isNotEmpty(),
             onSetSort = vm::setSortOrder,
             onToggleStability = vm::toggleStabilityFilter,
+            onToggleFavorites = vm::toggleFavoritesFilter,
         )
 
-        ResultCountBar(count = s.results.size, total = s.allSummaries.size,
-            filterActive = s.query.isNotBlank() || s.platformFilter != null || s.stabilityFilter != null)
+        ResultCountBar(
+            count = s.results.size,
+            total = if (s.favoritesFilterActive) s.favoriteGameIds.size else s.allSummaries.size,
+            filterActive = s.query.isNotBlank() || s.platformFilter != null ||
+                s.stabilityFilter != null || s.favoritesFilterActive,
+        )
 
         if (s.results.isEmpty() && s.allSummaries.isNotEmpty()) {
             Box(Modifier.fillMaxSize().padding(32.dp), Alignment.Center) {
@@ -123,6 +130,7 @@ fun SearchScreen(
                     GameCard(
                         s = summary,
                         tried = summary.game.id in s.triedGameIds,
+                        favorited = summary.game.id in s.favoriteGameIds,
                     ) { onOpenGame(summary.game.id) }
                 }
             }
@@ -267,8 +275,11 @@ private fun PlatformChips(
 private fun SortAndFilterChips(
     sortOrder: SortOrder,
     stabilityFilterActive: Boolean,
+    favoritesFilterActive: Boolean,
+    hasFavorites: Boolean,
     onSetSort: (SortOrder) -> Unit,
     onToggleStability: () -> Unit,
+    onToggleFavorites: () -> Unit,
 ) {
     Row(
         Modifier
@@ -277,6 +288,28 @@ private fun SortAndFilterChips(
             .padding(horizontal = 16.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        // Feature B: "Favorites" quick-filter chip — only shown when the user has at least one
+        val favColor = Color(0xFFFFC107)
+        if (hasFavorites || favoritesFilterActive) {
+            Box(
+                Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(
+                        if (favoritesFilterActive) favColor.copy(alpha = 0.85f)
+                        else MaterialTheme.colorScheme.surfaceVariant,
+                    )
+                    .clickable { onToggleFavorites() }
+                    .padding(horizontal = 14.dp, vertical = 7.dp),
+            ) {
+                Text(
+                    "★ Favorites",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = if (favoritesFilterActive) FontWeight.Bold else FontWeight.Normal,
+                    color = if (favoritesFilterActive) Color.White
+                            else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
         // "Runs great" quick-filter chip
         val runGreatColor = Color(0xFF4CAF50)
         Box(
@@ -333,7 +366,7 @@ private fun ResultCountBar(count: Int, total: Int, filterActive: Boolean) {
 }
 
 @Composable
-private fun GameCard(s: GameSummary, tried: Boolean = false, onClick: () -> Unit) {
+private fun GameCard(s: GameSummary, tried: Boolean = false, favorited: Boolean = false, onClick: () -> Unit) {
     val color = PlatformColors.primary(s.game.platform)
     Row(
         Modifier
@@ -373,6 +406,14 @@ private fun GameCard(s: GameSummary, tried: Boolean = false, onClick: () -> Unit
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.weight(1f, fill = false))
+                if (favorited) {
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        "★",
+                        style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                        color = Color(0xFFFFC107),
+                    )
+                }
                 if (tried) {
                     Spacer(Modifier.width(6.dp))
                     Box(

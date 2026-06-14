@@ -1,7 +1,11 @@
 package io.github.mayusi.isitcompatible.ui.detail
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,21 +15,20 @@ import io.github.mayusi.isitcompatible.apply.ApplyJobState
 import io.github.mayusi.isitcompatible.apply.PresetStager
 import io.github.mayusi.isitcompatible.compatdb.CompatDbRepository
 import io.github.mayusi.isitcompatible.compatdb.GuideResolver
-import io.github.mayusi.isitcompatible.compatdb.GuideStepDto
 import io.github.mayusi.isitcompatible.compatdb.JournalShareIntent
 import io.github.mayusi.isitcompatible.compatdb.ResolvedGuide
-import io.github.mayusi.isitcompatible.compatdb.compatJson
+import io.github.mayusi.isitcompatible.compatdb.VerifiedGuideImporter
 import io.github.mayusi.isitcompatible.compatdb.room.DriverDao
 import io.github.mayusi.isitcompatible.compatdb.room.EmulatorDao
 import io.github.mayusi.isitcompatible.compatdb.room.EmulatorEntity
+import io.github.mayusi.isitcompatible.compatdb.room.FavoriteDao
+import io.github.mayusi.isitcompatible.compatdb.room.FavoriteEntity
 import io.github.mayusi.isitcompatible.compatdb.room.GameDao
 import io.github.mayusi.isitcompatible.compatdb.room.GameEntity
 import io.github.mayusi.isitcompatible.compatdb.room.GuideDao
 import io.github.mayusi.isitcompatible.compatdb.room.GuideProgressEntity
 import io.github.mayusi.isitcompatible.compatdb.room.JournalDao
 import io.github.mayusi.isitcompatible.compatdb.room.JournalEntryEntity
-import io.github.mayusi.isitcompatible.compatdb.room.LocalVerifiedGuideDao
-import io.github.mayusi.isitcompatible.compatdb.room.LocalVerifiedGuideEntity
 import io.github.mayusi.isitcompatible.compatdb.room.PresetDao
 import io.github.mayusi.isitcompatible.compatdb.room.PresetEntity
 import io.github.mayusi.isitcompatible.compatdb.room.ReportDao
@@ -38,14 +41,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.jsonObject
 import java.util.UUID
 import javax.inject.Inject
 
@@ -59,13 +59,14 @@ class GameDetailViewModel @Inject constructor(
     private val driverDao: DriverDao,
     private val journalDao: JournalDao,
     private val guideDao: GuideDao,
-    private val localVerifiedGuideDao: LocalVerifiedGuideDao,
     private val guideResolver: GuideResolver,
     private val deviceScanner: io.github.mayusi.isitcompatible.autodetect.DeviceScanner,
     private val emulatorInstaller: io.github.mayusi.isitcompatible.getit.EmulatorInstaller,
     private val prefs: UserPreferences,
     private val stager: PresetStager,
     private val compatDb: CompatDbRepository,
+    private val favoriteDao: FavoriteDao,
+    private val verifiedGuideImporter: VerifiedGuideImporter,
     handle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -98,7 +99,68 @@ class GameDetailViewModel @Inject constructor(
     private val _state = MutableStateFlow(GameDetailState())
     val state: StateFlow<GameDetailState> = _state.asStateFlow()
 
-    init { load() }
+    init {
+        load()
+        // Feature B: observe favorite status reactively so the star updates
+        // immediately without reloading the full detail state.
+        favoriteDao.isFavoriteFlow(gameId)
+            .onEach { fav -> _state.update { it.copy(isFavorite = fav) } }
+            .launchIn(viewModelScope)
+    }
+
+    /** Feature B: toggle the star/bookmark on this game. */
+    fun toggleFavorite() {
+        viewModelScope.launch {
+            val currently = favoriteDao.isFavorite(gameId)
+            if (currently) {
+                favoriteDao.removeByGameId(gameId)
+            } else {
+                favoriteDao.upsert(
+                    FavoriteEntity(
+                        id = java.util.UUID.randomUUID().toString(),
+                        gameId = gameId,
+                        createdAt = System.currentTimeMillis(),
+                        lastKnownBestState = "",
+                    ),
+                )
+                // Feature B: request POST_NOTIFICATIONS the first time any game is
+                // favorited (API 33+ only; lower API auto-grants). Ask at most once —
+                // if the user already granted it in the wizard, skip. On denial the
+                // worker already checks the permission before posting so nothing crashes.
+                maybeRequestNotifPermission()
+            }
+        }
+    }
+
+    /**
+     * Feature B: emit a one-shot signal to the UI to launch the
+     * POST_NOTIFICATIONS request dialog. Conditions:
+     *  - Android 13+ (API 33); below this the permission is auto-granted.
+     *  - Permission not already granted (system already said yes).
+     *  - We haven't asked before (ask-once guard stored in prefs).
+     * After deciding to ask (or skip), we immediately persist the asked-flag so
+     * even if the composable doesn't consume the event we never ask twice.
+     */
+    private suspend fun maybeRequestNotifPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        val snap = prefs.data.first()
+        if (snap.notifPermAsked) return
+        val alreadyGranted = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.POST_NOTIFICATIONS,
+        ) == PackageManager.PERMISSION_GRANTED
+        // Mark asked regardless of whether we're going to prompt — if it's already
+        // granted there's nothing to ask; mark so we never revisit.
+        prefs.markNotifPermAsked()
+        if (alreadyGranted) return
+        // Signal the UI to fire the permission launcher. The composable consumes
+        // this flag and calls clearNotifPermRequest() once launched.
+        _state.update { it.copy(requestNotifPermission = true) }
+    }
+
+    /** Feature B: called by the UI after it has launched the permission request. */
+    fun clearNotifPermRequest() {
+        _state.update { it.copy(requestNotifPermission = false) }
+    }
 
     fun load() {
         viewModelScope.launch {
@@ -593,99 +655,42 @@ class GameDetailViewModel @Inject constructor(
                 return@launch
             }
 
-            // 2. Parse + validate it's actually a GameNative config.
-            val parsed = runCatching { compatJson.parseToJsonElement(rawText).jsonObject }.getOrNull()
-            if (parsed == null) {
-                _state.update { it.copy(importState = ImportConfigState.Error("That file isn't valid JSON. Export the config from GameNative and try again.")) }
-                return@launch
-            }
-            val missing = REQUIRED_CONFIG_KEYS.filter { it !in parsed.keys }
-            val hasExtraData = parsed["extraData"] is JsonObject
-            if (missing.isNotEmpty() || !hasExtraData) {
-                val why = buildString {
-                    append("This doesn't look like a GameNative config. ")
-                    if (missing.isNotEmpty()) append("Missing: ${missing.joinToString(", ")}. ")
-                    if (!hasExtraData) append("Missing the extraData section. ")
-                    append("Export it from GameNative (game → 3 dots → Export Config).")
-                }
-                _state.update { it.copy(importState = ImportConfigState.Error(why)) }
-                return@launch
-            }
-
-            // 3. Sanitize — strip device/user-specific + volatile bits so the
-            //    config is reusable + shareable. Keep everything reproducible.
-            val sanitized = sanitizeGameNativeConfig(parsed)
-            val sanitizedJson = compatJson.encodeToString(JsonObject.serializer(), sanitized)
-
-            // 4. Build the verified source label from the device fingerprint.
+            // 2-7. Validate, sanitize, persist — delegated to the shared importer
+            //      so both this SAF-pick path and the broadcast path stay in sync.
             val fp = _state.value.fingerprint
             val deviceLine = fp?.let { "${it.socFamily} · ${it.gpuModel}" }
             val sourceLabel = if (deviceLine != null) "Verified on your device · $deviceLine" else "Verified on your device"
-            val now = System.currentTimeMillis()
 
-            // 5. Minimal typed steps for the guide: get the app + import the config.
-            val steps = listOf(
-                GuideStepDto(
-                    kind = "GET_APP",
-                    text = "Install GameNative",
-                ),
-                GuideStepDto(
-                    kind = "ACTION",
-                    text = "Import this verified config (open the game → 3 dots → Import Config).",
-                ),
-            )
-            val stepsJson = compatJson.encodeToString(ListSerializer(GuideStepDto.serializer()), steps)
-
-            // 6. Persist as a DURABLE local verified guide. This table is never
-            //    wiped by sync; replaceAll re-applies it into `guides` as tier 1
-            //    after every seed reload, so it survives restarts AND wins over
-            //    the seed via the resolver's lowest-tier-wins ordering.
-            val localId = "local:${game.id}:$GAMENATIVE_EMULATOR_ID:t1"
-            val local = LocalVerifiedGuideEntity(
-                id = localId,
-                gameId = game.id,
-                emulatorId = GAMENATIVE_EMULATOR_ID,
-                sourceLabel = sourceLabel,
-                dataAsOf = now,
-                stepsJson = stepsJson,
-                gameNativeConfigJson = sanitizedJson,
-                createdAt = now,
-            )
-            runCatching {
-                localVerifiedGuideDao.upsert(local)
-                // Apply immediately into `guides` so the resolver sees it without
-                // waiting for the next sync's replaceAll re-apply.
-                guideDao.upsertAll(listOf(local.toGuideEntity()))
-            }.onFailure { err ->
-                _state.update { it.copy(importState = ImportConfigState.Error("Couldn't save the imported config: ${err.message}")) }
-                return@launch
-            }
-
-            // 7. Record a journal entry tying this verified result to the game.
-            //    PLAYABLE by default — the user imported a config that worked.
-            runCatching {
-                journalDao.upsert(
-                    JournalEntryEntity(
-                        id = UUID.randomUUID().toString(),
-                        gameId = game.id,
-                        emulatorId = GAMENATIVE_EMULATOR_ID,
-                        presetId = null,
-                        avgFps = null,
-                        stability = "PLAYABLE",
-                        notes = "Imported a verified working GameNative config.",
-                        createdAt = now,
-                        sessionMinutes = null,
-                        peakTempC = null,
-                        driverIdAtTimeOfRun = null,
-                        shareWithCommunity = false,
-                    ),
+            val importResult = withContext(kotlinx.coroutines.Dispatchers.IO) {
+                verifiedGuideImporter.importVerifiedConfig(
+                    gameId = game.id,
+                    rawConfigJson = rawText,
+                    sourceLabel = sourceLabel,
+                    journalStability = "PLAYABLE",
+                    journalNotes = "Imported a verified working GameNative config.",
                 )
             }
 
-            // 8. Refresh so verifiedGameNativeConfig flips true + the panel updates.
-            load()
-            _state.update {
-                it.copy(importState = ImportConfigState.Success(sanitizedConfigJson = sanitizedJson))
+            when (importResult) {
+                is VerifiedGuideImporter.ImportResult.Failure -> {
+                    val userMsg = when {
+                        importResult.reason.contains("valid JSON", ignoreCase = true) ->
+                            "That file isn't valid JSON. Export the config from GameNative and try again."
+                        importResult.reason.contains("does not look like", ignoreCase = true) ->
+                            importResult.reason + " Export it from GameNative (game → 3 dots → Export Config)."
+                        else ->
+                            "Couldn't save the imported config: ${importResult.reason}"
+                    }
+                    _state.update { it.copy(importState = ImportConfigState.Error(userMsg)) }
+                    return@launch
+                }
+                is VerifiedGuideImporter.ImportResult.Success -> {
+                    // 8. Refresh so verifiedGameNativeConfig flips true + the panel updates.
+                    load()
+                    _state.update {
+                        it.copy(importState = ImportConfigState.Success(sanitizedConfigJson = importResult.sanitizedConfigJson))
+                    }
+                }
             }
         }
     }
@@ -725,40 +730,13 @@ class GameDetailViewModel @Inject constructor(
         )
     }
 
-    /**
-     * Sanitize a parsed GameNative config: blank device/user-specific identity
-     * (name), strip the absolute game-install path from `drives`, drop volatile
-     * telemetry (sessionMetadata), and keep everything that's reusable. The
-     * `id`/`name`/`installPath`/`executablePath` are container-instance specifics
-     * that don't transfer; we normalize them so the config imports cleanly for
-     * the next person without leaking the importer's paths.
-     */
-    private fun sanitizeGameNativeConfig(src: JsonObject): JsonObject = buildJsonObject {
-        for ((key, value) in src) {
-            when (key) {
-                // Volatile telemetry — never reusable, never share.
-                "sessionMetadata" -> { /* drop */ }
-                // Identity / instance-specifics — blank so it's reusable + not leaky.
-                "name" -> put("name", JsonPrimitive(""))
-                "id" -> put("id", JsonPrimitive(""))
-                "installPath" -> put("installPath", JsonPrimitive(""))
-                "executablePath" -> put("executablePath", JsonPrimitive(""))
-                // `drives` embeds the absolute on-device game-install path; blank it.
-                // The importing user re-points their own install on import.
-                "drives" -> put("drives", JsonPrimitive(""))
-                // Keep everything else verbatim — emulator, wineVersion,
-                // containerVariant, graphicsDriver(+config+version), dxwrapper(+config),
-                // box/fex presets + versions, wincomponents, envVars, cpu lists,
-                // extraData (version/applied fields), audio, screen size, etc.
-                else -> put(key, value)
-            }
-        }
-    }
 }
 
 data class GameDetailState(
     val loading: Boolean = true,
     val game: GameEntity? = null,
+    /** Feature B: true when this game is in the user's favorites/watchlist. */
+    val isFavorite: Boolean = false,
     val fingerprint: DeviceFingerprint? = null,
     /** Flat concatenation of real + generated, real first. Kept for legacy UI bits. */
     val recommendations: List<Recommendation> = emptyList(),
@@ -849,6 +827,12 @@ data class GameDetailState(
      * Pre-populated into the journal form notes when a pending session exists.
      */
     val pendingSessionShowedFps: Boolean = false,
+    /**
+     * Feature B: one-shot signal. True when the composable should immediately
+     * launch the POST_NOTIFICATIONS permission request (API 33+, first favorite,
+     * not yet asked). The composable consumes this with [GameDetailViewModel.clearNotifPermRequest].
+     */
+    val requestNotifPermission: Boolean = false,
 )
 
 /**

@@ -71,15 +71,20 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.material.icons.outlined.HealthAndSafety
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import android.Manifest
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.widget.Toast
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.StarOutline
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
 import io.github.mayusi.isitcompatible.apply.ApplyJobState
@@ -112,6 +117,28 @@ fun GameDetailScreen(
     val ctx = LocalContext.current
     val platformColor = s.game?.let { PlatformColors.primary(it.platform) } ?: MaterialTheme.colorScheme.primary
 
+    // Feature B: POST_NOTIFICATIONS contextual request. Registered unconditionally
+    // (ActivityResultLauncher must be registered before composition is committed),
+    // but only fired by the LaunchedEffect below on API 33+ the first time a game
+    // is favorited. On denial the worker already guards postNotification() with a
+    // checkSelfPermission check — no crash, silent graceful degradation.
+    val notifPermLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { /* result ignored — worker checks permission before posting; no action needed */ }
+
+    // Consume the one-shot signal from the VM and launch the system dialog.
+    if (s.requestNotifPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        LaunchedEffect(Unit) {
+            val alreadyGranted = ContextCompat.checkSelfPermission(
+                ctx, Manifest.permission.POST_NOTIFICATIONS,
+            ) == PackageManager.PERMISSION_GRANTED
+            if (!alreadyGranted) {
+                notifPermLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+            vm.clearNotifPermRequest()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -119,6 +146,16 @@ fun GameDetailScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                actions = {
+                    // Feature B: star/bookmark toggle
+                    IconButton(onClick = { vm.toggleFavorite() }) {
+                        Icon(
+                            imageVector = if (s.isFavorite) Icons.Filled.Star else Icons.Outlined.StarOutline,
+                            contentDescription = if (s.isFavorite) "Remove from favorites" else "Add to favorites",
+                            tint = if (s.isFavorite) Color(0xFFFFC107) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

@@ -105,6 +105,31 @@
                 <action android:name="io.github.mayusi.isitcompatible.GAME_SESSION_ENDED" />
             </intent-filter>
         </receiver>
+
+        <!--
+          Auto-tuner result round-trip: receives AUTOTUNER_RESULT broadcast from
+          the GameNative IIC fork when the user applies a winning auto-tune config.
+          Stores the result as a Tier-1 verified local guide for that game+device,
+          so the VerdictCard upgrades from "estimated" to a real device-specific
+          recommendation.
+
+          exported=true is required for cross-app broadcast (different package).
+          Mitigations:
+           - Action is validated explicitly in the receiver.
+           - All extras are read defensively; malformed values are rejected.
+           - config_json is validated + sanitized via VerifiedGuideImporter
+             (same pipeline as the SAF-import path) before any DB write.
+           - appId must map to a known game in the DB; unknown ids are no-ops.
+           - Worst case: a malicious sender stores a nonsensical config for a
+             known game; the user can overwrite it by re-running the auto-tuner.
+        -->
+        <receiver
+            android:name=".AutoTunerResultReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="io.github.mayusi.isitcompatible.AUTOTUNER_RESULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
