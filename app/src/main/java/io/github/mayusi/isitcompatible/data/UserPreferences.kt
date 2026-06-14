@@ -51,6 +51,9 @@ class UserPreferences @Inject constructor(
             pendingSessionGameId = p[Keys.PENDING_SESSION_GAME_ID],
             pendingSessionMinutes = p[Keys.PENDING_SESSION_MINUTES],
             pendingSessionShowedFps = p[Keys.PENDING_SESSION_SHOWED_FPS] ?: false,
+            // Feature C: avg fps + derived stability from the fork session (forward-compat extras).
+            pendingSessionAvgFps = p[Keys.PENDING_SESSION_AVG_FPS],
+            pendingSessionStability = p[Keys.PENDING_SESSION_STABILITY],
             // v0.11: Windows quick-start onboarding card dismissed flag.
             windowsQuickStartDismissed = p[Keys.WINDOWS_QUICK_START_DISMISSED] ?: false,
             // Feature B: true once we've shown the POST_NOTIFICATIONS rationale
@@ -155,16 +158,24 @@ class UserPreferences @Inject constructor(
      * IIC round-trip: persist a pending session delivered by the GameNative fork
      * broadcast. [gameId] is the IIC-internal game id (from [GameEntity.id]).
      * Set [gameId] to null to clear the pending session once the user has seen it.
+     *
+     * Feature C: [avgFps] and [stability] are optional forward-compat extras that
+     * the fork may send in a future update. When present, the journal form pre-fills
+     * both fields so the user only confirms rather than entering data.
      */
     suspend fun setPendingSession(
         gameId: String?,
         sessionMinutes: Int?,
         showedFps: Boolean,
+        avgFps: Int? = null,
+        stability: String? = null,
     ) = context.dataStore.edit { p ->
         if (gameId == null) {
             p.remove(Keys.PENDING_SESSION_GAME_ID)
             p.remove(Keys.PENDING_SESSION_MINUTES)
             p.remove(Keys.PENDING_SESSION_SHOWED_FPS)
+            p.remove(Keys.PENDING_SESSION_AVG_FPS)
+            p.remove(Keys.PENDING_SESSION_STABILITY)
         } else {
             p[Keys.PENDING_SESSION_GAME_ID] = gameId
             if (sessionMinutes != null) {
@@ -173,6 +184,16 @@ class UserPreferences @Inject constructor(
                 p.remove(Keys.PENDING_SESSION_MINUTES)
             }
             p[Keys.PENDING_SESSION_SHOWED_FPS] = showedFps
+            if (avgFps != null) {
+                p[Keys.PENDING_SESSION_AVG_FPS] = avgFps
+            } else {
+                p.remove(Keys.PENDING_SESSION_AVG_FPS)
+            }
+            if (stability != null) {
+                p[Keys.PENDING_SESSION_STABILITY] = stability
+            } else {
+                p.remove(Keys.PENDING_SESSION_STABILITY)
+            }
         }
     }
 
@@ -190,6 +211,18 @@ class UserPreferences @Inject constructor(
         val pendingSessionMinutes: Int? = null,
         /** IIC round-trip: whether the FPS HUD was on during the fork session. */
         val pendingSessionShowedFps: Boolean = false,
+        /**
+         * Feature C: avg FPS delivered by the fork (forward-compat extra).
+         * Null when the fork didn't send it (current fork version) — the journal
+         * form treats null as "not measured" and leaves fpsKnown=false.
+         */
+        val pendingSessionAvgFps: Int? = null,
+        /**
+         * Feature C: stability string delivered by the fork (forward-compat extra).
+         * When null, the form defaults to PLAYABLE. When present, pre-selects the
+         * derived stability so the user just confirms.
+         */
+        val pendingSessionStability: String? = null,
         /** v0.11: true once the user dismisses the Windows quick-start onboarding card. */
         val windowsQuickStartDismissed: Boolean = false,
         /**
@@ -222,6 +255,9 @@ class UserPreferences @Inject constructor(
         val PENDING_SESSION_GAME_ID = stringPreferencesKey("pending_session_game_id")
         val PENDING_SESSION_MINUTES = intPreferencesKey("pending_session_minutes")
         val PENDING_SESSION_SHOWED_FPS = booleanPreferencesKey("pending_session_showed_fps")
+        // Feature C: forward-compat avg_fps + stability extras from the fork.
+        val PENDING_SESSION_AVG_FPS = intPreferencesKey("pending_session_avg_fps")
+        val PENDING_SESSION_STABILITY = stringPreferencesKey("pending_session_stability")
         // v0.11: Windows quick-start onboarding card.
         val WINDOWS_QUICK_START_DISMISSED = booleanPreferencesKey("windows_quick_start_dismissed")
         // Feature B: POST_NOTIFICATIONS contextual ask-once flag.

@@ -17,8 +17,11 @@ import io.github.mayusi.isitcompatible.data.UserPreferences
 import io.github.mayusi.isitcompatible.getit.EmulatorInstaller
 import io.github.mayusi.isitcompatible.getit.InstallProgress
 import io.github.mayusi.isitcompatible.hardware.DeviceFingerprint
+import io.github.mayusi.isitcompatible.compatdb.room.EmulatorDao
 import io.github.mayusi.isitcompatible.recommend.Bucket
+import io.github.mayusi.isitcompatible.recommend.Confidence
 import io.github.mayusi.isitcompatible.recommend.Recommender
+import io.github.mayusi.isitcompatible.ui.search.GameSummary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,6 +46,7 @@ class AutoDetectViewModel @Inject constructor(
     private val prefs: UserPreferences,
     private val gameDao: GameDao,
     private val reportDao: ReportDao,
+    private val emulatorDao: EmulatorDao,
     private val compatDb: CompatDbRepository,
     private val recommender: Recommender,
 ) : ViewModel() {
@@ -52,13 +56,14 @@ class AutoDetectViewModel @Inject constructor(
     init {
         // Check permission and auto-scan if granted
         refreshPermission()
-        // Compute hardware coverage stats once the DB is ready
+        // Compute hardware coverage stats + best-for-chip feed once the DB is ready
         viewModelScope.launch {
             val fp = prefs.data.first().fingerprint
             _state.update { it.copy(deviceFingerprint = fp) }
             if (fp != null) {
                 compatDb.ready.first { it }
                 loadCoverageStats(fp)
+                loadBestForChip(fp)
             }
         }
     }
@@ -95,6 +100,69 @@ class AutoDetectViewModel @Inject constructor(
             DeviceCoverageStats(real = realCount, estimated = estimatedCount)
         }
         _state.update { it.copy(coverageStats = stats) }
+    }
+
+    /**
+     * Feature A: build the "Best for your chip" discovery feed.
+     *
+     * Filters allSummaries to games where:
+     *  - effectiveConfidence is STRONG (SAME_SOC_AND_RAM) or MODERATE (SAME_SOC_FAMILY)
+     *    — i.e. the recommendation is backed by real same-SoC/family reports, not
+     *    extrapolated from a wider hardware bucket.
+     *  - stability is PERFECT or PLAYABLE — genuinely good performance on this chip.
+     *
+     * Sorted by avgFps descending (best performance first). Capped at 10 to keep the
+     * horizontal feed tight.
+     *
+     * If no games pass this bar (untested/unknown chip), [AutoDetectState.bestForChipGames]
+     * is empty — the UI shows an honest "Not enough chip-specific data yet" note instead
+     * of a sad empty list.
+     */
+    private suspend fun loadBestForChip(fp: DeviceFingerprint) {
+        val games = withContext(Dispatchers.IO) {
+            val allGames = gameDao.all()
+            val emusById = emulatorDao.all().associateBy { it.id }
+            val summaries = mutableListOf<GameSummary>()
+            allGames.map { it.id }.chunked(500).forEach { chunk ->
+                val reports = reportDao.byGameIds(chunk)
+                val grouped = reports.groupBy { it.gameId }
+                chunk.forEach { gameId ->
+                    val game = allGames.first { it.id == gameId }
+                    val gameReports = grouped[gameId].orEmpty()
+                    if (gameReports.isEmpty()) return@forEach
+                    val top = recommender.rank(gameReports, fp, topK = 1).firstOrNull()
+                        ?: return@forEach
+                    // Only include STRONG/MODERATE real-data matches at good stability
+                    val conf = top.effectiveConfidence
+                    if ((conf == Confidence.STRONG || conf == Confidence.MODERATE) &&
+                        (top.stability.uppercase() == "PERFECT" || top.stability.uppercase() == "PLAYABLE")
+                    ) {
+                        summaries.add(
+                            GameSummary(
+                                game = game,
+                                bestFps = top.avgFps,
+                                bestStability = top.stability,
+                                bestEmulatorName = emusById[top.emulatorId]?.name ?: top.emulatorId,
+                                bestConfidence = conf,
+                                reportCount = gameReports.size,
+                            )
+                        )
+                    }
+                }
+            }
+            summaries.sortedWith(
+                Comparator<GameSummary> { a, b ->
+                    val fa = a.bestFps; val fb = b.bestFps
+                    when {
+                        fa == null && fb == null -> a.game.title.compareTo(b.game.title)
+                        fa == null -> 1
+                        fb == null -> -1
+                        else -> fb.compareTo(fa)
+                    }
+                }
+            ).take(10)
+        }
+        _state.update { it.copy(bestForChipGames = games) }
     }
 
     fun refreshPermission() {
@@ -263,4 +331,11 @@ data class AutoDetectState(
     val deviceFingerprint: DeviceFingerprint? = null,
     /** Catalog coverage stats — null while computing. */
     val coverageStats: DeviceCoverageStats? = null,
+    /**
+     * Feature A: top games confirmed to run great on this exact chip —
+     * STRONG/MODERATE confidence + PERFECT/PLAYABLE stability, sorted by fps desc.
+     * Empty list = not yet computed OR no same-chip data exists (untested device).
+     * null = still loading.
+     */
+    val bestForChipGames: List<io.github.mayusi.isitcompatible.ui.search.GameSummary>? = null,
 )

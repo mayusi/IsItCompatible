@@ -492,16 +492,20 @@ class GameDetailViewModel @Inject constructor(
             // This pending session is for our game — consume it.
             val sessionMinutes = snap.pendingSessionMinutes
             val showedFps = snap.pendingSessionShowedFps
+            // Feature C: pick up avg fps + stability if the fork sent them.
+            val avgFps = snap.pendingSessionAvgFps
+            val stability = snap.pendingSessionStability
             // Clear the pref first so a crash / re-navigation doesn't re-trigger.
             prefs.setPendingSession(gameId = null, sessionMinutes = null, showedFps = false)
-            // Surface the pre-filled form. We pre-populate sessionMinutes; the
-            // JournalEntryForm already handles defaultEmulator/defaultPreset from
-            // the normal recommendation path — we only override sessionMinutes here.
+            // Surface the pre-filled form. sessionMinutes, avgFps, and stability
+            // are forwarded to the form for one-tap confirm when present.
             _state.update {
                 it.copy(
                     journalFormOpen = true,
                     pendingSessionMinutes = sessionMinutes,
                     pendingSessionShowedFps = showedFps,
+                    pendingSessionAvgFps = avgFps,
+                    pendingSessionStability = stability,
                 )
             }
         }
@@ -819,6 +823,17 @@ data class GameDetailState(
      * Pre-populated into the journal form notes when a pending session exists.
      */
     val pendingSessionShowedFps: Boolean = false,
+    /**
+     * Feature C: avg FPS from the fork broadcast (forward-compat extra).
+     * Null when the current fork version didn't send it — the form shows
+     * fpsKnown=false and lets the user add it manually.
+     */
+    val pendingSessionAvgFps: Int? = null,
+    /**
+     * Feature C: derived stability from the fork broadcast (forward-compat extra).
+     * Null when the current fork didn't send it — the form defaults to PLAYABLE.
+     */
+    val pendingSessionStability: String? = null,
     /**
      * Feature B: one-shot signal. True when the composable should immediately
      * launch the POST_NOTIFICATIONS permission request (API 33+, first favorite,

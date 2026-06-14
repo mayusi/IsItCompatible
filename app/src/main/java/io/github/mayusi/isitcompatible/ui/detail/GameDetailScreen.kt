@@ -70,6 +70,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.material.icons.outlined.HealthAndSafety
+import androidx.compose.material.icons.outlined.OpenInBrowser
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import android.Manifest
 import android.content.ClipData
@@ -222,6 +223,20 @@ fun GameDetailScreen(
                             onSubmitReport = { SubmitLinks.openSubmitFor(ctx, game, s.fingerprint) },
                         ),
                     )
+
+                    // PART 1 item 1: "What to expect on YOUR device" summary.
+                    // Placed between the VerdictCard and the section list — the
+                    // single most useful, scannable line on the screen.
+                    val deviceExpectRec = realTop ?: genTop
+                    if (deviceExpectRec != null && s.fingerprint != null) {
+                        Spacer(Modifier.height(10.dp))
+                        DeviceExpectCard(
+                            rec = deviceExpectRec,
+                            fingerprint = s.fingerprint!!,
+                            emulatorName = s.emulatorsById[deviceExpectRec.emulatorId]?.name ?: deviceExpectRec.emulatorId,
+                            isGenOnly = realTop == null,
+                        )
+                    }
 
                     // The "top" pick — used downstream for Setup tabs / Preset details.
                     val top = realTop ?: genTop!!
@@ -376,10 +391,14 @@ fun GameDetailScreen(
                         }
                     }
 
-                    // Spec item 6: "Game notes" — merges Known issues, Mods, BIOS, Version
-                    val hasGameNotes = !game.knownIssues.isNullOrBlank() ||
+                    // Spec item 6: "Game notes" — merges Known issues, Mods, BIOS, Version.
+                    // Auto-expand when critical notes exist (BIOS requirements or known
+                    // issues), so the user sees important caveats without extra taps.
+                    val hasKnownIssues = !game.knownIssues.isNullOrBlank()
+                    val hasBios = !game.biosRequirements.isNullOrBlank()
+                    val hasGameNotes = hasKnownIssues ||
                         !game.modsAndPatches.isNullOrBlank() ||
-                        !game.biosRequirements.isNullOrBlank() ||
+                        hasBios ||
                         !game.bestVersionGuidance.isNullOrBlank()
                     if (hasGameNotes) {
                         Spacer(Modifier.height(10.dp))
@@ -387,7 +406,9 @@ fun GameDetailScreen(
                             title = "Game notes",
                             icon = Icons.Outlined.BugReport,
                             accent = Color(0xFFFFC107),
-                            initiallyExpanded = false,
+                            // Expand automatically when there are known issues or BIOS requirements
+                            // so critical info isn't buried behind a tap.
+                            initiallyExpanded = hasKnownIssues || hasBios,
                         ) {
                             GameNotesBody(game = game)
                         }
@@ -479,6 +500,10 @@ fun GameDetailScreen(
         // fork, s.pendingSessionMinutes is non-null and the form opens
         // pre-filled; defaultEmulator is forced to "gamenative" in that case.
         if (s.journalFormOpen && s.game != null) {
+            // IIC round-trip: a pending session was delivered by the GameNative fork
+            // when pendingSessionMinutes is non-null (set even for 0-min sessions from
+            // the broadcast). Feature C: avgFps + stability are additional forward-compat
+            // extras sent by a future fork version — null in the current fork.
             val hasPendingSession = s.pendingSessionMinutes != null
             val defaultEmuId = if (hasPendingSession) {
                 "gamenative"
@@ -490,14 +515,21 @@ fun GameDetailScreen(
                 s.recommendationsBySource.fromReal.firstOrNull()?.presetId
                     ?: s.recommendationsBySource.fromGenerated.firstOrNull()?.presetId
             )
-            val defaultFps = if (hasPendingSession) null else (
-                s.recommendationsBySource.fromReal.firstOrNull()?.avgFps
+            // Feature C: prefer fork-sent avgFps (when available) over recommendation estimate.
+            val defaultFps = when {
+                hasPendingSession && s.pendingSessionAvgFps != null -> s.pendingSessionAvgFps
+                hasPendingSession -> null   // fork didn't send fps — user enters manually
+                else -> s.recommendationsBySource.fromReal.firstOrNull()?.avgFps
                     ?: s.recommendationsBySource.fromGenerated.firstOrNull()?.avgFps
-            )
+            }
+            // Feature C: pre-select stability if the fork sent it; otherwise default to PLAYABLE
+            // (the form's existing default for non-IIC opens is also PLAYABLE, so this is consistent).
+            val defaultStability: String = s.pendingSessionStability ?: "PLAYABLE"
             val iicNotes = if (hasPendingSession) {
                 buildString {
                     append("Played via GameNative (IIC).")
                     if (s.pendingSessionShowedFps) append(" FPS HUD was on.")
+                    if (s.pendingSessionAvgFps != null) append(" Avg FPS pre-filled from session.")
                 }
             } else ""
             JournalEntryForm(
@@ -505,6 +537,7 @@ fun GameDetailScreen(
                 defaultEmulator = defaultEmuId?.let(s.emulatorsById::get),
                 defaultPreset = defaultPreset?.let(s.presetsById::get),
                 defaultFps = defaultFps,
+                defaultStability = defaultStability,
                 defaultSessionMinutes = s.pendingSessionMinutes,
                 defaultNotes = iicNotes,
                 onSave = { entry ->
@@ -670,6 +703,86 @@ private fun Section(
 }
 
 /* =============================================================================
+   DEVICE EXPECT CARD (PART 1 item 1)
+   "What to expect on YOUR device" — a plain-language one-glance summary,
+   honest about how confident we are. Placed between VerdictCard and the
+   section list so it's the first contextual text after the hero numbers.
+
+   Uses the same recommendation + effectiveConfidence + fingerprint that the
+   VerdictCard already has — no new data fetching, just a different framing
+   that answers "is this *my* experience or someone else's on a random phone?".
+
+   Param count: 4. Well below the VerifyError threshold.
+   ============================================================================= */
+
+@Composable
+private fun DeviceExpectCard(
+    rec: Recommendation,
+    fingerprint: io.github.mayusi.isitcompatible.hardware.DeviceFingerprint,
+    emulatorName: String,
+    isGenOnly: Boolean,
+) {
+    val chipLabel = "${fingerprint.socFamily} · ${fingerprint.gpuModel}"
+    val fpsText = rec.avgFps?.let { if (isGenOnly) "~$it fps" else "$it fps" } ?: "?"
+    val stabilityLabel = PlatformColors.stabilityLabel(rec.stability)
+
+    // Build the main sentence honestly.
+    val mainSentence = when {
+        isGenOnly -> {
+            "No same-chip reports yet — estimated $fpsText, $stabilityLabel via $emulatorName " +
+                "based on similar hardware. Treat as a rough guide."
+        }
+        rec.bucket == io.github.mayusi.isitcompatible.recommend.Bucket.SAME_SOC_AND_RAM ||
+        rec.bucket == io.github.mayusi.isitcompatible.recommend.Bucket.SAME_SOC_FAMILY -> {
+            "On your $chipLabel: $fpsText, $stabilityLabel via $emulatorName — " +
+                "from ${rec.reportCount} report${if (rec.reportCount == 1) "" else "s"} on your chip."
+        }
+        rec.bucket == io.github.mayusi.isitcompatible.recommend.Bucket.SAME_GPU_VENDOR -> {
+            "Same GPU brand, different chip — estimated $fpsText, $stabilityLabel via $emulatorName. " +
+                "No same-chip reports yet; result may vary."
+        }
+        else -> {
+            "No same-chip reports — $fpsText, $stabilityLabel via $emulatorName estimated from " +
+                "other handhelds. Your mileage may vary significantly."
+        }
+    }
+
+    val containerBg = when {
+        isGenOnly -> MaterialTheme.colorScheme.surfaceVariant
+        rec.bucket == io.github.mayusi.isitcompatible.recommend.Bucket.SAME_SOC_AND_RAM -> MaterialTheme.colorScheme.tertiaryContainer
+        rec.bucket == io.github.mayusi.isitcompatible.recommend.Bucket.SAME_SOC_FAMILY -> MaterialTheme.colorScheme.secondaryContainer
+        else -> MaterialTheme.colorScheme.surfaceVariant
+    }
+    val textColor = when {
+        isGenOnly -> MaterialTheme.colorScheme.onSurfaceVariant
+        rec.bucket == io.github.mayusi.isitcompatible.recommend.Bucket.SAME_SOC_AND_RAM -> MaterialTheme.colorScheme.onTertiaryContainer
+        rec.bucket == io.github.mayusi.isitcompatible.recommend.Bucket.SAME_SOC_FAMILY -> MaterialTheme.colorScheme.onSecondaryContainer
+        else -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Card(
+        Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = containerBg),
+    ) {
+        Row(Modifier.padding(12.dp), verticalAlignment = Alignment.Top) {
+            Icon(
+                Icons.Outlined.Devices,
+                contentDescription = null,
+                tint = textColor.copy(alpha = 0.7f),
+                modifier = Modifier.size(16.dp).padding(top = 2.dp),
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                mainSentence,
+                style = MaterialTheme.typography.bodySmall,
+                color = textColor,
+            )
+        }
+    }
+}
+
+/* =============================================================================
    MORE DETAILS HEADER — visual break before the secondary / reference zone
    ============================================================================= */
 
@@ -820,7 +933,10 @@ private fun VerdictCard(
                 // Confidence context line (single labelSmall)
                 if (realTop != null) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        ConfidenceBadge(rec.bucket.confidence)
+                        // v1.1: use effectiveConfidence (factors in count, agreement, freshness)
+                        // instead of raw bucket.confidence so the badge honestly reflects
+                        // trustworthiness beyond just hardware-match.
+                        ConfidenceBadge(rec.effectiveConfidence)
                         Spacer(Modifier.width(8.dp))
                         // Use title-case bucket label directly ("Same SoC + RAM", etc.)
                         // for instant scannability — avoid lowercasing it.
@@ -837,6 +953,16 @@ private fun VerdictCard(
                         style = MaterialTheme.typography.bodySmall,
                         color = onContainer.copy(alpha = 0.6f),
                     )
+                    // v1.1: surface conflict note when reports disagree significantly.
+                    // Be honest — don't hide disagreement from the user.
+                    if (rec.hasHighConflict && rec.conflictNote != null) {
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            rec.conflictNote,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = onContainer.copy(alpha = 0.6f),
+                        )
+                    }
                 } else {
                     Text(
                         "Estimated for ${emulator?.name ?: rec.emulatorId} — not a real test result.",
@@ -1297,10 +1423,16 @@ private fun GameNotesBody(game: GameEntity) {
     val biosList = game.biosRequirements?.split('\n')?.map { it.trim() }?.filter { it.isNotEmpty() }.orEmpty()
     val versionText = game.bestVersionGuidance?.takeIf { it.isNotBlank() }
 
-    var firstRendered = false
+    // Track whether we've already rendered at least one block so we can insert
+    // a divider before each subsequent block. Bug-fix: the old code set
+    // firstRendered = true AFTER rendering but checked it BEFORE — the first
+    // block never showed a divider regardless (the divider only ever appeared
+    // from the second block onward). We now use a boolean that reads correctly.
+    var anyRendered = false
 
     if (issuesList.isNotEmpty()) {
-        if (firstRendered) { HorizontalDivider(Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outlineVariant) }
+        if (anyRendered) HorizontalDivider(Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outlineVariant)
+        anyRendered = true
         Text("KNOWN ISSUES",
             style = MaterialTheme.typography.labelSmall,
             color = Color(0xFFB07000),
@@ -1308,10 +1440,10 @@ private fun GameNotesBody(game: GameEntity) {
             letterSpacing = 0.8.sp)
         Spacer(Modifier.height(6.dp))
         KnownIssuesList(issues = issuesList)
-        firstRendered = true
     }
     if (modsList.isNotEmpty()) {
-        if (firstRendered) { HorizontalDivider(Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outlineVariant) }
+        if (anyRendered) HorizontalDivider(Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outlineVariant)
+        anyRendered = true
         Text("MODS & COMMUNITY PATCHES",
             style = MaterialTheme.typography.labelSmall,
             color = Color(0xFF9C27B0),
@@ -1319,10 +1451,10 @@ private fun GameNotesBody(game: GameEntity) {
             letterSpacing = 0.8.sp)
         Spacer(Modifier.height(6.dp))
         BulletedList(items = modsList, bulletColor = Color(0xFF9C27B0))
-        firstRendered = true
     }
     if (biosList.isNotEmpty()) {
-        if (firstRendered) { HorizontalDivider(Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outlineVariant) }
+        if (anyRendered) HorizontalDivider(Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outlineVariant)
+        anyRendered = true
         Text("BIOS / FIRMWARE REQUIREMENTS",
             style = MaterialTheme.typography.labelSmall,
             color = Color(0xFFEF5350),
@@ -1336,10 +1468,9 @@ private fun GameNotesBody(game: GameEntity) {
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        firstRendered = true
     }
     if (versionText != null) {
-        if (firstRendered) { HorizontalDivider(Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outlineVariant) }
+        if (anyRendered) HorizontalDivider(Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outlineVariant)
         Text("WHICH VERSION TO EMULATE",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary,
@@ -1606,11 +1737,25 @@ private fun Stat(label: String, value: String, color: Color) {
    Section already provides the collapsible container.
    ============================================================================= */
 
+/**
+ * PART 1 item 2: rich per-report rows.
+ *
+ * Each row now shows:
+ *  - emulator name + FPS + stability pill (unchanged)
+ *  - hardware line: "Snapdragon 8 Gen 2 · Adreno 740 · 12 GB" (so users know
+ *    whether the result is from a similar device)
+ *  - source badge + tappable "View source" link when sourceRef is present
+ *  - relative age ("3 mo ago", "2 y ago") so users know how fresh each report is
+ *  - notes (unchanged)
+ *
+ * Param count stays below 12 (only 2 params).
+ */
 @Composable
 private fun AllReportsInline(
     reports: List<ReportEntity>,
     emusById: Map<String, EmulatorEntity>,
 ) {
+    val ctx = LocalContext.current
     Text(
         "All ${reports.size} report${if (reports.size == 1) "" else "s"}",
         style = MaterialTheme.typography.titleSmall,
@@ -1619,6 +1764,7 @@ private fun AllReportsInline(
     Spacer(Modifier.height(8.dp))
     reports.sortedByDescending { it.avgFps ?: 0 }.forEach { r ->
         Column(Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+            // Row 1: emulator + FPS + stability
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(emusById[r.emulatorId]?.name ?: r.emulatorId,
                     style = MaterialTheme.typography.bodyMedium,
@@ -1633,10 +1779,54 @@ private fun AllReportsInline(
                 }
                 StabilityPill(r.stability)
             }
-            Spacer(Modifier.height(2.dp))
-            Text(reportContextSentence(r),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(Modifier.height(4.dp))
+            // Row 2: hardware chips — "Snapdragon 8 Gen 2 · Adreno 740 · 12 GB"
+            val ramGbStr = if (r.ramMb > 0) "${r.ramMb / 1024} GB" else null
+            val hardwareParts = listOfNotNull(
+                r.socFamily.ifBlank { null },
+                r.gpuModel.ifBlank { null },
+                ramGbStr,
+            )
+            if (hardwareParts.isNotEmpty()) {
+                Text(
+                    hardwareParts.joinToString(" · "),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Medium,
+                )
+                Spacer(Modifier.height(2.dp))
+            }
+            // Row 3: source badge + age + optional "View source" link
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                ReportSourceBadge(source = r.source)
+                Text(
+                    reportAgeLabel(r.submittedAt),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                // Tappable "View source" link when we have a URL
+                val ref = r.sourceRef?.takeIf { it.startsWith("http") }
+                if (ref != null) {
+                    Icon(
+                        Icons.Outlined.OpenInBrowser,
+                        contentDescription = "View source",
+                        modifier = Modifier
+                            .size(14.dp)
+                            .clickable {
+                                runCatching {
+                                    ctx.startActivity(
+                                        Intent(Intent.ACTION_VIEW, android.net.Uri.parse(ref))
+                                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    )
+                                }
+                            },
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
             r.notes?.takeIf { it.isNotBlank() }?.let {
                 Text(it,
                     style = MaterialTheme.typography.bodySmall,
@@ -1647,6 +1837,44 @@ private fun AllReportsInline(
                 color = MaterialTheme.colorScheme.outlineVariant,
             )
         }
+    }
+}
+
+/** Compact source label badge pill. */
+@Composable
+private fun ReportSourceBadge(source: String) {
+    val (label, bg, fg) = when (source.uppercase()) {
+        "EMUREADY_LIVE"      -> Triple("EmuReady",   Color(0xFFE3F2FD), Color(0xFF1565C0))
+        "EMUREADY_SNAPSHOT"  -> Triple("EmuReady",   Color(0xFFE3F2FD), Color(0xFF1565C0))
+        "OUR_GITHUB"         -> Triple("Community",  Color(0xFFE8F5E9), Color(0xFF2E7D32))
+        "BUNDLED"            -> Triple("Bundled",    Color(0xFFF3E5F5), Color(0xFF6A1B9A))
+        "GENERATED_HEURISTIC" -> Triple("Estimated", Color(0xFFFFF8E1), Color(0xFFE65100))
+        else                 -> Triple(source.lowercase().replace('_', ' '), Color(0xFFF5F5F5), Color(0xFF616161))
+    }
+    Box(
+        Modifier
+            .clip(RoundedCornerShape(4.dp))
+            .background(bg)
+            .padding(horizontal = 5.dp, vertical = 1.dp),
+    ) {
+        Text(label,
+            style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+            color = fg,
+            fontWeight = FontWeight.SemiBold)
+    }
+}
+
+/** Returns a human-readable relative age for a report, e.g. "3 mo ago", "2 y ago", "just now". */
+private fun reportAgeLabel(submittedAt: Long): String {
+    if (submittedAt <= 0L) return "unknown date"
+    val diffMs = System.currentTimeMillis() - submittedAt
+    if (diffMs < 0) return "recent"
+    val days = diffMs / (1000L * 60 * 60 * 24)
+    return when {
+        days < 7   -> "this week"
+        days < 30  -> "${days / 7}w ago"
+        days < 365 -> "${days / 30}mo ago"
+        else       -> "${days / 365}y ago"
     }
 }
 
@@ -2379,16 +2607,3 @@ private fun genericSetupSteps(
     }
 }
 
-private fun reportContextSentence(r: ReportEntity): String {
-    val ramGb = if (r.ramMb > 0) "${r.ramMb / 1024} GB RAM" else "unknown RAM"
-    val device = "${r.socFamily} (${r.gpuModel}, $ramGb)"
-    val source = when (r.source.uppercase()) {
-        "OUR_GITHUB" -> "submitted via this app's community DB"
-        "EMUREADY_LIVE" -> "from EmuReady (live)"
-        "EMUREADY_SNAPSHOT" -> "from EmuReady (snapshot)"
-        "BUNDLED" -> "bundled with this release"
-        "GENERATED_HEURISTIC" -> "estimated by rules engine — help by submitting a real test"
-        else -> r.source.lowercase().replace('_', ' ')
-    }
-    return "Tested on $device · $source"
-}

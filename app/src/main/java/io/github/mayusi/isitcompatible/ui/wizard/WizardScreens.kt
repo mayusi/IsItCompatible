@@ -74,7 +74,48 @@ fun WelcomeStep(onLetsGo: () -> Unit) {
             stringResource(R.string.wizard_welcome_blurb),
             style = MaterialTheme.typography.bodyMedium,
         )
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(20.dp))
+        Card(
+            Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
+        ) {
+            Column(Modifier.padding(16.dp)) {
+                Text(
+                    "What you get",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Spacer(Modifier.height(8.dp))
+                listOf(
+                    "Best emulator + preset for your exact chip",
+                    "Per-game setup guide + BIOS checklist",
+                    "Community reports from people with the same hardware",
+                    "One-tap config apply for Windows games via GameNative",
+                ).forEach { item ->
+                    Row(
+                        Modifier.padding(vertical = 3.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Outlined.CheckCircle,
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp),
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            item,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                    }
+                }
+            }
+        }
+        Spacer(Modifier.height(16.dp))
         Card(
             Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -438,6 +479,13 @@ fun FingerprintStep(
             }
         }
 
+        // "What you can do" moment — only shown when we have a fingerprint.
+        // Gives the user an immediate, concrete sense of value before they hit Done.
+        if (fingerprint != null && !loading) {
+            Spacer(Modifier.height(16.dp))
+            DeviceValueCard(fingerprint)
+        }
+
         Spacer(Modifier.height(40.dp))
         Row(
             Modifier.fillMaxWidth(),
@@ -452,6 +500,62 @@ fun FingerprintStep(
                 enabled = fingerprint != null,
             ) {
                 Text(stringResource(R.string.wizard_done))
+            }
+        }
+    }
+}
+
+/**
+ * Post-detection value card: shown on the FingerprintStep after we have a
+ * fingerprint. Gives the user a concrete "here's what the app does for YOU"
+ * moment so landing on Browse after the wizard isn't a blank search page.
+ * Stays tight — 3 bullets max, no friction.
+ */
+@Composable
+private fun DeviceValueCard(fp: DeviceFingerprint) {
+    val deviceLabel = "${fp.socFamily} · ${fp.gpuModel} · ${fp.totalRamMb / 1024} GB"
+    Card(
+        Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+        ),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text(
+                "Your ${fp.manufacturer} ${fp.model} is ready",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                deviceLabel,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.75f),
+            )
+            Spacer(Modifier.height(10.dp))
+            listOf(
+                "Browse any game and see exactly what to expect on your chip",
+                "Get the right emulator + preset — matched to your hardware",
+                "See reports from people with the same SoC, not just anyone",
+            ).forEach { bullet ->
+                Row(
+                    Modifier.padding(vertical = 3.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        Icons.Outlined.CheckCircle,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = MaterialTheme.colorScheme.tertiary,
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        bullet,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    )
+                }
             }
         }
     }

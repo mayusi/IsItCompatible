@@ -116,7 +116,9 @@ class SearchViewModel @Inject constructor(
                         bestFps = top?.avgFps,
                         bestStability = top?.stability,
                         bestEmulatorName = top?.emulatorId?.let { emusById[it]?.name } ?: top?.emulatorId,
-                        bestConfidence = top?.bucket?.confidence,
+                        // v1.1: use effectiveConfidence (factors in count, agreement, freshness)
+                        // rather than raw bucket.confidence so the FPS pill dims honestly.
+                        bestConfidence = top?.effectiveConfidence,
                         reportCount = reports.size,
                     )
                 }

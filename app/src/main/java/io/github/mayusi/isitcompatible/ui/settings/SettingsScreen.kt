@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -36,20 +37,37 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.mayusi.isitcompatible.BuildConfig
+import io.github.mayusi.isitcompatible.compatdb.backup.BackupRestoreRepository
 import io.github.mayusi.isitcompatible.data.UserPreferences
 import io.github.mayusi.isitcompatible.hardware.HardwareFingerprinter
 import io.github.mayusi.isitcompatible.ui.appupdate.AppUpdateViewModel
 import io.github.mayusi.isitcompatible.ui.common.AppUpdateBanner
 import io.github.mayusi.isitcompatible.ui.common.AppUpdateDialog
 import io.github.mayusi.isitcompatible.ui.submit.SubmitLinks
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+/** UI state for the backup/restore card. */
+sealed interface BackupUiState {
+    data object Idle : BackupUiState
+    data object Working : BackupUiState
+    data class Success(val message: String) : BackupUiState
+    data class Error(val message: String) : BackupUiState
+}
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     val prefs: UserPreferences,
     private val fingerprinter: HardwareFingerprinter,
+    private val backupRepo: BackupRestoreRepository,
 ) : ViewModel() {
+
+    private val _backupState = MutableStateFlow<BackupUiState>(BackupUiState.Idle)
+    val backupState: StateFlow<BackupUiState> = _backupState.asStateFlow()
 
     fun setRom(uri: Uri?) = viewModelScope.launch { prefs.setRomFolderUri(uri?.toString()) }
     fun setPc(uri: Uri?) = viewModelScope.launch { prefs.setPcFolderUri(uri?.toString()) }
@@ -58,6 +76,59 @@ class SettingsViewModel @Inject constructor(
         val fp = fingerprinter.fingerprint()
         prefs.setFingerprint(fp)
     }
+
+    fun exportBackup(uri: Uri) {
+        if (_backupState.value is BackupUiState.Working) return
+        viewModelScope.launch {
+            _backupState.update { BackupUiState.Working }
+            val result = backupRepo.export(uri)
+            _backupState.update {
+                when (result) {
+                    is BackupRestoreRepository.ExportResult.Success -> BackupUiState.Success(
+                        "Backup saved — ${result.journalCount} journal " +
+                            "${pluralise(result.journalCount, "entry", "entries")}, " +
+                            "${result.favoriteCount} " +
+                            "${pluralise(result.favoriteCount, "favourite", "favourites")}, " +
+                            "${result.guideCount} verified " +
+                            "${pluralise(result.guideCount, "config", "configs")}, " +
+                            "${result.progressCount} checklist " +
+                            "${pluralise(result.progressCount, "row", "rows")}."
+                    )
+                    is BackupRestoreRepository.ExportResult.Failure -> BackupUiState.Error(result.reason)
+                }
+            }
+        }
+    }
+
+    fun importBackup(uri: Uri) {
+        if (_backupState.value is BackupUiState.Working) return
+        viewModelScope.launch {
+            _backupState.update { BackupUiState.Working }
+            val result = backupRepo.import(uri)
+            _backupState.update {
+                when (result) {
+                    is BackupRestoreRepository.ImportResult.Success -> BackupUiState.Success(
+                        "Restored — ${result.journalCount} journal " +
+                            "${pluralise(result.journalCount, "entry", "entries")}, " +
+                            "${result.favoriteCount} " +
+                            "${pluralise(result.favoriteCount, "favourite", "favourites")}, " +
+                            "${result.guideCount} verified " +
+                            "${pluralise(result.guideCount, "config", "configs")}, " +
+                            "${result.progressCount} checklist " +
+                            "${pluralise(result.progressCount, "row", "rows")}."
+                    )
+                    is BackupRestoreRepository.ImportResult.Failure -> BackupUiState.Error(result.reason)
+                }
+            }
+        }
+    }
+
+    fun clearBackupState() {
+        _backupState.update { BackupUiState.Idle }
+    }
+
+    private fun pluralise(count: Int, singular: String, plural: String) =
+        if (count == 1) singular else plural
 }
 
 @Composable
@@ -70,6 +141,7 @@ fun SettingsScreen(
     val ctx = LocalContext.current
     val updateState by updateVm.state.collectAsState()
     var showUpdateDialog by remember { mutableStateOf(false) }
+    val backupState by vm.backupState.collectAsState()
 
     val romLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocumentTree()
@@ -100,6 +172,19 @@ fun SettingsScreen(
                 android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
         )
         vm.setStaging(uri)
+    }
+
+    // SAF: create a new JSON backup file.
+    val exportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        if (uri != null) vm.exportBackup(uri)
+    }
+    // SAF: open an existing backup file.
+    val importLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) vm.importBackup(uri)
     }
 
     // Show the update dialog if requested.
@@ -167,6 +252,13 @@ fun SettingsScreen(
             }
         }
 
+        BackupRestoreCard(
+            state = backupState,
+            onExport = { exportLauncher.launch("isitcompatible-backup.json") },
+            onImport = { importLauncher.launch(arrayOf("application/json", "*/*")) },
+            onDismissMessage = vm::clearBackupState,
+        )
+
         Card(Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text("Submit a report", style = MaterialTheme.typography.titleMedium)
@@ -201,6 +293,73 @@ fun SettingsScreen(
             onShowDialog = { showUpdateDialog = true },
             hasPendingUpdate = updateState.pendingUpdate != null,
         )
+    }
+}
+
+@Composable
+private fun BackupRestoreCard(
+    state: BackupUiState,
+    onExport: () -> Unit,
+    onImport: () -> Unit,
+    onDismissMessage: () -> Unit,
+) {
+    Card(Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("Backup & Restore", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "Save your journal, verified configs, favourites, and setup progress to a file. " +
+                    "Useful before reflashing your device. Local only — never uploaded anywhere.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            val busy = state is BackupUiState.Working
+
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Button(
+                    onClick = onExport,
+                    enabled = !busy,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("Back up my data")
+                }
+                OutlinedButton(
+                    onClick = onImport,
+                    enabled = !busy,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text("Restore from backup")
+                }
+            }
+
+            when (state) {
+                is BackupUiState.Working -> Text(
+                    "Working…",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                is BackupUiState.Success -> {
+                    Text(
+                        state.message,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
+                    TextButton(onClick = onDismissMessage) { Text("Dismiss") }
+                }
+                is BackupUiState.Error -> {
+                    Text(
+                        state.message,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                    TextButton(onClick = onDismissMessage) { Text("Dismiss") }
+                }
+                is BackupUiState.Idle -> Unit
+            }
+        }
     }
 }
 

@@ -143,7 +143,12 @@ fun MainScaffold(
                     onOpenGame = { gameId -> nav.navigate(detailRoute(gameId)) },
                 )
             }
-            composable(Tab.AUTODETECT.route) { AutoDetectScreen(contentPadding = padding) }
+            composable(Tab.AUTODETECT.route) {
+                AutoDetectScreen(
+                    contentPadding = padding,
+                    onOpenGame = { gameId -> nav.navigate(detailRoute(gameId)) },
+                )
+            }
             composable(Tab.UPDATES.route) { UpdatesScreen(contentPadding = padding) }
             composable(Tab.SETTINGS.route) { SettingsScreen(contentPadding = padding) }
             composable(

@@ -59,6 +59,13 @@ class SessionResultReceiver : BroadcastReceiver() {
         private const val EXTRA_GAME_SOURCE = "game_source"
         private const val EXTRA_SESSION_MINUTES = "session_minutes"
         private const val EXTRA_SHOWED_FPS = "showed_fps"
+        // Feature C: forward-compat extras — sent by a future fork update.
+        // Current fork (v1.x) does not send these; the receiver degrades gracefully.
+        private const val EXTRA_AVG_FPS = "avg_fps"
+        private const val EXTRA_STABILITY = "stability"
+
+        /** Valid stability values; anything else is rejected. */
+        private val VALID_STABILITIES = setOf("PERFECT", "PLAYABLE", "GLITCHY", "CRASHES")
     }
 
     @Inject lateinit var prefs: UserPreferences
@@ -81,8 +88,15 @@ class SessionResultReceiver : BroadcastReceiver() {
             ?: ""
         val sessionMinutes: Int = intent.getIntExtra(EXTRA_SESSION_MINUTES, 0).coerceAtLeast(0)
         val showedFps: Boolean = intent.getBooleanExtra(EXTRA_SHOWED_FPS, false)
+        // Feature C: forward-compat extras. The current fork does not send these;
+        // getIntExtra / getStringExtra return -1 / null when absent.
+        val avgFpsRaw: Int = intent.getIntExtra(EXTRA_AVG_FPS, -1)
+        val avgFps: Int? = if (avgFpsRaw in 0..999) avgFpsRaw else null
+        val stabilityRaw: String? = intent.getStringExtra(EXTRA_STABILITY)?.trim()?.uppercase()
+        val stability: String? = if (stabilityRaw != null && stabilityRaw in VALID_STABILITIES)
+            stabilityRaw else null
 
-        Log.i(TAG, "Received session-ended: appId=$appId src=$gameSource mins=$sessionMinutes fps=$showedFps")
+        Log.i(TAG, "Received session-ended: appId=$appId src=$gameSource mins=$sessionMinutes fps=$showedFps avgFps=$avgFps stability=$stability")
 
         if (appId <= 0) {
             Log.d(TAG, "appId <= 0 — cannot resolve game; ignoring broadcast")
@@ -94,7 +108,7 @@ class SessionResultReceiver : BroadcastReceiver() {
         val result = goAsync()
         scope.launch {
             try {
-                handleSessionEnded(appId, gameSource, sessionMinutes, showedFps)
+                handleSessionEnded(appId, gameSource, sessionMinutes, showedFps, avgFps, stability)
             } catch (e: Exception) {
                 Log.w(TAG, "Error handling session-ended broadcast", e)
             } finally {
@@ -108,6 +122,8 @@ class SessionResultReceiver : BroadcastReceiver() {
         gameSource: String,
         sessionMinutes: Int,
         showedFps: Boolean,
+        avgFps: Int? = null,
+        stability: String? = null,
     ) {
         // Resolve the IIC game id from the broadcast's numeric app id + source.
         // GameNative only handles STEAM games (all its store ids are Steam app ids).
@@ -125,8 +141,10 @@ class SessionResultReceiver : BroadcastReceiver() {
             gameId = gameId,
             sessionMinutes = sessionMinutes.takeIf { it > 0 },
             showedFps = showedFps,
+            avgFps = avgFps,         // Feature C: null if fork didn't send it
+            stability = stability,   // Feature C: null if fork didn't send it
         )
-        Log.i(TAG, "Pending session stored for gameId=$gameId (mins=$sessionMinutes fps=$showedFps)")
+        Log.i(TAG, "Pending session stored for gameId=$gameId (mins=$sessionMinutes fps=$showedFps avgFps=$avgFps stability=$stability)")
     }
 
     /**

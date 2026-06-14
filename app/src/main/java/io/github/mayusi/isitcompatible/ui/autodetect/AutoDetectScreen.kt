@@ -42,16 +42,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.width
 import io.github.mayusi.isitcompatible.autodetect.AllFilesAccess
 import io.github.mayusi.isitcompatible.autodetect.SwitchKeysStatus
 import io.github.mayusi.isitcompatible.hardware.DeviceFingerprint
 import io.github.mayusi.isitcompatible.hardware.SocCatalog
 import io.github.mayusi.isitcompatible.hardware.SocTier
+import io.github.mayusi.isitcompatible.recommend.Confidence
+import io.github.mayusi.isitcompatible.ui.common.PlatformColors
+import io.github.mayusi.isitcompatible.ui.search.GameSummary
 import java.io.File
 
 @Composable
 fun AutoDetectScreen(
     contentPadding: PaddingValues,
+    onOpenGame: (gameId: String) -> Unit = {},
     vm: AutoDetectViewModel = hiltViewModel(),
 ) {
     val s by vm.state.collectAsStateWithLifecycle()
@@ -76,6 +82,15 @@ fun AutoDetectScreen(
         // Hardware summary card — shown when fingerprint is available
         s.deviceFingerprint?.let { fp ->
             HardwareSummaryCard(fp = fp, stats = s.coverageStats)
+        }
+
+        // Feature A: "Best for your chip" discovery feed — only when fingerprint is known
+        s.deviceFingerprint?.let { fp ->
+            BestForChipSection(
+                socLabel = fp.socFamily,
+                games = s.bestForChipGames,
+                onOpenGame = onOpenGame,
+            )
         }
 
         // Permission gate
@@ -720,6 +735,165 @@ private fun HardwareSummaryCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
+            }
+        }
+    }
+}
+
+/**
+ * Feature A: "Best for your [chip]" horizontal discovery feed.
+ *
+ * Only shows games with STRONG/MODERATE confidence AND PERFECT/PLAYABLE stability —
+ * i.e. real same-SoC or same-family data at good performance. No estimates,
+ * no widened fallbacks. When the chip has no such data yet (untested/unknown
+ * device), shows an honest "Not enough chip-specific data yet" card instead.
+ *
+ * [games] is null while loading, empty list when load finished but nothing qualifies.
+ */
+@Composable
+private fun BestForChipSection(
+    socLabel: String,
+    games: List<GameSummary>?,
+    onOpenGame: (gameId: String) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            "Best for your $socLabel",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+        )
+
+        when {
+            games == null -> {
+                // Still computing — show a subtle loading indicator
+                Card(Modifier.fillMaxWidth()) {
+                    Row(
+                        Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(14.dp), strokeWidth = 1.5.dp)
+                        Text(
+                            "Finding games that run great on your chip…",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+            games.isEmpty() -> {
+                // Honest empty state — device not tested yet, don't show a sad empty list
+                Card(Modifier.fillMaxWidth()) {
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(
+                            "Not enough chip-specific data yet",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                        )
+                        Text(
+                            "No confirmed same-SoC reports at good performance exist for your chip. " +
+                                "Browse all games to find options — reports for your hardware build " +
+                                "up over time.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+            else -> {
+                // Horizontal scroll of chip-confirmed game cards
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    games.forEach { summary ->
+                        ChipGameCard(summary = summary, onClick = { onOpenGame(summary.game.id) })
+                    }
+                }
+            }
+        }
+    }
+}
+
+/** A compact vertical card for the chip discovery feed. */
+@Composable
+private fun ChipGameCard(summary: GameSummary, onClick: () -> Unit) {
+    val color = PlatformColors.primary(summary.game.platform)
+    val stabColor = PlatformColors.stability(summary.bestStability)
+    val isStrong = summary.bestConfidence == Confidence.STRONG
+
+    Card(
+        modifier = Modifier
+            .width(140.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+    ) {
+        Column {
+            // Platform color bar at top
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(4.dp)
+                    .background(color),
+            )
+            Column(
+                Modifier.padding(10.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                // Platform chip
+                Box(
+                    Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(color.copy(alpha = 0.18f))
+                        .padding(horizontal = 6.dp, vertical = 2.dp),
+                ) {
+                    Text(
+                        summary.game.platform,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = color,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    )
+                }
+                // Game title
+                Text(
+                    summary.game.title,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                    maxLines = 2,
+                    modifier = Modifier.height(36.dp),
+                )
+                // FPS pill
+                if (summary.bestFps != null) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Box(
+                            Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(stabColor.copy(alpha = 0.18f))
+                                .padding(horizontal = 7.dp, vertical = 3.dp),
+                        ) {
+                            Text(
+                                "${summary.bestFps} fps",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                color = stabColor,
+                            )
+                        }
+                    }
+                }
+                // Confidence badge — STRONG = same SoC+RAM, MODERATE = same SoC family
+                Text(
+                    if (isStrong) "Same SoC" else "Same family",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }

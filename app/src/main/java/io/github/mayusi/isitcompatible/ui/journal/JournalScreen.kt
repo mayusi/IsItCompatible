@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material3.AlertDialog
@@ -28,6 +30,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -73,6 +76,18 @@ fun JournalScreen(
         if (s.loading) {
             Box(Modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
             return@Column
+        }
+
+        // Feature B: In-progress setups section — shown above the journal entries
+        // whenever there is at least one guide the user has started but not finished.
+        // Only renders when the list is non-null and non-empty.
+        val inProgress = s.inProgressSetups
+        if (!inProgress.isNullOrEmpty()) {
+            InProgressSection(
+                setups = inProgress,
+                onResume = onOpenGame,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            )
         }
 
         if (s.entries.isEmpty()) {
@@ -307,3 +322,86 @@ private fun JournalEntryRow(
 
 private fun formatDate(epochMs: Long): String =
     DateFormat.getDateInstance(DateFormat.SHORT).format(Date(epochMs))
+
+/**
+ * Feature B: "In progress" section — shows setups the user started but didn't
+ * finish (1+ guide steps done, not all done). Each card deep-links to the game
+ * detail so the user can pick up where they left off.
+ *
+ * Only rendered when there is at least one in-progress setup (caller guards).
+ */
+@Composable
+private fun InProgressSection(
+    setups: List<InProgressSetup>,
+    onResume: (gameId: String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            "In progress",
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        setups.forEach { setup ->
+            InProgressCard(setup = setup, onResume = { onResume(setup.gameId) })
+        }
+    }
+}
+
+@Composable
+private fun InProgressCard(
+    setup: InProgressSetup,
+    onResume: () -> Unit,
+) {
+    val fraction = if (setup.totalSteps > 0)
+        setup.doneSteps.toFloat() / setup.totalSteps
+    else 0f
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onResume),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f),
+        ),
+        shape = RoundedCornerShape(10.dp),
+    ) {
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        "Resume setup: ${setup.gameTitle}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                    )
+                    Text(
+                        "${setup.emulatorName} · step ${setup.doneSteps}/${setup.totalSteps}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Icon(
+                    Icons.AutoMirrored.Outlined.ArrowForward,
+                    contentDescription = "Resume setup",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(18.dp),
+                )
+            }
+            LinearProgressIndicator(
+                progress = { fraction },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(4.dp)
+                    .clip(RoundedCornerShape(2.dp)),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            )
+        }
+    }
+}

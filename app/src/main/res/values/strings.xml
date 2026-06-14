@@ -4,8 +4,9 @@
 
     <!-- Wizard -->
     <string name="wizard_welcome_title">Welcome</string>
-    <string name="wizard_welcome_blurb">Search ANY game — PC, PlayStation, Switch, 3DS, anything — and we\'ll tell you the best emulator + driver + preset to run it on YOUR device. You don\'t need the game installed or dumped. Browse compatibility for everything.</string>
+    <string name="wizard_welcome_blurb">Works on any Android handheld — Retroid Pocket, AYANEO, Odin, or any phone with a controller. Search any game: PC, PlayStation, Switch, 3DS, Dreamcast, and more. We\'ll tell you the best emulator, driver, and settings for YOUR chip — no guessing, no digging through forums.</string>
     <string name="wizard_welcome_credit">Console compatibility data comes from EmuReady. Thanks to the EmuReady community.</string>
+    <string name="wizard_welcome_what_you_get">What you get:\n• Best emulator + preset for your exact chip\n• Per-game setup guide + BIOS checklist\n• Community reports from people with the same hardware\n• One-tap config apply for Windows games via GameNative</string>
     <string name="wizard_lets_go">Let\'s Go</string>
 
     <string name="wizard_libraries_title">Where are your games?</string>

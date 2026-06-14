@@ -137,6 +137,9 @@ interface JournalDao {
     @Query("SELECT DISTINCT gameId FROM journal_entries")
     fun observeTriedGameIds(): Flow<List<String>>
 
+    @Query("SELECT * FROM journal_entries ORDER BY createdAt DESC")
+    suspend fun all(): List<JournalEntryEntity>
+
     @Query("SELECT COUNT(*) FROM journal_entries")
     fun countFlow(): Flow<Int>
 
@@ -182,8 +185,23 @@ interface GuideDao {
     @Query("SELECT * FROM guide_progress WHERE guideKey = :guideKey")
     suspend fun progressFor(guideKey: String): List<GuideProgressEntity>
 
+    @Query("SELECT * FROM guide_progress")
+    suspend fun allProgress(): List<GuideProgressEntity>
+
     @Query("DELETE FROM guide_progress WHERE guideKey = :guideKey")
     suspend fun clearProgress(guideKey: String)
+
+    /**
+     * Feature B: return the set of guideKeys that have at least one done step
+     * but are NOT fully completed. "Fully completed" is defined as every step
+     * index 0..(totalSteps-1) being done — we check this in the VM after fetching
+     * the step counts from the matching [GuideEntity].
+     *
+     * Returns all guide_progress rows so the VM can group + check per guideKey.
+     * Avoids a complex correlated subquery that would be hard to test and maintain.
+     */
+    @Query("SELECT * FROM guide_progress WHERE done = 1")
+    suspend fun allDoneSteps(): List<GuideProgressEntity>
 }
 
 /**
