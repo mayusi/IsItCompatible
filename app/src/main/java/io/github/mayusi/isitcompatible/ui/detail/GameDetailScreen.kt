@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -100,6 +99,9 @@ import io.github.mayusi.isitcompatible.recommend.Bucket
 import io.github.mayusi.isitcompatible.recommend.Confidence
 import io.github.mayusi.isitcompatible.recommend.Recommendation
 import io.github.mayusi.isitcompatible.ui.common.PlatformColors
+import io.github.mayusi.isitcompatible.ui.theme.AppColors
+import io.github.mayusi.isitcompatible.ui.theme.AppShapes
+import io.github.mayusi.isitcompatible.ui.theme.Spacing
 import io.github.mayusi.isitcompatible.ui.journal.JournalEntryForm
 import io.github.mayusi.isitcompatible.ui.submit.SubmitLinks
 import java.text.DateFormat
@@ -155,7 +157,7 @@ fun GameDetailScreen(
                         Icon(
                             imageVector = if (s.isFavorite) Icons.Filled.Star else Icons.Outlined.StarOutline,
                             contentDescription = if (s.isFavorite) "Remove from favorites" else "Add to favorites",
-                            tint = if (s.isFavorite) Color(0xFFFFC107) else MaterialTheme.colorScheme.onSurfaceVariant,
+                            tint = if (s.isFavorite) AppColors.favorite else MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 },
@@ -181,8 +183,8 @@ fun GameDetailScreen(
             // Spec item 1: CompactGameHeader replaces PlatformHeader + CoverAndScreenshotsStrip
             CompactGameHeader(game)
 
-            Column(Modifier.padding(horizontal = 16.dp)) {
-                Spacer(Modifier.height(16.dp))
+            Column(Modifier.padding(horizontal = Spacing.screenH)) {
+                Spacer(Modifier.height(Spacing.sectionGap))
 
                 if (s.recommendations.isEmpty()) {
                     NoReportsCard(
@@ -229,7 +231,7 @@ fun GameDetailScreen(
                     // single most useful, scannable line on the screen.
                     val deviceExpectRec = realTop ?: genTop
                     if (deviceExpectRec != null && s.fingerprint != null) {
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(Spacing.cardGap))
                         DeviceExpectCard(
                             rec = deviceExpectRec,
                             fingerprint = s.fingerprint!!,
@@ -266,7 +268,7 @@ fun GameDetailScreen(
                     // Spec item 3: "How to run it" — collapsed by default
                     val resolvedGuide = s.guide
                     if (resolvedGuide != null && resolvedGuide.steps.isNotEmpty()) {
-                        Spacer(Modifier.height(16.dp))
+                        Spacer(Modifier.height(Spacing.sectionGap))
                         val guideEmuName = s.emulatorsById[resolvedGuide.emulatorId]?.name ?: resolvedGuide.emulatorId
                         Section(
                             title = "How to run it · $guideEmuName",
@@ -289,7 +291,7 @@ fun GameDetailScreen(
                             )
                         }
                     } else if (viableEmulators.isNotEmpty()) {
-                        Spacer(Modifier.height(16.dp))
+                        Spacer(Modifier.height(Spacing.sectionGap))
                         Section(
                             title = "How to run it",
                             icon = Icons.Outlined.Speed,
@@ -309,11 +311,11 @@ fun GameDetailScreen(
                     // Spec item 4: "Something's wrong?" (renamed from "It didn't work? Troubleshoot")
                     val tvm: TroubleshootViewModel = hiltViewModel()
                     val ts by tvm.state.collectAsStateWithLifecycle()
-                    Spacer(Modifier.height(16.dp))
+                    Spacer(Modifier.height(Spacing.sectionGap))
                     Section(
                         title = "Something's wrong?",
                         icon = Icons.Outlined.HealthAndSafety,
-                        accent = Color(0xFFEF5350),
+                        accent = AppColors.danger,
                         initiallyExpanded = false,
                     ) {
                         TroubleshootSection(
@@ -329,13 +331,13 @@ fun GameDetailScreen(
                     }
 
                     // ── SECONDARY ZONE — reference material, collapsed by default ──
-                    Spacer(Modifier.height(24.dp))
+                    Spacer(Modifier.height(Spacing.xl))
                     MoreDetailsHeader()
 
                     // Spec item 5: GameNative config wrapped in a collapsed Section.
                     // IicOfferCard is now its own separate Section (extracted out of GameNativeConfigPanel).
                     if (s.isWindowsGame) {
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(Spacing.cardGap))
                         Section(
                             title = "GameNative config",
                             icon = Icons.Outlined.Build,
@@ -359,11 +361,11 @@ fun GameDetailScreen(
                         }
                         // Spec item 5: IicOfferCard in its own Section, only when IIC not installed
                         if (!s.iicInstalled) {
-                            Spacer(Modifier.height(10.dp))
+                            Spacer(Modifier.height(Spacing.cardGap))
                             Section(
                                 title = "Optional: GameNative (IIC) fork",
                                 icon = Icons.Outlined.AutoFixHigh,
-                                accent = Color(0xFF9C27B0),
+                                accent = AppColors.sourceBundled,
                                 initiallyExpanded = false,
                             ) {
                                 IicOfferCard(
@@ -376,7 +378,7 @@ fun GameDetailScreen(
 
                     // Preset details (collapsed)
                     top.presetId?.let { presetId ->
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(Spacing.cardGap))
                         Section(
                             title = "Preset details",
                             icon = Icons.Outlined.Build,
@@ -401,11 +403,11 @@ fun GameDetailScreen(
                         hasBios ||
                         !game.bestVersionGuidance.isNullOrBlank()
                     if (hasGameNotes) {
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(Spacing.cardGap))
                         Section(
                             title = "Game notes",
                             icon = Icons.Outlined.BugReport,
-                            accent = Color(0xFFFFC107),
+                            accent = AppColors.warning,
                             // Expand automatically when there are known issues or BIOS requirements
                             // so critical info isn't buried behind a tap.
                             initiallyExpanded = hasKnownIssues || hasBios,
@@ -416,7 +418,7 @@ fun GameDetailScreen(
 
                     // Other options / Alternatives (collapsed)
                     if (s.recommendations.size > 1) {
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(Spacing.cardGap))
                         Section(
                             title = "Other options",
                             icon = Icons.Outlined.Devices,
@@ -438,7 +440,7 @@ fun GameDetailScreen(
                     }
 
                     // Spec item 8: Renamed to "Community reports (N)" with TextButton("Submit a report")
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(Spacing.cardGap))
                     val allReports = s.recommendations.flatMap { it.reports }
                     Section(
                         title = "Community reports (${allReports.size})",
@@ -573,7 +575,7 @@ private fun CompactGameHeader(game: GameEntity) {
                     ),
                 )
             )
-            .padding(16.dp),
+            .padding(Spacing.cardPadding),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             // Small cover thumbnail when available
@@ -584,20 +586,20 @@ private fun CompactGameHeader(game: GameEntity) {
                     modifier = Modifier
                         .height(96.dp)
                         .width(72.dp)
-                        .clip(RoundedCornerShape(6.dp))
+                        .clip(AppShapes.badge)
                         .background(platformColor.copy(alpha = 0.10f)),
                 )
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(Spacing.md))
             }
             Column(Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     PlatformBadge(platform = game.platform)
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(Spacing.sm))
                     game.releaseYear?.let {
                         Text("$it",
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Spacer(Modifier.width(8.dp))
+                        Spacer(Modifier.width(Spacing.sm))
                     }
                     game.region?.let {
                         Text(it,
@@ -607,8 +609,8 @@ private fun CompactGameHeader(game: GameEntity) {
                 }
                 val genres = game.genres?.split('|').orEmpty().filter { it.isNotBlank() }
                 if (genres.isNotEmpty()) {
-                    Spacer(Modifier.height(8.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Spacer(Modifier.height(Spacing.sm))
+                    Row(horizontalArrangement = Arrangement.spacedBy(Spacing.xs)) {
                         genres.take(3).forEach { g -> Chip(g) }
                     }
                 }
@@ -622,13 +624,13 @@ private fun PlatformBadge(platform: String) {
     val color = PlatformColors.primary(platform)
     Box(
         Modifier
-            .clip(RoundedCornerShape(6.dp))
-            .background(color.copy(alpha = 0.85f))
-            .padding(horizontal = 8.dp, vertical = 3.dp),
+            .clip(AppShapes.badge)
+            .background(color.copy(alpha = 0.18f))
+            .padding(horizontal = Spacing.sm, vertical = Spacing.chipVertical),
     ) {
         Text(platform.uppercase(),
             style = MaterialTheme.typography.labelMedium,
-            color = Color.White,
+            color = color,
             fontWeight = FontWeight.Bold)
     }
 }
@@ -637,9 +639,9 @@ private fun PlatformBadge(platform: String) {
 private fun Chip(label: String) {
     Box(
         Modifier
-            .clip(RoundedCornerShape(12.dp))
+            .clip(AppShapes.chip)
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(horizontal = 10.dp, vertical = 4.dp),
+            .padding(horizontal = Spacing.chipHorizontal, vertical = Spacing.chipVertical),
     ) {
         Text(label, style = MaterialTheme.typography.labelSmall)
     }
@@ -660,7 +662,7 @@ private fun Section(
     var expanded by remember { mutableStateOf(initiallyExpanded) }
     Card(
         Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
+        shape = AppShapes.card,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Column {
@@ -670,7 +672,7 @@ private fun Section(
                 Modifier
                     .fillMaxWidth()
                     .clickable { expanded = !expanded }
-                    .padding(16.dp),
+                    .padding(Spacing.cardPadding),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
@@ -682,7 +684,7 @@ private fun Section(
                 ) {
                     Icon(icon, contentDescription = null, tint = accent, modifier = Modifier.size(18.dp))
                 }
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(Spacing.md))
                 Text(title,
                     modifier = Modifier.weight(1f),
                     style = MaterialTheme.typography.titleMedium,
@@ -694,7 +696,7 @@ private fun Section(
                 )
             }
             AnimatedVisibility(expanded) {
-                Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+                Column(Modifier.padding(start = Spacing.cardPadding, end = Spacing.cardPadding, bottom = Spacing.cardPadding)) {
                     content()
                 }
             }
@@ -762,17 +764,17 @@ private fun DeviceExpectCard(
 
     Card(
         Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
+        shape = AppShapes.card,
         colors = CardDefaults.cardColors(containerColor = containerBg),
     ) {
-        Row(Modifier.padding(12.dp), verticalAlignment = Alignment.Top) {
+        Row(Modifier.padding(Spacing.md), verticalAlignment = Alignment.Top) {
             Icon(
                 Icons.Outlined.Devices,
                 contentDescription = null,
                 tint = textColor.copy(alpha = 0.7f),
                 modifier = Modifier.size(16.dp).padding(top = 2.dp),
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(Spacing.sm))
             Text(
                 mainSentence,
                 style = MaterialTheme.typography.bodySmall,
@@ -874,10 +876,10 @@ private fun VerdictCard(
     Column {
         Card(
             Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(20.dp),
+            shape = AppShapes.cardLarge,
             colors = CardDefaults.cardColors(containerColor = containerColor),
         ) {
-            Column(Modifier.padding(20.dp)) {
+            Column(Modifier.padding(Spacing.xl)) {
                 // Header label
                 val headerLabel = if (realTop != null)
                     "RECOMMENDED · BASED ON REAL REPORTS"
@@ -1073,9 +1075,9 @@ private fun StabilityPill(stability: String) {
     val color = PlatformColors.stability(stability)
     Box(
         Modifier
-            .clip(RoundedCornerShape(8.dp))
+            .clip(AppShapes.chip)
             .background(color.copy(alpha = 0.20f))
-            .padding(horizontal = 6.dp, vertical = 1.dp),
+            .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
     ) {
         Text(PlatformColors.stabilityLabel(stability),
             style = MaterialTheme.typography.labelSmall,
@@ -1095,9 +1097,9 @@ private fun EstimatedStabilityPill(stability: String) {
     val neutralColor = MaterialTheme.colorScheme.onSurfaceVariant
     Box(
         Modifier
-            .clip(RoundedCornerShape(8.dp))
+            .clip(AppShapes.chip)
             .background(neutralColor.copy(alpha = 0.14f))
-            .padding(horizontal = 6.dp, vertical = 1.dp),
+            .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
     ) {
         Text(
             "Est. ${PlatformColors.stabilityLabel(stability)}",
@@ -1123,15 +1125,15 @@ private fun ConfidenceBadge(c: Confidence) {
     val errorColor = MaterialTheme.colorScheme.error
     val (label, color) = when (c) {
         Confidence.STRONG    -> "STRONG"    to tertiaryColor
-        Confidence.MODERATE  -> "MODERATE"  to Color(0xFFAED581)
-        Confidence.WEAK      -> "WEAK"      to Color(0xFFFFC107)
+        Confidence.MODERATE  -> "MODERATE"  to AppColors.sourceCommunity
+        Confidence.WEAK      -> "WEAK"      to AppColors.warning
         Confidence.VERY_WEAK -> "VERY WEAK" to errorColor
     }
     Box(
         Modifier
-            .clip(RoundedCornerShape(4.dp))
+            .clip(AppShapes.badge)
             .background(color.copy(alpha = 0.18f))
-            .padding(horizontal = 6.dp, vertical = 2.dp),
+            .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
     ) {
         Text(label, style = MaterialTheme.typography.labelSmall, color = color, fontWeight = FontWeight.Bold)
     }
@@ -1141,7 +1143,7 @@ private fun ConfidenceBadge(c: Confidence) {
 private fun HardwareCallout(vramMb: Int?, recRamGb: Int?, userRamMb: Int?) {
     val userRamGb = userRamMb?.let { it / 1024 }
     val warns = recRamGb != null && userRamGb != null && userRamGb < recRamGb
-    val bg = if (warns) Color(0xFFFFC107).copy(alpha = 0.18f)
+    val bg = if (warns) AppColors.warning.copy(alpha = 0.18f)
              else MaterialTheme.colorScheme.surface.copy(alpha = 0.70f)
     Card(
         Modifier.fillMaxWidth(),
@@ -1167,7 +1169,7 @@ private fun HardwareCallout(vramMb: Int?, recRamGb: Int?, userRamMb: Int?) {
                 Spacer(Modifier.height(6.dp))
                 Text("Your device may be short on RAM — try a lighter preset or expect crashes.",
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color(0xFFB07000))
+                    color = AppColors.warning)
             }
         }
     }
@@ -1223,7 +1225,7 @@ private fun GroupedSettingsBody(
         if (groupRows.isNotEmpty()) {
             SettingsGroupBlock(group.title, groupRows)
             seenKeys.addAll(groupRows.map { it.first })
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(Spacing.md))
         }
     }
     val unmatched = flatRows.entries.filter { it.key !in seenKeys }.map { it.key to it.value }
@@ -1256,18 +1258,18 @@ private fun NewerDriverHint(currentName: String, upstreamTag: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             Modifier
-                .clip(RoundedCornerShape(4.dp))
-                .background(Color(0xFF1976D2).copy(alpha = 0.18f))
-                .padding(horizontal = 7.dp, vertical = 2.dp),
+                .clip(AppShapes.badge)
+                .background(AppColors.sourceEmuReady.copy(alpha = 0.18f))
+                .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
         ) {
             Text(
                 "newer driver available",
                 style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
-                color = Color(0xFF0D47A1),
+                color = AppColors.sourceEmuReady,
                 fontWeight = FontWeight.SemiBold,
             )
         }
-        Spacer(Modifier.width(6.dp))
+        Spacer(Modifier.width(Spacing.xs))
         Text(
             upstreamTag,
             style = MaterialTheme.typography.labelSmall,
@@ -1289,17 +1291,17 @@ private fun DataAsOfFooter(epochMs: Long) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         if (stale) {
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(Spacing.sm))
             Box(
                 Modifier
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(Color(0xFFFFC107).copy(alpha = 0.20f))
-                    .padding(horizontal = 5.dp, vertical = 1.dp),
+                    .clip(AppShapes.badge)
+                    .background(AppColors.warning.copy(alpha = 0.20f))
+                    .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
             ) {
                 Text(
                     if (epochMs > 0) "may be outdated" else "unverified",
                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
-                    color = Color(0xFFB07000),
+                    color = AppColors.warning,
                     fontWeight = FontWeight.SemiBold,
                 )
             }
@@ -1310,13 +1312,13 @@ private fun DataAsOfFooter(epochMs: Long) {
 @Composable
 private fun SettingsGroupBlock(title: String, rows: List<Pair<String, String>>) {
     Text(title.uppercase(),
-        style = MaterialTheme.typography.labelSmall,
+        style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.SemiBold,
         letterSpacing = 0.8.sp)
-    Spacer(Modifier.height(4.dp))
+    Spacer(Modifier.height(Spacing.xs))
     rows.forEach { (k, v) ->
-        Row(Modifier.fillMaxWidth().padding(vertical = 3.dp)) {
+        Row(Modifier.fillMaxWidth().padding(vertical = Spacing.xs)) {
             Text(k,
                 modifier = Modifier.width(140.dp),
                 style = MaterialTheme.typography.bodySmall,
@@ -1398,7 +1400,7 @@ private fun KnownIssuesList(issues: List<String>) {
                     Modifier
                         .size(6.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFFFC107))
+                        .background(AppColors.warning)
                         .padding(top = 8.dp),
                 )
                 Spacer(Modifier.width(10.dp))
@@ -1431,37 +1433,37 @@ private fun GameNotesBody(game: GameEntity) {
     var anyRendered = false
 
     if (issuesList.isNotEmpty()) {
-        if (anyRendered) HorizontalDivider(Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outlineVariant)
+        if (anyRendered) HorizontalDivider(Modifier.padding(vertical = Spacing.md), color = MaterialTheme.colorScheme.outlineVariant)
         anyRendered = true
         Text("KNOWN ISSUES",
-            style = MaterialTheme.typography.labelSmall,
-            color = Color(0xFFB07000),
+            style = MaterialTheme.typography.labelMedium,
+            color = AppColors.warning,
             fontWeight = FontWeight.SemiBold,
             letterSpacing = 0.8.sp)
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(Spacing.sm))
         KnownIssuesList(issues = issuesList)
     }
     if (modsList.isNotEmpty()) {
-        if (anyRendered) HorizontalDivider(Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outlineVariant)
+        if (anyRendered) HorizontalDivider(Modifier.padding(vertical = Spacing.md), color = MaterialTheme.colorScheme.outlineVariant)
         anyRendered = true
         Text("MODS & COMMUNITY PATCHES",
-            style = MaterialTheme.typography.labelSmall,
-            color = Color(0xFF9C27B0),
+            style = MaterialTheme.typography.labelMedium,
+            color = AppColors.sourceBundled,
             fontWeight = FontWeight.SemiBold,
             letterSpacing = 0.8.sp)
-        Spacer(Modifier.height(6.dp))
-        BulletedList(items = modsList, bulletColor = Color(0xFF9C27B0))
+        Spacer(Modifier.height(Spacing.sm))
+        BulletedList(items = modsList, bulletColor = AppColors.sourceBundled)
     }
     if (biosList.isNotEmpty()) {
-        if (anyRendered) HorizontalDivider(Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outlineVariant)
+        if (anyRendered) HorizontalDivider(Modifier.padding(vertical = Spacing.md), color = MaterialTheme.colorScheme.outlineVariant)
         anyRendered = true
         Text("BIOS / FIRMWARE REQUIREMENTS",
-            style = MaterialTheme.typography.labelSmall,
-            color = Color(0xFFEF5350),
+            style = MaterialTheme.typography.labelMedium,
+            color = AppColors.danger,
             fontWeight = FontWeight.SemiBold,
             letterSpacing = 0.8.sp)
-        Spacer(Modifier.height(6.dp))
-        BulletedList(items = biosList, bulletColor = Color(0xFFEF5350))
+        Spacer(Modifier.height(Spacing.sm))
+        BulletedList(items = biosList, bulletColor = AppColors.danger)
         Spacer(Modifier.height(4.dp))
         Text(
             "BIOS/firmware come from hardware you own — there's no download here. Place/import them once you have them.",
@@ -1470,13 +1472,13 @@ private fun GameNotesBody(game: GameEntity) {
         )
     }
     if (versionText != null) {
-        if (anyRendered) HorizontalDivider(Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outlineVariant)
+        if (anyRendered) HorizontalDivider(Modifier.padding(vertical = Spacing.md), color = MaterialTheme.colorScheme.outlineVariant)
         Text("WHICH VERSION TO EMULATE",
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.SemiBold,
             letterSpacing = 0.8.sp)
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(Spacing.sm))
         Text(versionText, style = MaterialTheme.typography.bodyMedium)
     }
 }
@@ -1537,13 +1539,13 @@ private fun PerEmulatorSetupTabs(
             val isSelected = index == selectedIndex
             Box(
                 Modifier
-                    .clip(RoundedCornerShape(10.dp))
+                    .clip(AppShapes.chip)
                     .background(
                         if (isSelected) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.surfaceVariant
                     )
                     .clickable { selectedIndex = index }
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                    .padding(horizontal = Spacing.md, vertical = Spacing.sm),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
@@ -1617,13 +1619,13 @@ private fun AlternativeRow(
 ) {
     Card(
         Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
+        shape = AppShapes.card,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
     ) {
         Row(
-            Modifier.fillMaxWidth().padding(12.dp),
+            Modifier.fillMaxWidth().padding(Spacing.md),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f)) {
@@ -1701,14 +1703,14 @@ private fun PerformanceOverviewBody(reports: List<ReportEntity>) {
                 Modifier
                     .weight(1f)
                     .height(8.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(AppShapes.pill)
                     .background(MaterialTheme.colorScheme.surfaceVariant),
             ) {
                 Box(
                     Modifier
                         .fillMaxWidth(count / total)
                         .height(8.dp)
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(AppShapes.pill)
                         .background(color),
                 )
             }
@@ -1843,23 +1845,23 @@ private fun AllReportsInline(
 /** Compact source label badge pill. */
 @Composable
 private fun ReportSourceBadge(source: String) {
-    val (label, bg, fg) = when (source.uppercase()) {
-        "EMUREADY_LIVE"      -> Triple("EmuReady",   Color(0xFFE3F2FD), Color(0xFF1565C0))
-        "EMUREADY_SNAPSHOT"  -> Triple("EmuReady",   Color(0xFFE3F2FD), Color(0xFF1565C0))
-        "OUR_GITHUB"         -> Triple("Community",  Color(0xFFE8F5E9), Color(0xFF2E7D32))
-        "BUNDLED"            -> Triple("Bundled",    Color(0xFFF3E5F5), Color(0xFF6A1B9A))
-        "GENERATED_HEURISTIC" -> Triple("Estimated", Color(0xFFFFF8E1), Color(0xFFE65100))
-        else                 -> Triple(source.lowercase().replace('_', ' '), Color(0xFFF5F5F5), Color(0xFF616161))
+    val (label, accent) = when (source.uppercase()) {
+        "EMUREADY_LIVE"       -> "EmuReady"  to AppColors.sourceEmuReady
+        "EMUREADY_SNAPSHOT"   -> "EmuReady"  to AppColors.sourceEmuReady
+        "OUR_GITHUB"          -> "Community" to AppColors.sourceCommunity
+        "BUNDLED"             -> "Bundled"   to AppColors.sourceBundled
+        "GENERATED_HEURISTIC" -> "Estimated" to AppColors.sourceEstimated
+        else -> source.lowercase().replace('_', ' ') to AppColors.neutral
     }
     Box(
         Modifier
-            .clip(RoundedCornerShape(4.dp))
-            .background(bg)
-            .padding(horizontal = 5.dp, vertical = 1.dp),
+            .clip(AppShapes.badge)
+            .background(accent.copy(alpha = 0.18f))
+            .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
     ) {
         Text(label,
             style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
-            color = fg,
+            color = accent,
             fontWeight = FontWeight.SemiBold)
     }
 }
@@ -1920,8 +1922,7 @@ private fun GameNativeConfigPanel(
             Column {
                 ConfigStatusBadge(
                     text = "NO CONFIG YET",
-                    bg = Color(0xFFE8EAF6),
-                    fg = Color(0xFF3949AB),
+                    accent = AppColors.neutral,
                 )
                 Spacer(Modifier.height(10.dp))
                 Text(
@@ -1958,14 +1959,12 @@ private fun GameNativeConfigPanel(
                 if (authored) {
                     ConfigStatusBadge(
                         text = "COMMUNITY CONFIG",
-                        bg = Color(0xFFE8EAF6),
-                        fg = Color(0xFF3949AB),
+                        accent = AppColors.sourceEmuReady,
                     )
                 } else {
                     ConfigStatusBadge(
                         text = "VERIFIED CONFIG",
-                        bg = Color(0xFFD1FAE5),
-                        fg = Color(0xFF065F46),
+                        accent = AppColors.success,
                     )
                 }
                 Spacer(Modifier.height(10.dp))
@@ -1994,18 +1993,18 @@ private fun GameNativeConfigPanel(
                         Text("Apply config & launch in GameNative")
                     }
                     if (iicInstalled) {
-                        Spacer(Modifier.height(4.dp))
+                        Spacer(Modifier.height(Spacing.xs))
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 Modifier
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .background(Color(0xFFD1FAE5))
-                                    .padding(horizontal = 7.dp, vertical = 2.dp),
+                                    .clip(AppShapes.badge)
+                                    .background(AppColors.success.copy(alpha = 0.18f))
+                                    .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
                             ) {
                                 Text(
                                     "Launching via GameNative (IIC)",
                                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
-                                    color = Color(0xFF065F46),
+                                    color = AppColors.success,
                                     fontWeight = FontWeight.SemiBold,
                                 )
                             }
@@ -2049,8 +2048,7 @@ private fun GameNativeConfigPanel(
             Column {
                 ConfigStatusBadge(
                     text = "NO VERIFIED SETUP YET",
-                    bg = Color(0xFFFEF3C7),
-                    fg = Color(0xFF92400E),
+                    accent = AppColors.warning,
                 )
                 Spacer(Modifier.height(10.dp))
                 Text(
@@ -2124,17 +2122,17 @@ private fun ImportStatus(
             }
         }
         is ImportConfigState.Error -> {
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(Spacing.md))
             Card(
                 Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(10.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFEF5350).copy(alpha = 0.14f)),
+                shape = AppShapes.card,
+                colors = CardDefaults.cardColors(containerColor = AppColors.danger.copy(alpha = 0.14f)),
             ) {
-                Column(Modifier.padding(12.dp)) {
+                Column(Modifier.padding(Spacing.md)) {
                     Text("Import failed",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFB71C1C))
+                        color = AppColors.danger)
                     Spacer(Modifier.height(4.dp))
                     Text(state.message, style = MaterialTheme.typography.bodySmall)
                     Spacer(Modifier.height(6.dp))
@@ -2143,23 +2141,23 @@ private fun ImportStatus(
             }
         }
         is ImportConfigState.Success -> {
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(Spacing.md))
             Card(
                 Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(10.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFD1FAE5)),
+                shape = AppShapes.card,
+                colors = CardDefaults.cardColors(containerColor = AppColors.success.copy(alpha = 0.14f)),
             ) {
-                Column(Modifier.padding(12.dp)) {
+                Column(Modifier.padding(Spacing.md)) {
                     Text("Config verified and saved",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF065F46))
-                    Spacer(Modifier.height(4.dp))
+                        color = AppColors.success)
+                    Spacer(Modifier.height(Spacing.xs))
                     Text(
                         "Your working config is now the verified config for this game — " +
                             "it'll show as Verified and is downloadable any time.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF065F46),
+                        color = AppColors.success,
                     )
                     Spacer(Modifier.height(8.dp))
                     Row {
@@ -2200,12 +2198,12 @@ private fun IicOfferCard(
 ) {
     Card(
         Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
+        shape = AppShapes.card,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
         ),
     ) {
-        Column(Modifier.padding(12.dp)) {
+        Column(Modifier.padding(Spacing.md)) {
             Text(
                 "Get GameNative (IIC) — auto-fixes tricky games",
                 style = MaterialTheme.typography.labelMedium,
@@ -2234,7 +2232,7 @@ private fun IicOfferCard(
                     Text(
                         "Installer opened — tap Install in the system prompt.",
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color(0xFF065F46),
+                        color = AppColors.success,
                         fontWeight = FontWeight.SemiBold,
                     )
                 }
@@ -2242,7 +2240,7 @@ private fun IicOfferCard(
                     Text(
                         "Download failed: ${iicInstallStatus.message}",
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color(0xFFB71C1C),
+                        color = AppColors.danger,
                     )
                     Spacer(Modifier.height(4.dp))
                     OutlinedButton(onClick = onGetIic, modifier = Modifier.fillMaxWidth()) {
@@ -2263,14 +2261,14 @@ private fun IicOfferCard(
 }
 
 @Composable
-private fun ConfigStatusBadge(text: String, bg: Color, fg: Color) {
+private fun ConfigStatusBadge(text: String, accent: Color) {
     Box(
         Modifier
-            .clip(RoundedCornerShape(50))
-            .background(bg)
-            .padding(horizontal = 10.dp, vertical = 3.dp),
+            .clip(AppShapes.pill)
+            .background(accent.copy(alpha = 0.18f))
+            .padding(horizontal = Spacing.chipHorizontal, vertical = Spacing.chipVertical),
     ) {
-        Text(text, color = fg, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+        Text(text, color = accent, fontSize = 11.sp, fontWeight = FontWeight.Bold)
     }
 }
 
@@ -2282,10 +2280,10 @@ private fun ConfigStatusBadge(text: String, bg: Color, fg: Color) {
 private fun NoReportsCard(game: GameEntity, fingerprint: String?, onSubmit: () -> Unit) {
     Card(
         Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
+        shape = AppShapes.card,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
     ) {
-        Column(Modifier.padding(20.dp)) {
+        Column(Modifier.padding(Spacing.xl)) {
             Text("No reports for this game yet",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold)

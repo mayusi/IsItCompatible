@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.Close
@@ -35,6 +34,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.github.mayusi.isitcompatible.ui.theme.AppColors
+import io.github.mayusi.isitcompatible.ui.theme.AppShapes
+import io.github.mayusi.isitcompatible.ui.theme.Spacing
 
 /**
  * The "It didn't work" interactive troubleshooter UI.
@@ -126,7 +128,7 @@ private fun FixStep(
 
         // The one fix to try.
         Row(verticalAlignment = Alignment.Top) {
-            Icon(Icons.Outlined.Lightbulb, null, tint = Color(0xFFFFB300), modifier = Modifier.size(22.dp))
+            Icon(Icons.Outlined.Lightbulb, null, tint = AppColors.favorite, modifier = Modifier.size(22.dp))
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
                 Text("Try this:", style = MaterialTheme.typography.labelSmall,
@@ -170,16 +172,16 @@ private fun SolvedState(
 ) {
     Column(Modifier.fillMaxWidth()) {
         Box(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color(0xFFD1FAE5)).padding(14.dp),
+            Modifier.fillMaxWidth().clip(AppShapes.card).background(AppColors.success.copy(alpha = 0.18f)).padding(Spacing.cardPadding),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.CheckCircle, null, tint = Color(0xFF065F46), modifier = Modifier.size(20.dp))
-                Spacer(Modifier.width(8.dp))
+                Icon(Icons.Filled.CheckCircle, null, tint = AppColors.success, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(Spacing.sm))
                 Column {
                     Text("Nice — it's working", style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold, color = Color(0xFF065F46))
+                        fontWeight = FontWeight.Bold, color = AppColors.success)
                     Text("Log it so it shows as your last run, and help the next person.",
-                        style = MaterialTheme.typography.bodySmall, color = Color(0xFF065F46))
+                        style = MaterialTheme.typography.bodySmall, color = AppColors.success)
                 }
             }
         }
@@ -213,16 +215,16 @@ private fun ExhaustedState(
     val hadFixes = state.fixes.isNotEmpty()
     Column(Modifier.fillMaxWidth()) {
         Box(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
-                .background(Color(0xFFFEF3C7)).padding(14.dp),
+            Modifier.fillMaxWidth().clip(AppShapes.card)
+                .background(AppColors.warning.copy(alpha = 0.18f)).padding(Spacing.cardPadding),
         ) {
             Column {
                 Text(
                     if (hadFixes) "We're out of known fixes for this one" else "No specific fixes for this one yet",
                     style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold,
-                    color = Color(0xFF92400E),
+                    color = AppColors.warning,
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(Spacing.xs))
                 Text(
                     if (hadFixes)
                         "That's everything we know to try for this symptom on the recommended " +
@@ -232,7 +234,7 @@ private fun ExhaustedState(
                         "We don't have ranked fixes for this symptom on the recommended emulator " +
                             "yet. If you work it out, logging the result (or importing your config) " +
                             "saves the next person the trouble.",
-                    style = MaterialTheme.typography.bodySmall, color = Color(0xFF92400E),
+                    style = MaterialTheme.typography.bodySmall, color = AppColors.warning,
                 )
             }
         }
@@ -303,33 +305,33 @@ private fun RollbackSection(
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFFFFECB3))
-                        .padding(14.dp),
+                        .clip(AppShapes.card)
+                        .background(AppColors.warning.copy(alpha = 0.18f))
+                        .padding(Spacing.cardPadding),
                 ) {
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 Icons.Outlined.History,
                                 null,
-                                tint = Color(0xFF7B5800),
+                                tint = AppColors.warning,
                                 modifier = Modifier.size(20.dp),
                             )
-                            Spacer(Modifier.width(8.dp))
+                            Spacer(Modifier.width(Spacing.sm))
                             Text(
                                 "Possible driver regression detected",
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF7B5800),
+                                color = AppColors.warning,
                             )
                         }
-                        Spacer(Modifier.height(8.dp))
+                        Spacer(Modifier.height(Spacing.sm))
                         Text(
                             "Your last working run on ${rb.lastWorkingDate} used driver " +
                                 "${rb.workingDriverName}. A newer driver (${rb.currentDriverName}) " +
                                 "may have caused this regression.",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF7B5800),
+                            color = AppColors.warning,
                         )
                     }
                 }
@@ -364,9 +366,9 @@ private fun RollbackSection(
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
+                        .clip(AppShapes.card)
                         .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .padding(14.dp),
+                        .padding(Spacing.cardPadding),
                 ) {
                     Column {
                         Text(
@@ -374,7 +376,7 @@ private fun RollbackSection(
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                         )
-                        Spacer(Modifier.height(4.dp))
+                        Spacer(Modifier.height(Spacing.xs))
                         Text(
                             "Your last working run (${rb.lastWorkingDate}) also used " +
                                 "${rb.driverName} — the same driver you're on now. " +
@@ -390,9 +392,9 @@ private fun RollbackSection(
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
+                        .clip(AppShapes.card)
                         .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .padding(14.dp),
+                        .padding(Spacing.cardPadding),
                 ) {
                     Text(
                         rb.message,
@@ -415,13 +417,16 @@ private fun RollbackSection(
 /** Small tag showing whether a fix is game-specific or an emulator-wide fallback. */
 @Composable
 private fun SourceChip(fromGuide: Boolean) {
-    val (bg, fg, label) = if (fromGuide)
-        Triple(Color(0xFFDBEAFE), Color(0xFF1E40AF), "Known issue for this game")
+    val (accent, label) = if (fromGuide)
+        AppColors.sourceEmuReady to "Known issue for this game"
     else
-        Triple(Color(0xFFE5E7EB), Color(0xFF374151), "General fix for this emulator")
+        AppColors.neutral to "General fix for this emulator"
     Box(
-        Modifier.clip(RoundedCornerShape(50)).background(bg).padding(horizontal = 9.dp, vertical = 3.dp),
+        Modifier
+            .clip(AppShapes.pill)
+            .background(accent.copy(alpha = 0.18f))
+            .padding(horizontal = Spacing.xs, vertical = Spacing.chipVertical),
     ) {
-        Text(label, color = fg, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.SemiBold)
+        Text(label, color = accent, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.SemiBold)
     }
 }

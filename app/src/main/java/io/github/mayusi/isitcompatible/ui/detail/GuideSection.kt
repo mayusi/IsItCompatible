@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.Bolt
@@ -51,6 +50,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.mayusi.isitcompatible.compatdb.GuideStepDto
 import io.github.mayusi.isitcompatible.compatdb.ResolvedGuide
+import io.github.mayusi.isitcompatible.ui.theme.AppColors
+import io.github.mayusi.isitcompatible.ui.theme.AppShapes
+import io.github.mayusi.isitcompatible.ui.theme.Spacing
 
 /**
  * v0.8: the "actually run it" guide. A typed, checkable, screen-by-screen
@@ -93,7 +95,7 @@ fun GuideSection(
                 Text(
                     if (days > 60) "may be outdated" else "updated ${formatJournalDate(guide.dataAsOf)}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (days > 60) Color(0xFFB07000) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = if (days > 60) AppColors.warning else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -198,7 +200,7 @@ private fun GuideStepRow(
                     .clickable { onToggle(!done) },
             )
         } else {
-            Icon(Icons.Outlined.Bolt, null, tint = Color(0xFFFFB300), modifier = Modifier.size(24.dp))
+            Icon(Icons.Outlined.Bolt, null, tint = AppColors.favorite, modifier = Modifier.size(24.dp))
         }
         Spacer(Modifier.width(10.dp))
         Column(Modifier.weight(1f)) {
@@ -228,7 +230,7 @@ private fun GuideStepRow(
                         is GuideInstallStatus.Done -> Text(
                             "✓ opening installer",
                             style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.SemiBold, color = Color(0xFF059669),
+                            fontWeight = FontWeight.SemiBold, color = AppColors.success,
                         )
                         is GuideInstallStatus.Failed -> Row(verticalAlignment = Alignment.CenterVertically) {
                             ActionChip("Retry", Icons.Outlined.Download, accent) { onGetApp() }
@@ -288,14 +290,14 @@ private fun GuideStepRow(
 private fun ActionChip(label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, accent: Color, onClick: () -> Unit) {
     Row(
         Modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(accent.copy(alpha = 0.14f))
+            .clip(AppShapes.chip)
+            .background(accent.copy(alpha = 0.18f))
             .clickable(onClick = onClick)
-            .padding(horizontal = 10.dp, vertical = 5.dp),
+            .padding(horizontal = Spacing.chipHorizontal, vertical = Spacing.xs),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(icon, null, tint = accent, modifier = Modifier.size(15.dp))
-        Spacer(Modifier.width(5.dp))
+        Spacer(Modifier.width(Spacing.xs))
         Text(label, style = MaterialTheme.typography.labelMedium, color = accent, fontWeight = FontWeight.SemiBold)
     }
 }
@@ -305,14 +307,14 @@ private fun ActionChip(label: String, icon: androidx.compose.ui.graphics.vector.
 private fun HaveChip(label: String) {
     Row(
         Modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFFD1FAE5))
-            .padding(horizontal = 10.dp, vertical = 5.dp),
+            .clip(AppShapes.chip)
+            .background(AppColors.success.copy(alpha = 0.18f))
+            .padding(horizontal = Spacing.chipHorizontal, vertical = Spacing.xs),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(Icons.Filled.CheckCircle, null, tint = Color(0xFF065F46), modifier = Modifier.size(15.dp))
-        Spacer(Modifier.width(5.dp))
-        Text(label, style = MaterialTheme.typography.labelMedium, color = Color(0xFF065F46), fontWeight = FontWeight.SemiBold)
+        Icon(Icons.Filled.CheckCircle, null, tint = AppColors.success, modifier = Modifier.size(15.dp))
+        Spacer(Modifier.width(Spacing.xs))
+        Text(label, style = MaterialTheme.typography.labelMedium, color = AppColors.success, fontWeight = FontWeight.SemiBold)
     }
 }
 
@@ -320,13 +322,13 @@ private fun HaveChip(label: String) {
 private fun PathChip(path: String, accent: Color, ctx: Context) {
     Row(
         Modifier
-            .clip(RoundedCornerShape(8.dp))
+            .clip(AppShapes.chip)
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
             .clickable {
                 copyToClipboard(ctx, "path", path)
                 Toast.makeText(ctx, "Path copied", Toast.LENGTH_SHORT).show()
             }
-            .padding(horizontal = 8.dp, vertical = 5.dp),
+            .padding(horizontal = Spacing.sm, vertical = Spacing.xs),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -345,12 +347,12 @@ private fun SettingsTable(settings: Map<String, String>) {
     Column(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
+            .clip(AppShapes.chip)
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
-            .padding(10.dp),
+            .padding(Spacing.chipHorizontal),
     ) {
         settings.entries.forEachIndexed { i, (k, v) ->
-            Row(Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+            Row(Modifier.fillMaxWidth().padding(vertical = Spacing.xxs)) {
                 Text(
                     k,
                     modifier = Modifier.width(130.dp),
@@ -384,16 +386,19 @@ private fun SettingsReferenceCard(steps: List<GuideStepDto>) {
 
 @Composable
 private fun TierBadge(tier: Int, label: String) {
-    val (bg, fg) = when (tier) {
-        1 -> Color(0xFFD1FAE5) to Color(0xFF065F46)   // green — verified
-        2 -> Color(0xFFDBEAFE) to Color(0xFF1E40AF)   // blue — authored
-        3 -> Color(0xFFFEF3C7) to Color(0xFF92400E)   // amber — EmuReady
-        else -> Color(0xFFE5E7EB) to Color(0xFF374151) // grey — base
+    val accent = when (tier) {
+        1    -> AppColors.success        // green — verified
+        2    -> AppColors.sourceEmuReady // blue — authored
+        3    -> AppColors.warning        // amber — EmuReady
+        else -> AppColors.neutral        // grey — base
     }
     Box(
-        Modifier.clip(RoundedCornerShape(50)).background(bg).padding(horizontal = 10.dp, vertical = 3.dp),
+        Modifier
+            .clip(AppShapes.pill)
+            .background(accent.copy(alpha = 0.18f))
+            .padding(horizontal = Spacing.chipHorizontal, vertical = Spacing.chipVertical),
     ) {
-        Text(label, color = fg, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+        Text(label, color = accent, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 

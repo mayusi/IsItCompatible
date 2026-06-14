@@ -3,11 +3,12 @@ package io.github.mayusi.isitcompatible.ui.wizard
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
@@ -27,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -40,11 +41,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.mayusi.isitcompatible.R
 import io.github.mayusi.isitcompatible.hardware.DeviceFingerprint
+import io.github.mayusi.isitcompatible.ui.common.SectionCard
+import io.github.mayusi.isitcompatible.ui.theme.AppColors
+import io.github.mayusi.isitcompatible.ui.theme.AppShapes
+import io.github.mayusi.isitcompatible.ui.theme.Spacing
 
 /* ---------- Step 1: Welcome ---------- */
 
@@ -53,91 +59,109 @@ fun WelcomeStep(onLetsGo: () -> Unit) {
     Column(
         Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(horizontal = Spacing.xl, vertical = Spacing.screenV)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(Modifier.height(48.dp))
+        Spacer(Modifier.height(Spacing.xxl + Spacing.lg))
+
+        // Hero app name — big Chakra Petch display style
         Text(
             text = stringResource(R.string.app_name),
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(Spacing.sm))
         Text(
             stringResource(R.string.app_tagline),
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontWeight = FontWeight.Normal,
         )
-        Spacer(Modifier.height(40.dp))
+
+        Spacer(Modifier.height(Spacing.xl + Spacing.sm))
+
         Text(
             stringResource(R.string.wizard_welcome_blurb),
             style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
         )
-        Spacer(Modifier.height(20.dp))
-        Card(
-            Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-            ),
+
+        Spacer(Modifier.height(Spacing.xl))
+
+        // Feature bullets — styled SectionCard
+        SectionCard(
+            title = "What you get",
+            accentColor = MaterialTheme.colorScheme.primary,
         ) {
-            Column(Modifier.padding(16.dp)) {
-                Text(
-                    "What you get",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                )
-                Spacer(Modifier.height(8.dp))
-                listOf(
-                    "Best emulator + preset for your exact chip",
-                    "Per-game setup guide + BIOS checklist",
-                    "Community reports from people with the same hardware",
-                    "One-tap config apply for Windows games via GameNative",
-                ).forEach { item ->
+            val features = listOf(
+                "Best emulator + preset for your exact chip",
+                "Per-game setup guide + BIOS checklist",
+                "Community reports from people with the same hardware",
+                "One-tap config apply for Windows games via GameNative",
+            )
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
+                features.forEach { item ->
                     Row(
-                        Modifier.padding(vertical = 3.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Icon(
                             Icons.Outlined.CheckCircle,
                             contentDescription = null,
-                            modifier = Modifier.size(14.dp),
+                            modifier = Modifier.size(Spacing.lg),
                             tint = MaterialTheme.colorScheme.primary,
                         )
-                        Spacer(Modifier.width(8.dp))
+                        Spacer(Modifier.width(Spacing.sm))
                         Text(
                             item,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 }
             }
         }
-        Spacer(Modifier.height(16.dp))
+
+        Spacer(Modifier.height(Spacing.md))
+
+        // Credit card — token-styled with outline border
         Card(
             Modifier.fillMaxWidth(),
+            shape = AppShapes.card,
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+            border = BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
             ),
         ) {
             Text(
                 stringResource(R.string.wizard_welcome_credit),
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(Spacing.cardPadding),
                 style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        Spacer(Modifier.height(48.dp))
+
+        Spacer(Modifier.height(Spacing.xxl))
+
+        // Full-width CTA button
         Button(
             onClick = onLetsGo,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
-            shape = RoundedCornerShape(12.dp),
+            shape = AppShapes.button,
         ) {
-            Text(stringResource(R.string.wizard_lets_go))
+            Text(
+                stringResource(R.string.wizard_lets_go),
+                fontWeight = FontWeight.Bold,
+            )
         }
+
+        Spacer(Modifier.height(Spacing.xl))
     }
 }
 
@@ -167,29 +191,30 @@ fun LibrariesStep(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(horizontal = Spacing.xl, vertical = Spacing.screenV)
             .verticalScroll(rememberScrollState()),
     ) {
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(Spacing.lg))
         Text(
             stringResource(R.string.wizard_libraries_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
         )
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(Spacing.xl))
 
         FolderPickRow(
             label = stringResource(R.string.wizard_pick_rom_folder),
             uri = romFolderUri,
             onPick = { romLauncher.launch(null) },
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(Spacing.md))
         FolderPickRow(
             label = stringResource(R.string.wizard_pick_pc_folder),
             uri = pcFolderUri,
             onPick = { pcLauncher.launch(null) },
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(Spacing.md))
         FolderPickRow(
             label = stringResource(R.string.wizard_pick_staging_folder),
             uri = stagingFolderUri,
@@ -197,29 +222,44 @@ fun LibrariesStep(
             subtitle = stringResource(R.string.wizard_staging_blurb),
         )
 
-        Spacer(Modifier.height(40.dp))
+        Spacer(Modifier.height(Spacing.xxl + Spacing.sm))
         Row(
             Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.md),
         ) {
-            OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) {
+            OutlinedButton(
+                onClick = onBack,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp),
+                shape = AppShapes.button,
+            ) {
                 Text("Back")
             }
             Button(
                 onClick = onContinue,
-                modifier = Modifier.weight(2f),
+                modifier = Modifier
+                    .weight(2f)
+                    .height(56.dp),
                 enabled = stagingFolderUri != null,
+                shape = AppShapes.button,
             ) {
-                Text(stringResource(R.string.wizard_continue))
+                Text(
+                    stringResource(R.string.wizard_continue),
+                    fontWeight = FontWeight.Bold,
+                )
             }
         }
         if (stagingFolderUri == null) {
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(Spacing.sm))
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
             ) {
-                TextButton(onClick = onContinue) {
+                TextButton(
+                    onClick = onContinue,
+                    shape = AppShapes.button,
+                ) {
                     Text("Skip for now")
                 }
             }
@@ -234,34 +274,65 @@ private fun FolderPickRow(
     onPick: () -> Unit,
     subtitle: String? = null,
 ) {
+    val picked = uri != null
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(AppShapes.card)
             .clickable(onClick = onPick),
+        shape = AppShapes.card,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (picked)
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.45f)
+            else
+                MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
         ),
     ) {
-        Column(Modifier.padding(16.dp)) {
+        Column(Modifier.padding(Spacing.cardPadding)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    if (uri != null) Icons.Outlined.CheckCircle else Icons.Outlined.FolderOpen,
-                    contentDescription = null,
-                    tint = if (uri != null) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(Modifier.width(12.dp))
+                Box(
+                    Modifier
+                        .size(36.dp)
+                        .clip(AppShapes.badge)
+                        .background(
+                            if (picked)
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                            else
+                                MaterialTheme.colorScheme.surfaceVariant,
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        if (picked) Icons.Outlined.CheckCircle else Icons.Outlined.FolderOpen,
+                        contentDescription = null,
+                        tint = if (picked) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
+                Spacer(Modifier.width(Spacing.md))
                 Column(Modifier.weight(1f)) {
-                    Text(label, style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        label,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
                     Text(
                         uri ?: stringResource(R.string.not_picked),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
             if (subtitle != null) {
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(Spacing.sm))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                Spacer(Modifier.height(Spacing.sm))
                 Text(
                     subtitle,
                     style = MaterialTheme.typography.bodySmall,
@@ -272,7 +343,7 @@ private fun FolderPickRow(
     }
 }
 
-/* ---------- Step 2: Permissions ---------- */
+/* ---------- Step 3: Permissions ---------- */
 
 @Composable
 fun PermissionsStep(
@@ -316,22 +387,23 @@ fun PermissionsStep(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(horizontal = Spacing.xl, vertical = Spacing.screenV)
             .verticalScroll(rememberScrollState()),
     ) {
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(Spacing.lg))
         Text(
             "Permissions",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(Spacing.sm))
         Text(
             "Grant these now so downloading emulators and scanning your games works smoothly later. All optional — searching games works without them.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(Spacing.xl))
 
         PermissionRow(
             title = "Install apps",
@@ -342,7 +414,7 @@ fun PermissionsStep(
                     ?.let { context.startActivity(it) }
             },
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(Spacing.md))
         PermissionRow(
             title = "Find my games & BIOS",
             blurb = "All-files access so the Auto-Detect tab can see the games, emulators and BIOS you already have.",
@@ -352,7 +424,7 @@ fun PermissionsStep(
                     ?.let { context.startActivity(it) }
             },
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(Spacing.md))
         PermissionRow(
             title = "Notifications",
             blurb = "Show download and database-sync progress.",
@@ -364,15 +436,32 @@ fun PermissionsStep(
             },
         )
 
-        Spacer(Modifier.height(40.dp))
+        Spacer(Modifier.height(Spacing.xxl + Spacing.sm))
         Row(
             Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.md),
         ) {
-            OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) { Text("Back") }
-            Button(onClick = onContinue, modifier = Modifier.weight(2f)) {
+            OutlinedButton(
+                onClick = onBack,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp),
+                shape = AppShapes.button,
+            ) {
+                Text("Back")
+            }
+            Button(
+                onClick = onContinue,
+                modifier = Modifier
+                    .weight(2f)
+                    .height(56.dp),
+                shape = AppShapes.button,
+            ) {
                 // Always enabled — everything here is optional.
-                Text(stringResource(R.string.wizard_continue))
+                Text(
+                    stringResource(R.string.wizard_continue),
+                    fontWeight = FontWeight.Bold,
+                )
             }
         }
     }
@@ -387,30 +476,58 @@ private fun PermissionRow(
 ) {
     Card(
         Modifier.fillMaxWidth(),
+        shape = AppShapes.card,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (granted)
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.45f)
+            else
+                MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
         ),
     ) {
         Row(
-            Modifier.padding(16.dp),
+            Modifier.padding(Spacing.cardPadding),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
-                if (granted) Icons.Outlined.CheckCircle else Icons.Outlined.RadioButtonUnchecked,
-                contentDescription = null,
-                tint = if (granted) MaterialTheme.colorScheme.primary
-                else MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(Modifier.width(12.dp))
+            Box(
+                Modifier
+                    .size(36.dp)
+                    .clip(AppShapes.badge)
+                    .background(
+                        if (granted)
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                        else
+                            MaterialTheme.colorScheme.surfaceVariant,
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    if (granted) Icons.Outlined.CheckCircle else Icons.Outlined.RadioButtonUnchecked,
+                    contentDescription = null,
+                    tint = if (granted) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+            Spacer(Modifier.width(Spacing.md))
             Column(Modifier.weight(1f)) {
-                Text(title, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(Modifier.height(Spacing.xxs))
                 Text(
                     blurb,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(Spacing.sm))
             if (granted) {
                 Text(
                     "Granted",
@@ -419,13 +536,18 @@ private fun PermissionRow(
                     color = MaterialTheme.colorScheme.primary,
                 )
             } else {
-                TextButton(onClick = onGrant) { Text("Grant") }
+                TextButton(
+                    onClick = onGrant,
+                    shape = AppShapes.button,
+                ) {
+                    Text("Grant")
+                }
             }
         }
     }
 }
 
-/* ---------- Step 3: Fingerprint confirm ---------- */
+/* ---------- Step 4: Fingerprint confirm ---------- */
 
 @Composable
 fun FingerprintStep(
@@ -438,40 +560,59 @@ fun FingerprintStep(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(horizontal = Spacing.xl, vertical = Spacing.screenV)
             .verticalScroll(rememberScrollState()),
     ) {
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(Spacing.lg))
         Text(
             stringResource(R.string.wizard_fingerprint_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(Spacing.sm))
         Text(
             stringResource(R.string.wizard_fingerprint_blurb),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(Spacing.xl))
 
         Card(
             Modifier.fillMaxWidth(),
+            shape = AppShapes.card,
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            border = BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
             ),
         ) {
-            Column(Modifier.padding(20.dp)) {
+            Column(Modifier.padding(Spacing.xl)) {
                 when {
                     loading -> Box(
-                        Modifier.fillMaxWidth().padding(vertical = 24.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = Spacing.xl),
                         contentAlignment = Alignment.Center,
-                    ) { CircularProgressIndicator() }
+                    ) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    }
 
                     fingerprint == null -> {
-                        Text("Couldn't read device info.")
-                        Spacer(Modifier.height(12.dp))
-                        TextButton(onClick = onRetry) { Text("Retry") }
+                        Text(
+                            "Couldn't read device info.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Spacer(Modifier.height(Spacing.md))
+                        TextButton(
+                            onClick = onRetry,
+                            shape = AppShapes.button,
+                        ) {
+                            Text("Retry")
+                        }
                     }
 
                     else -> FingerprintReadout(fingerprint)
@@ -480,26 +621,37 @@ fun FingerprintStep(
         }
 
         // "What you can do" moment — only shown when we have a fingerprint.
-        // Gives the user an immediate, concrete sense of value before they hit Done.
         if (fingerprint != null && !loading) {
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(Spacing.lg))
             DeviceValueCard(fingerprint)
         }
 
-        Spacer(Modifier.height(40.dp))
+        Spacer(Modifier.height(Spacing.xxl + Spacing.sm))
         Row(
             Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.md),
         ) {
-            OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) {
+            OutlinedButton(
+                onClick = onBack,
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp),
+                shape = AppShapes.button,
+            ) {
                 Text("Back")
             }
             Button(
                 onClick = onDone,
-                modifier = Modifier.weight(2f),
+                modifier = Modifier
+                    .weight(2f)
+                    .height(56.dp),
                 enabled = fingerprint != null,
+                shape = AppShapes.button,
             ) {
-                Text(stringResource(R.string.wizard_done))
+                Text(
+                    stringResource(R.string.wizard_done),
+                    fontWeight = FontWeight.Bold,
+                )
             }
         }
     }
@@ -514,46 +666,35 @@ fun FingerprintStep(
 @Composable
 private fun DeviceValueCard(fp: DeviceFingerprint) {
     val deviceLabel = "${fp.socFamily} · ${fp.gpuModel} · ${fp.totalRamMb / 1024} GB"
-    Card(
-        Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-        ),
+    SectionCard(
+        title = "Your ${fp.manufacturer} ${fp.model} is ready",
+        accentColor = AppColors.success,
     ) {
-        Column(Modifier.padding(16.dp)) {
-            Text(
-                "Your ${fp.manufacturer} ${fp.model} is ready",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onTertiaryContainer,
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                deviceLabel,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.75f),
-            )
-            Spacer(Modifier.height(10.dp))
-            listOf(
-                "Browse any game and see exactly what to expect on your chip",
-                "Get the right emulator + preset — matched to your hardware",
-                "See reports from people with the same SoC, not just anyone",
-            ).forEach { bullet ->
-                Row(
-                    Modifier.padding(vertical = 3.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+        Text(
+            deviceLabel,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(Spacing.md))
+        val bullets = listOf(
+            "Browse any game and see exactly what to expect on your chip",
+            "Get the right emulator + preset — matched to your hardware",
+            "See reports from people with the same SoC, not just anyone",
+        )
+        Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
+            bullets.forEach { bullet ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         Icons.Outlined.CheckCircle,
                         contentDescription = null,
-                        modifier = Modifier.size(14.dp),
-                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(Spacing.lg),
+                        tint = AppColors.success,
                     )
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(Spacing.sm))
                     Text(
                         bullet,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer,
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
@@ -563,27 +704,42 @@ private fun DeviceValueCard(fp: DeviceFingerprint) {
 
 @Composable
 private fun FingerprintReadout(fp: DeviceFingerprint) {
-    KeyValue(stringResource(R.string.fp_soc), "${fp.socFamily} (${fp.socModel})")
-    KeyValue(stringResource(R.string.fp_gpu), fp.gpuModel)
-    KeyValue(stringResource(R.string.fp_ram), "${fp.totalRamMb / 1024} GB")
-    KeyValue(stringResource(R.string.fp_android), "${fp.androidRelease} (API ${fp.androidApi})")
-    KeyValue(stringResource(R.string.fp_driver), fp.gpuDriver)
-    KeyValue("Device", "${fp.manufacturer} ${fp.model}")
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.xs)) {
+        KeyValue(stringResource(R.string.fp_soc), "${fp.socFamily} (${fp.socModel})")
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        KeyValue(stringResource(R.string.fp_gpu), fp.gpuModel)
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        KeyValue(stringResource(R.string.fp_ram), "${fp.totalRamMb / 1024} GB")
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        KeyValue(stringResource(R.string.fp_android), "${fp.androidRelease} (API ${fp.androidApi})")
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        KeyValue(stringResource(R.string.fp_driver), fp.gpuDriver)
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        KeyValue("Device", "${fp.manufacturer} ${fp.model}")
+    }
 }
 
 @Composable
 private fun KeyValue(key: String, value: String) {
-    Row(Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = Spacing.sm),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Text(
             key,
             modifier = Modifier.width(120.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Medium,
         )
         Text(
             value,
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
@@ -633,15 +789,18 @@ fun WizardHost(
 @Composable
 private fun StepIndicator(current: WizardStep) {
     Row(
-        Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Spacing.xl, vertical = Spacing.lg),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         WizardStep.entries.forEach { step ->
-            val active = step.ordinal <= current.ordinal
+            val completed = step.ordinal <= current.ordinal
             Icon(
-                if (active) Icons.Outlined.CheckCircle else Icons.Outlined.RadioButtonUnchecked,
+                if (completed) Icons.Outlined.CheckCircle else Icons.Outlined.RadioButtonUnchecked,
                 contentDescription = null,
-                tint = if (active) MaterialTheme.colorScheme.primary
+                tint = if (completed) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp),
             )

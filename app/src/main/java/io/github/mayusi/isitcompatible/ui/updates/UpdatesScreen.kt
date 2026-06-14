@@ -1,7 +1,6 @@
 package io.github.mayusi.isitcompatible.ui.updates
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,12 +12,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CloudSync
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,12 +27,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.mayusi.isitcompatible.ui.common.SectionCard
+import io.github.mayusi.isitcompatible.ui.theme.AppColors
+import io.github.mayusi.isitcompatible.ui.theme.AppShapes
+import io.github.mayusi.isitcompatible.ui.theme.Spacing
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -43,72 +45,122 @@ fun UpdatesScreen(
 ) {
     val s by vm.state.collectAsStateWithLifecycle()
     Column(
-        Modifier.fillMaxSize().padding(contentPadding).padding(16.dp)
+        Modifier
+            .fillMaxSize()
+            .padding(contentPadding)
+            .padding(horizontal = Spacing.screenH, vertical = Spacing.screenV)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(Spacing.sectionGap),
     ) {
-        Text("Database", style = MaterialTheme.typography.headlineSmall)
+        Text(
+            "Database",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+        )
 
-        // Last-synced timestamp card. The honest version: shows when we last
-        // tried, whether the remote came through, and a chip if we're running
-        // on bundled-only data.
+        // ── Last-synced card ──────────────────────────────────────────────────
         LastSyncCard(
             epochMs = s.lastSyncEpochMs,
             remoteReached = s.lastSyncRemoteReached,
         )
 
-        // Totals card: games + reports + journal entries side by side.
-        Card(Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("Catalog", style = MaterialTheme.typography.titleMedium)
+        // ── Catalog stats card ────────────────────────────────────────────────
+        SectionCard(
+            title = "Catalog",
+            icon = Icons.Outlined.Storage,
+            accentColor = AppColors.sourceEmuReady,
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
                 StatRow("Games", s.games.toString())
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 StatRow("Reports", s.reports.toString())
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 StatRow("Your journal entries", s.journalEntries.toString())
             }
         }
 
-        // Per-source breakdown. Shows exactly where each report came from so the
-        // user can see "1700 of these are heuristic estimates" honestly.
+        // ── Per-source breakdown ──────────────────────────────────────────────
         if (s.breakdown.isNotEmpty()) {
-            Card(Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text("Where reports come from", style = MaterialTheme.typography.titleMedium)
-                    Spacer(Modifier.height(4.dp))
-                    s.breakdown.sortedByDescending { it.count }.forEach { sc ->
+            SectionCard(
+                title = "Where reports come from",
+                icon = Icons.Outlined.Info,
+                accentColor = AppColors.sourceBundled,
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
+                    s.breakdown.sortedByDescending { it.count }.forEachIndexed { index, sc ->
+                        if (index > 0) {
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        }
                         StatRow(friendlySourceName(sc.source), sc.count.toString())
                     }
                 }
             }
         }
 
+        // ── Refresh button ────────────────────────────────────────────────────
         Button(
             onClick = vm::refreshNow,
             enabled = !s.syncing,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(Spacing.xxl + Spacing.md),
+            shape = AppShapes.button,
         ) {
             if (s.syncing) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
-                    Spacer(Modifier.width(8.dp))
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(Spacing.lg + Spacing.xxs),
+                        strokeWidth = Spacing.xxs,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                    Spacer(Modifier.width(Spacing.sm))
                     Text("Syncing…")
                 }
             } else {
-                Text("Refresh now")
+                Text("Refresh now", fontWeight = FontWeight.SemiBold)
             }
         }
+
         s.lastResult?.let {
-            Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                it,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
-        Spacer(Modifier.height(16.dp))
-        Text("Sources", style = MaterialTheme.typography.titleSmall)
-        Text(
-            "• Bundled seed — always available, ships with the APK.\n" +
-                "• mayusi/IsItCompatible-DB on GitHub — community-submitted reports and preset tweaks, pulled when online.\n" +
-                "• Heuristic estimates — rules-engine generated when no real report exists for your device class; clearly labelled in-app.\n" +
-                "• Your journal — local-only by default; ranks above community data for games you've personally tried.",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+
+        // ── Sources section ───────────────────────────────────────────────────
+        SectionCard(
+            title = "Sources",
+            icon = Icons.Outlined.CloudSync,
+            accentColor = AppColors.sourceCommunity,
+        ) {
+            val sourceBullets = listOf(
+                "Bundled seed — always available, ships with the APK.",
+                "mayusi/IsItCompatible-DB on GitHub — community-submitted reports and preset tweaks, pulled when online.",
+                "Heuristic estimates — rules-engine generated when no real report exists for your device class; clearly labelled in-app.",
+                "Your journal — local-only by default; ranks above community data for games you've personally tried.",
+            )
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
+                sourceBullets.forEach { bullet ->
+                    Row(verticalAlignment = Alignment.Top) {
+                        Text(
+                            "•",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = AppColors.sourceCommunity,
+                            modifier = Modifier.width(Spacing.md),
+                        )
+                        Text(
+                            bullet,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(Modifier.height(Spacing.md))
     }
 }
 
@@ -120,75 +172,89 @@ private fun LastSyncCard(epochMs: Long, remoteReached: Boolean) {
         "never"
     } else {
         val raw = friendlyAge(now - epochMs)
-        // "just now" reads naturally on its own; everything else gets " ago"
         if (raw == "just now") raw else "$raw ago"
     }
     val absoluteText = if (haveSynced) {
         SimpleDateFormat("MMM d, yyyy 'at' HH:mm", Locale.getDefault()).format(Date(epochMs))
     } else "—"
 
-    Card(
-        Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
-        ),
+    val syncAccent = if (!haveSynced || !remoteReached) AppColors.warning else AppColors.success
+
+    SectionCard(
+        title = "Last synced",
+        icon = Icons.Outlined.CloudSync,
+        accentColor = syncAccent,
     ) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text("Last synced", style = MaterialTheme.typography.titleMedium)
-            Text(
-                ageText,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
+        Text(
+            ageText,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(Spacing.xxs))
+        Text(
+            absoluteText,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(Spacing.sm))
+        if (!haveSynced) {
+            StatusPill(
+                text = "Not synced yet — bundled seed only",
+                accentColor = AppColors.warning,
             )
-            Text(
-                absoluteText,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+        } else if (!remoteReached) {
+            StatusPill(
+                text = "Bundled only — remote unreachable",
+                accentColor = AppColors.warning,
             )
-            Spacer(Modifier.height(4.dp))
-            if (!haveSynced) {
-                Pill(
-                    text = "Not synced yet — bundled seed only",
-                    bg = Color(0xFFFEF3C7),
-                    fg = Color(0xFF92400E),
-                )
-            } else if (!remoteReached) {
-                Pill(
-                    text = "Bundled only — remote unreachable",
-                    bg = Color(0xFFFEF3C7),
-                    fg = Color(0xFF92400E),
-                )
-            } else {
-                Pill(
-                    text = "Remote reached",
-                    bg = Color(0xFFD1FAE5),
-                    fg = Color(0xFF065F46),
-                )
-            }
+        } else {
+            StatusPill(
+                text = "Remote reached",
+                accentColor = AppColors.success,
+            )
         }
     }
 }
 
 @Composable
-private fun StatRow(label: String, value: String) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(label, style = MaterialTheme.typography.bodyMedium)
-        Text(value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+private fun StatusPill(text: String, accentColor: androidx.compose.ui.graphics.Color) {
+    Surface(
+        color = accentColor.copy(alpha = 0.18f),
+        shape = AppShapes.pill,
+    ) {
+        Text(
+            text,
+            color = accentColor,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.padding(
+                horizontal = Spacing.chipHorizontal,
+                vertical = Spacing.chipVertical,
+            ),
+        )
     }
 }
 
 @Composable
-private fun Pill(text: String, bg: Color, fg: Color) {
-    Surface(
-        color = bg,
-        shape = RoundedCornerShape(50),
+private fun StatRow(label: String, value: String) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = Spacing.xs),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text,
-            color = fg,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+            label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }

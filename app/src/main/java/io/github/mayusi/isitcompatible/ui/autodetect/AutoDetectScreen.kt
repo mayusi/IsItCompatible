@@ -16,34 +16,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GetApp
+import androidx.compose.material.icons.filled.Memory
+import androidx.compose.material.icons.filled.SportsEsports
+import androidx.compose.material.icons.filled.Devices
+import androidx.compose.material.icons.filled.Storage
+import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.width
 import io.github.mayusi.isitcompatible.autodetect.AllFilesAccess
 import io.github.mayusi.isitcompatible.autodetect.SwitchKeysStatus
 import io.github.mayusi.isitcompatible.hardware.DeviceFingerprint
@@ -51,6 +53,11 @@ import io.github.mayusi.isitcompatible.hardware.SocCatalog
 import io.github.mayusi.isitcompatible.hardware.SocTier
 import io.github.mayusi.isitcompatible.recommend.Confidence
 import io.github.mayusi.isitcompatible.ui.common.PlatformColors
+import io.github.mayusi.isitcompatible.ui.common.SectionCard
+import io.github.mayusi.isitcompatible.ui.common.PlatformBadge
+import io.github.mayusi.isitcompatible.ui.theme.AppColors
+import io.github.mayusi.isitcompatible.ui.theme.AppShapes
+import io.github.mayusi.isitcompatible.ui.theme.Spacing
 import io.github.mayusi.isitcompatible.ui.search.GameSummary
 import java.io.File
 
@@ -67,24 +74,30 @@ fun AutoDetectScreen(
         Modifier
             .fillMaxSize()
             .padding(contentPadding)
-            .padding(16.dp)
+            .padding(horizontal = Spacing.screenH, vertical = Spacing.screenV)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(Spacing.sectionGap),
     ) {
-        // Header
-        Text("My Device", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-        Text(
-            "What you already have on this device.",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        // ── Header ───────────────────────────────────────────────────────────
+        Column(verticalArrangement = Arrangement.spacedBy(Spacing.xs)) {
+            Text(
+                "My Device",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                "What you already have on this device.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
 
-        // Hardware summary card — shown when fingerprint is available
+        // ── Hardware summary hero card — shown when fingerprint is available ──
         s.deviceFingerprint?.let { fp ->
             HardwareSummaryCard(fp = fp, stats = s.coverageStats)
         }
 
-        // Feature A: "Best for your chip" discovery feed — only when fingerprint is known
+        // ── "Best for your chip" discovery feed ──────────────────────────────
         s.deviceFingerprint?.let { fp ->
             BestForChipSection(
                 socLabel = fp.socFamily,
@@ -93,57 +106,58 @@ fun AutoDetectScreen(
             )
         }
 
-        // Permission gate
+        // ── Permission gate ───────────────────────────────────────────────────
         if (!s.permissionGranted) {
-            Card(Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(
-                        "Grant all-files access",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                    Text(
-                        "We scan your Emulation folder for games and BIOS you've dumped. Only this tab uses it.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            SectionCard(
+                title = "Grant all-files access",
+                icon = Icons.Filled.Storage,
+                accentColor = AppColors.warning,
+            ) {
+                Text(
+                    "We scan your Emulation folder for games and BIOS you've dumped. Only this tab uses it.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(Spacing.md))
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+                ) {
+                    Button(
+                        onClick = {
+                            AllFilesAccess.settingsIntent(context)?.let {
+                                context.startActivity(it)
+                            }
+                        },
+                        modifier = Modifier.weight(1f),
+                        shape = AppShapes.button,
                     ) {
-                        Button(
-                            onClick = {
-                                AllFilesAccess.settingsIntent(context)?.let {
-                                    context.startActivity(it)
-                                }
-                            },
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text("Grant access")
-                        }
-                        TextButton(
-                            onClick = vm::refreshPermission,
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text("I've granted it — rescan")
-                        }
+                        Text("Grant access")
+                    }
+                    TextButton(
+                        onClick = vm::refreshPermission,
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text("I've granted it — rescan")
                     }
                 }
             }
             return@Column
         }
 
-        // Loading state
+        // ── Loading state ─────────────────────────────────────────────────────
         if (s.scanning) {
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .height(100.dp),
+                    .height(120.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    CircularProgressIndicator()
-                    Spacer(Modifier.height(12.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(Spacing.md),
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     Text("Scanning…", style = MaterialTheme.typography.bodyMedium)
                 }
             }
@@ -151,243 +165,267 @@ fun AutoDetectScreen(
         }
 
         s.result?.let { result ->
-            // Emulators section
-            Section(
+
+            // ── Emulators installed ───────────────────────────────────────────
+            SectionCard(
                 title = "Emulators installed (${result.installedEmulators.size})",
-                isEmpty = result.installedEmulators.isEmpty(),
-                emptyText = "No known emulators detected.",
+                icon = Icons.Filled.Devices,
+                accentColor = MaterialTheme.colorScheme.primary,
             ) {
-                result.installedEmulators.forEach { emulator ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column(Modifier.weight(1f)) {
-                            Text(
-                                emulator.name,
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.SemiBold,
-                            )
-                            Text(
-                                "${emulator.platformTargets} · ${emulator.installedVersion ?: "installed"}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                        // v0.10: "Update" Get-it action (re-download latest via the manifest).
-                        GetItButton(
-                            status = s.installStatus[emulator.packageId],
-                            label = "Update",
-                            onClick = { vm.install(emulator.packageId, emulator.name) },
-                        )
-                    }
-                }
-            }
-
-            // Games section
-            Section(
-                title = "Games found (${result.gamesBySystem.size} systems)",
-                isEmpty = result.gamesBySystem.isEmpty(),
-                emptyText = "No games found under Emulation/roms/. Check Settings to pick your ROM folder.",
-            ) {
-                result.gamesBySystem.forEach { systemGames ->
-                    Column(Modifier.padding(vertical = 8.dp)) {
-                        Text(
-                            "${systemGames.platform} · ${systemGames.count} games",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                        Text(
-                            systemGames.sampleNames.joinToString(", "),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 2,
-                        )
-                    }
-                }
-            }
-
-            // v0.10: Missing-emulator suggestions — you have games for a system
-            // but no emulator that runs it. Offer to download the right one.
-            if (result.missingEmulators.isNotEmpty()) {
-                Section(
-                    title = "Get an emulator for your games",
-                    isEmpty = false,
-                ) {
-                    result.missingEmulators.forEach { sug ->
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Column(Modifier.weight(1f)) {
-                                Text(
-                                    "You have ${sug.gameCount} ${sug.platform} game${if (sug.gameCount == 1) "" else "s"}",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.SemiBold,
-                                )
-                                Text(
-                                    "No emulator yet — try ${sug.emulatorName}",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                            GetItButton(
-                                status = s.installStatus[sug.packageId],
-                                label = "Get it",
-                                onClick = { vm.install(sug.packageId, sug.emulatorName) },
-                            )
-                        }
-                    }
-                }
-            }
-
-            // BIOS section
-            Section(
-                title = "BIOS status",
-                isEmpty = false,
-            ) {
-                result.biosStatus.forEach { bios ->
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Column(Modifier.weight(1f)) {
-                                Text(
-                                    bios.display,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.SemiBold,
-                                )
-                                Text(
-                                    "Used by: ${bios.usedBy}",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                            // Status indicator
-                            when {
-                                bios.foundInZip -> {
-                                    // Found in zip — show amber indicator
-                                    Column(horizontalAlignment = Alignment.End) {
-                                        Text(
-                                            "📦 in archive",
-                                            style = MaterialTheme.typography.labelSmall,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = Color(0xFFB45309),
-                                        )
-                                    }
-                                }
-                                bios.present -> {
-                                    // Plain file present — show green checkmark
+                if (result.installedEmulators.isEmpty()) {
+                    Text(
+                        "No known emulators detected.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
+                        result.installedEmulators.forEach { emulator ->
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = Spacing.xs),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Column(Modifier.weight(1f)) {
                                     Text(
-                                        "✓ ${bios.foundFile ?: "found"}",
-                                        style = MaterialTheme.typography.labelSmall,
+                                        emulator.name,
+                                        style = MaterialTheme.typography.bodyMedium,
                                         fontWeight = FontWeight.SemiBold,
-                                        color = Color(0xFF059669),
+                                    )
+                                    Text(
+                                        "${emulator.platformTargets} · ${emulator.installedVersion ?: "installed"}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
                                 }
-                                else -> {
-                                    // Missing — show red X
-                                    Column(horizontalAlignment = Alignment.End) {
-                                        Text(
-                                            "✗ not found",
-                                            style = MaterialTheme.typography.labelSmall,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = if (bios.required) Color(0xFFDC2626) else Color(0xFF6B7280),
-                                        )
-                                        if (!bios.required) {
-                                            Text(
-                                                "optional",
-                                                style = MaterialTheme.typography.labelSmall,
-                                                color = Color(0xFF6B7280),
-                                            )
-                                        }
-                                    }
+                                GetItButton(
+                                    status = s.installStatus[emulator.packageId],
+                                    label = "Update",
+                                    onClick = { vm.install(emulator.packageId, emulator.name) },
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // ── Games found ───────────────────────────────────────────────────
+            SectionCard(
+                title = "Games found (${result.gamesBySystem.size} systems)",
+                icon = Icons.Filled.SportsEsports,
+                accentColor = AppColors.sourceCommunity,
+            ) {
+                if (result.gamesBySystem.isEmpty()) {
+                    Text(
+                        "No games found under Emulation/roms/. Check Settings to pick your ROM folder.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
+                        result.gamesBySystem.forEach { systemGames ->
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = Spacing.xs),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Column(Modifier.weight(1f)) {
+                                    Text(
+                                        systemGames.platform,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.SemiBold,
+                                    )
+                                    Text(
+                                        systemGames.sampleNames.joinToString(", "),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        maxLines = 2,
+                                    )
+                                }
+                                // Game count badge
+                                Box(
+                                    Modifier
+                                        .clip(AppShapes.badge)
+                                        .background(AppColors.sourceCommunity.copy(alpha = 0.15f))
+                                        .padding(horizontal = Spacing.sm, vertical = Spacing.xxs),
+                                ) {
+                                    Text(
+                                        "${systemGames.count}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = AppColors.sourceCommunity,
+                                    )
                                 }
                             }
                         }
+                    }
+                }
+            }
 
-                        // Show region + notes for found BIOS
-                        if (bios.present && bios.region != null) {
-                            Text(
-                                "${bios.region} — ${bios.notes ?: ""}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        } else if (!bios.present && bios.notes != null) {
-                            // Show hint for missing BIOS
-                            Text(
-                                bios.notes,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+            // ── Get an emulator for your games ────────────────────────────────
+            if (result.missingEmulators.isNotEmpty()) {
+                SectionCard(
+                    title = "Get an emulator for your games",
+                    icon = Icons.Outlined.Download,
+                    accentColor = AppColors.sourceEmuReady,
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
+                        result.missingEmulators.forEach { sug ->
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = Spacing.xs),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Column(Modifier.weight(1f)) {
+                                    Text(
+                                        "You have ${sug.gameCount} ${sug.platform} game${if (sug.gameCount == 1) "" else "s"}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.SemiBold,
+                                    )
+                                    Text(
+                                        "No emulator yet — try ${sug.emulatorName}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                                GetItButton(
+                                    status = s.installStatus[sug.packageId],
+                                    label = "Get it",
+                                    onClick = { vm.install(sug.packageId, sug.emulatorName) },
+                                )
+                            }
                         }
+                    }
+                }
+            }
 
-                        // Extract button for zipped BIOS
-                        if (bios.foundInZip) {
-                            val extractKey = "bios_${bios.system}"
-                            val extractStatus = s.extractStatus[extractKey]
+            // ── BIOS status ───────────────────────────────────────────────────
+            SectionCard(
+                title = "BIOS status",
+                icon = Icons.Filled.Memory,
+                accentColor = AppColors.warning,
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.md)) {
+                    result.biosStatus.forEach { bios ->
+                        Column(
+                            Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                        ) {
                             Row(
                                 Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                when (extractStatus) {
-                                    is ExtractStatus.Working -> {
-                                        Row(
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .padding(8.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                        ) {
-                                            CircularProgressIndicator(
-                                                modifier = Modifier.size(16.dp),
-                                                strokeWidth = 2.dp,
-                                            )
+                                Column(Modifier.weight(1f)) {
+                                    Text(
+                                        bios.display,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.SemiBold,
+                                    )
+                                    Text(
+                                        "Used by: ${bios.usedBy}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                                Spacer(Modifier.width(Spacing.sm))
+                                // Status pill
+                                when {
+                                    bios.foundInZip -> BiosStatusPill(
+                                        label = "in archive",
+                                        accentColor = AppColors.warning,
+                                    )
+                                    bios.present -> BiosStatusPill(
+                                        label = "✓ found",
+                                        accentColor = AppColors.success,
+                                    )
+                                    bios.required -> BiosStatusPill(
+                                        label = "✗ missing",
+                                        accentColor = AppColors.danger,
+                                    )
+                                    else -> BiosStatusPill(
+                                        label = "optional",
+                                        accentColor = AppColors.neutral,
+                                    )
+                                }
+                            }
+
+                            // Region + notes for found BIOS
+                            if (bios.present && bios.region != null) {
+                                Text(
+                                    "${bios.region} — ${bios.notes ?: ""}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            } else if (!bios.present && bios.notes != null) {
+                                Text(
+                                    bios.notes,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+
+                            // Extract button for zipped BIOS
+                            if (bios.foundInZip) {
+                                val extractKey = "bios_${bios.system}"
+                                val extractStatus = s.extractStatus[extractKey]
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+                                ) {
+                                    when (extractStatus) {
+                                        is ExtractStatus.Working -> {
+                                            Row(
+                                                Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(Spacing.sm),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+                                            ) {
+                                                CircularProgressIndicator(
+                                                    modifier = Modifier.size(16.dp),
+                                                    strokeWidth = 2.dp,
+                                                )
+                                                Text(
+                                                    "Extracting…",
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                )
+                                            }
+                                        }
+                                        is ExtractStatus.Done -> {
                                             Text(
-                                                "Extracting…",
+                                                "✓ Extracted",
                                                 style = MaterialTheme.typography.labelSmall,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = AppColors.success,
+                                                modifier = Modifier.padding(Spacing.sm),
                                             )
                                         }
-                                    }
-                                    is ExtractStatus.Done -> {
-                                        Text(
-                                            "✓ Extracted",
-                                            style = MaterialTheme.typography.labelSmall,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = Color(0xFF059669),
-                                            modifier = Modifier.padding(8.dp),
-                                        )
-                                    }
-                                    is ExtractStatus.Failed -> {
-                                        TextButton(
-                                            onClick = { vm.extractBios(bios) },
-                                            modifier = Modifier.fillMaxWidth(),
-                                        ) {
-                                            Text("Retry extraction")
+                                        is ExtractStatus.Failed -> {
+                                            TextButton(
+                                                onClick = { vm.extractBios(bios) },
+                                                modifier = Modifier.fillMaxWidth(),
+                                            ) {
+                                                Text("Retry extraction")
+                                            }
                                         }
-                                    }
-                                    null -> {
-                                        Button(
-                                            onClick = { vm.extractBios(bios) },
-                                            modifier = Modifier.fillMaxWidth(),
-                                        ) {
-                                            Icon(Icons.Filled.GetApp, contentDescription = null, modifier = Modifier.size(18.dp))
-                                            Spacer(Modifier.size(4.dp))
-                                            Text("Extract from ${File(bios.archivePath ?: "").name}")
+                                        null -> {
+                                            Button(
+                                                onClick = { vm.extractBios(bios) },
+                                                modifier = Modifier.fillMaxWidth(),
+                                                shape = AppShapes.button,
+                                            ) {
+                                                Icon(Icons.Filled.GetApp, contentDescription = null, modifier = Modifier.size(18.dp))
+                                                Spacer(Modifier.size(Spacing.xs))
+                                                Text("Extract from ${File(bios.archivePath ?: "").name}")
+                                            }
                                         }
                                     }
                                 }
@@ -397,47 +435,83 @@ fun AutoDetectScreen(
                 }
             }
 
-            // Switch keys & firmware — DETECT what's present and report honestly.
-            // Keys/firmware come from a Switch the user owns; there's no download
-            // for them in this app, and no app can provide or fetch them.
+            // ── Switch keys & firmware ────────────────────────────────────────
             SwitchKeysSection(
                 switchKeys = result.switchKeys,
             )
 
-            // Emulation root warning
+            // ── Emulation root warning ────────────────────────────────────────
             if (!result.emulationRootExists) {
-                Card(Modifier.fillMaxWidth()) {
+                Card(
+                    Modifier.fillMaxWidth(),
+                    shape = AppShapes.card,
+                    colors = CardDefaults.cardColors(
+                        containerColor = AppColors.warning.copy(alpha = 0.10f),
+                    ),
+                ) {
                     Text(
                         "No Emulation/ folder found at /storage/emulated/0/Emulation. " +
                             "Create it (or use EmuTran) and rescan.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF92400E),
-                        modifier = Modifier.padding(16.dp),
+                        color = AppColors.warning,
+                        modifier = Modifier.padding(Spacing.cardPadding),
                     )
                 }
             }
         }
 
-        // Error state
+        // ── Error state ───────────────────────────────────────────────────────
         s.lastError?.let {
-            Card(Modifier.fillMaxWidth()) {
+            Card(
+                Modifier.fillMaxWidth(),
+                shape = AppShapes.card,
+                colors = CardDefaults.cardColors(
+                    containerColor = AppColors.danger.copy(alpha = 0.10f),
+                ),
+            ) {
                 Text(
                     "Error: $it",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFFDC2626),
-                    modifier = Modifier.padding(16.dp),
+                    color = AppColors.danger,
+                    modifier = Modifier.padding(Spacing.cardPadding),
                 )
             }
         }
 
-        // Rescan button
-        Button(onClick = vm::scan, modifier = Modifier.fillMaxWidth()) {
+        // ── Rescan button ─────────────────────────────────────────────────────
+        Button(
+            onClick = vm::scan,
+            modifier = Modifier.fillMaxWidth(),
+            shape = AppShapes.button,
+        ) {
             Text("Rescan")
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(Spacing.lg))
     }
 }
+
+// ── BiosStatusPill ────────────────────────────────────────────────────────────
+
+/** Compact tinted status pill for BIOS found / missing / in-archive / optional. */
+@Composable
+private fun BiosStatusPill(label: String, accentColor: androidx.compose.ui.graphics.Color) {
+    Box(
+        Modifier
+            .clip(AppShapes.badge)
+            .background(accentColor.copy(alpha = 0.15f))
+            .padding(horizontal = Spacing.sm, vertical = Spacing.xxs),
+    ) {
+        Text(
+            label,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = accentColor,
+        )
+    }
+}
+
+// ── GetItButton ───────────────────────────────────────────────────────────────
 
 /**
  * v0.10: "Get it / Update" button with inline status. Shows a spinner+label
@@ -452,12 +526,14 @@ private fun GetItButton(
 ) {
     when (status) {
         is GetItStatus.Working -> {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
+            ) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(14.dp),
                     strokeWidth = 2.dp,
                 )
-                Spacer(Modifier.size(6.dp))
                 Text(
                     status.label,
                     style = MaterialTheme.typography.labelSmall,
@@ -470,7 +546,7 @@ private fun GetItButton(
                 "✓ opening installer",
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF059669),
+                color = AppColors.success,
             )
         }
         is GetItStatus.Failed -> {
@@ -481,6 +557,8 @@ private fun GetItButton(
         }
     }
 }
+
+// ── SwitchKeysSection ─────────────────────────────────────────────────────────
 
 /**
  * Switch keys & firmware. Nintendo Switch emulators (Eden / Citron / Sudachi)
@@ -497,36 +575,35 @@ private fun SwitchKeysSection(
     switchKeys: SwitchKeysStatus?,
 ) {
     val context = LocalContext.current
-    val green = Color(0xFF059669)
-    val amber = Color(0xFFB45309)
-    val red = Color(0xFFDC2626)
-    val grey = Color(0xFF6B7280)
 
-    Section(title = "Switch keys & firmware", isEmpty = false) {
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    SectionCard(
+        title = "Switch keys & firmware",
+        icon = Icons.Filled.Key,
+        accentColor = AppColors.sourceBundled,
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(Spacing.md)) {
 
             // STATUS first — only when we've actually scanned.
             if (switchKeys != null) {
                 // prod.keys line.
                 val keysText: String
-                val keysColor: Color
+                val keysColor: androidx.compose.ui.graphics.Color
                 when {
                     switchKeys.prodKeysFound && switchKeys.keyCount == 0 -> {
-                        // Found on disk but unreadable (scoped storage) — keysNote carries the hint.
                         keysText = "prod.keys ${switchKeys.keysNote ?: "found but couldn't read"}"
-                        keysColor = amber
+                        keysColor = AppColors.warning
                     }
                     switchKeys.prodKeysFound && switchKeys.keysLookComplete -> {
                         keysText = "✓ prod.keys found (${switchKeys.keyCount} keys, looks complete)"
-                        keysColor = green
+                        keysColor = AppColors.success
                     }
                     switchKeys.prodKeysFound -> {
                         keysText = "✓ found but looks incomplete (${switchKeys.keyCount} keys)"
-                        keysColor = amber
+                        keysColor = AppColors.warning
                     }
                     else -> {
                         keysText = "✗ prod.keys not found"
-                        keysColor = red
+                        keysColor = AppColors.danger
                     }
                 }
                 Text(
@@ -545,7 +622,7 @@ private fun SwitchKeysSection(
                         "✓ Firmware present (${switchKeys.firmwareNcaCount} files)",
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.SemiBold,
-                        color = green,
+                        color = AppColors.success,
                     )
                     if (switchKeys.firmwarePath != null) {
                         CopyPathChip(label = "Firmware", path = switchKeys.firmwarePath, context = context)
@@ -555,7 +632,7 @@ private fun SwitchKeysSection(
                         "✗ Firmware not found",
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.SemiBold,
-                        color = grey,
+                        color = AppColors.neutral,
                     )
                 }
             }
@@ -568,8 +645,7 @@ private fun SwitchKeysSection(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            // Informational target paths (Eden) — tap to copy. Always shown so the
-            // user knows where the files belong even before/without a scan.
+            // Informational target paths (Eden) — tap to copy.
             Text(
                 "Where they go (Eden):",
                 style = MaterialTheme.typography.labelSmall,
@@ -590,22 +666,24 @@ private fun SwitchKeysSection(
     }
 }
 
+// ── CopyPathChip ──────────────────────────────────────────────────────────────
+
 /** A tap-to-copy path chip. Mirrors the PathChip used in the setup guide. */
 @Composable
 private fun CopyPathChip(label: String, path: String, context: Context) {
     Row(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
+            .clip(AppShapes.chip)
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
             .clickable {
                 val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
                 cm?.setPrimaryClip(android.content.ClipData.newPlainText(label, path))
                 android.widget.Toast.makeText(context, "Path copied", android.widget.Toast.LENGTH_SHORT).show()
             }
-            .padding(horizontal = 10.dp, vertical = 7.dp),
+            .padding(horizontal = Spacing.chipHorizontal, vertical = Spacing.xs + Spacing.xxs),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
     ) {
         Text(
             "$label:",
@@ -617,7 +695,7 @@ private fun CopyPathChip(label: String, path: String, context: Context) {
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier.weight(1f, fill = false),
         )
-        Spacer(Modifier.size(2.dp))
+        Spacer(Modifier.size(Spacing.xxs))
         Icon(
             Icons.Outlined.ContentCopy,
             contentDescription = "Copy path",
@@ -627,6 +705,8 @@ private fun CopyPathChip(label: String, path: String, context: Context) {
     }
 }
 
+// ── HardwareSummaryCard ───────────────────────────────────────────────────────
+
 @Composable
 private fun HardwareSummaryCard(
     fp: DeviceFingerprint,
@@ -634,111 +714,149 @@ private fun HardwareSummaryCard(
 ) {
     val tier = SocCatalog.tier(fp.socFamily)
     val tierColor = when (tier) {
-        SocTier.FLAGSHIP -> Color(0xFF6200EE)
-        SocTier.HIGH_END -> Color(0xFF1976D2)
-        SocTier.MID_RANGE -> Color(0xFF00897B)
-        SocTier.BUDGET -> Color(0xFF757575)
-        SocTier.UNKNOWN -> Color(0xFF9E9E9E)
+        SocTier.FLAGSHIP -> AppColors.tierFlagship
+        SocTier.HIGH_END -> AppColors.tierHighEnd
+        SocTier.MID_RANGE -> AppColors.tierMidRange
+        SocTier.BUDGET -> AppColors.tierEntry
+        SocTier.UNKNOWN -> AppColors.neutral
     }
+
     Card(
         Modifier.fillMaxWidth(),
+        shape = AppShapes.cardLarge,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
+            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f),
         ),
-        shape = RoundedCornerShape(14.dp),
     ) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    "Your hardware",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                // For unknown/unlisted chips, omit the tier badge and show a softer label
-                // instead so the device doesn't feel unsupported.
-                if (tier != SocTier.UNKNOWN) {
-                    Box(
-                        Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(tierColor.copy(alpha = 0.18f))
-                            .padding(horizontal = 10.dp, vertical = 4.dp),
-                    ) {
-                        Text(
-                            tier.label,
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = tierColor,
-                        )
-                    }
-                }
-            }
-            Text(
-                fp.displayLine,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+        Column {
+            // Top accent bar in tier color
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(4.dp)
+                    .background(tierColor),
             )
-            // For unknown chips, show a reassurance line explaining detection still works.
-            if (tier == SocTier.UNKNOWN) {
-                Text(
-                    "SoC not in our catalog yet — we'll match you to compatible reports using your GPU (${fp.gpuModel}) and ${fp.totalRamMb / 1024} GB RAM.",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            if (stats != null) {
-                val total = stats.real + stats.estimated
-                val fraction = if (total > 0) stats.real.toFloat() / total else 0f
-                Spacer(Modifier.height(4.dp))
+
+            Column(
+                Modifier.padding(Spacing.cardPadding),
+                verticalArrangement = Arrangement.spacedBy(Spacing.md),
+            ) {
+                // Header row: "Your hardware" label + tier badge
                 Row(
                     Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    val coverageText = if (stats.real == 0) {
-                        "No chip-specific data yet — ${stats.estimated} games have estimated compatibility for similar hardware"
-                    } else {
-                        "${stats.real} games have data for your chip"
-                    }
                     Text(
-                        coverageText,
+                        "Your hardware",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    if (tier != SocTier.UNKNOWN) {
+                        Box(
+                            Modifier
+                                .clip(AppShapes.badge)
+                                .background(tierColor.copy(alpha = 0.18f))
+                                .padding(horizontal = Spacing.sm, vertical = Spacing.xxs),
+                        ) {
+                            Text(
+                                tier.label,
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = tierColor,
+                            )
+                        }
+                    }
+                }
+
+                // Chip name — hero headline
+                Text(
+                    fp.socFamily,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+
+                // Device display line (model/GPU/RAM)
+                Text(
+                    fp.displayLine,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                // Unknown chip reassurance
+                if (tier == SocTier.UNKNOWN) {
+                    Text(
+                        "SoC not in our catalog yet — we'll match you to compatible reports using your GPU (${fp.gpuModel}) and ${fp.totalRamMb / 1024} GB RAM.",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.weight(1f),
                     )
-                    if (stats.real > 0) {
+                }
+
+                // Coverage bar
+                if (stats != null) {
+                    val total = stats.real + stats.estimated
+                    val fraction = if (total > 0) stats.real.toFloat() / total else 0f
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.xs)) {
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            val coverageText = if (stats.real == 0) {
+                                "No chip-specific data yet"
+                            } else {
+                                "${stats.real} games have chip data"
+                            }
+                            Text(
+                                coverageText,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            if (stats.real == 0 && stats.estimated > 0) {
+                                Text(
+                                    "${stats.estimated} estimated",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = AppColors.neutral,
+                                )
+                            } else if (stats.real > 0) {
+                                Text(
+                                    "${stats.estimated} estimated",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = AppColors.neutral,
+                                )
+                            }
+                        }
+                        LinearProgressIndicator(
+                            progress = { fraction },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(6.dp)
+                                .clip(AppShapes.pill),
+                            color = AppColors.success,
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                        )
+                    }
+                } else {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(12.dp), strokeWidth = 1.5.dp)
                         Text(
-                            "${stats.estimated} estimated",
+                            "Computing catalog coverage…",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
-                LinearProgressIndicator(
-                    progress = { fraction },
-                    modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
-                    color = Color(0xFF4CAF50),
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                )
-            } else {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.size(12.dp), strokeWidth = 1.5.dp)
-                    Text(
-                        "Computing catalog coverage…",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
             }
         }
     }
 }
+
+// ── BestForChipSection ────────────────────────────────────────────────────────
 
 /**
  * Feature A: "Best for your [chip]" horizontal discovery feed.
@@ -756,21 +874,27 @@ private fun BestForChipSection(
     games: List<GameSummary>?,
     onOpenGame: (gameId: String) -> Unit,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
         Text(
             "Best for your $socLabel",
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+            fontWeight = FontWeight.SemiBold,
         )
 
         when {
             games == null -> {
-                // Still computing — show a subtle loading indicator
-                Card(Modifier.fillMaxWidth()) {
+                // Still computing
+                Card(
+                    Modifier.fillMaxWidth(),
+                    shape = AppShapes.card,
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+                ) {
                     Row(
-                        Modifier.padding(16.dp),
+                        Modifier.padding(Spacing.cardPadding),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.md),
                     ) {
                         CircularProgressIndicator(modifier = Modifier.size(14.dp), strokeWidth = 1.5.dp)
                         Text(
@@ -782,13 +906,22 @@ private fun BestForChipSection(
                 }
             }
             games.isEmpty() -> {
-                // Honest empty state — device not tested yet, don't show a sad empty list
-                Card(Modifier.fillMaxWidth()) {
-                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                // Honest empty state
+                Card(
+                    Modifier.fillMaxWidth(),
+                    shape = AppShapes.card,
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+                ) {
+                    Column(
+                        Modifier.padding(Spacing.cardPadding),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                    ) {
                         Text(
                             "Not enough chip-specific data yet",
                             style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                            fontWeight = FontWeight.SemiBold,
                         )
                         Text(
                             "No confirmed same-SoC reports at good performance exist for your chip. " +
@@ -806,7 +939,7 @@ private fun BestForChipSection(
                     Modifier
                         .fillMaxWidth()
                         .horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.md),
                 ) {
                     games.forEach { summary ->
                         ChipGameCard(summary = summary, onClick = { onOpenGame(summary.game.id) })
@@ -817,6 +950,8 @@ private fun BestForChipSection(
     }
 }
 
+// ── ChipGameCard ──────────────────────────────────────────────────────────────
+
 /** A compact vertical card for the chip discovery feed. */
 @Composable
 private fun ChipGameCard(summary: GameSummary, onClick: () -> Unit) {
@@ -826,9 +961,9 @@ private fun ChipGameCard(summary: GameSummary, onClick: () -> Unit) {
 
     Card(
         modifier = Modifier
-            .width(140.dp)
+            .width(148.dp)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(12.dp),
+        shape = AppShapes.card,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
@@ -842,84 +977,44 @@ private fun ChipGameCard(summary: GameSummary, onClick: () -> Unit) {
                     .background(color),
             )
             Column(
-                Modifier.padding(10.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
+                Modifier.padding(Spacing.md),
+                verticalArrangement = Arrangement.spacedBy(Spacing.sm),
             ) {
-                // Platform chip
-                Box(
-                    Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(color.copy(alpha = 0.18f))
-                        .padding(horizontal = 6.dp, vertical = 2.dp),
-                ) {
-                    Text(
-                        summary.game.platform,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = color,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                    )
-                }
+                // Platform badge
+                PlatformBadge(platform = summary.game.platform)
+
                 // Game title
                 Text(
                     summary.game.title,
                     style = MaterialTheme.typography.bodySmall,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
                     modifier = Modifier.height(36.dp),
                 )
+
                 // FPS pill
                 if (summary.bestFps != null) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    Box(
+                        Modifier
+                            .clip(AppShapes.badge)
+                            .background(stabColor.copy(alpha = 0.18f))
+                            .padding(horizontal = Spacing.sm, vertical = Spacing.xxs),
                     ) {
-                        Box(
-                            Modifier
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(stabColor.copy(alpha = 0.18f))
-                                .padding(horizontal = 7.dp, vertical = 3.dp),
-                        ) {
-                            Text(
-                                "${summary.bestFps} fps",
-                                style = MaterialTheme.typography.labelSmall,
-                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                                color = stabColor,
-                            )
-                        }
+                        Text(
+                            "${summary.bestFps} fps",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = stabColor,
+                        )
                     }
                 }
+
                 // Confidence badge — STRONG = same SoC+RAM, MODERATE = same SoC family
                 Text(
                     if (isStrong) "Same SoC" else "Same family",
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = AppColors.neutral,
                 )
-            }
-        }
-    }
-}
-
-@Composable
-private fun Section(
-    title: String,
-    isEmpty: Boolean = false,
-    emptyText: String? = null,
-    content: @Composable () -> Unit = {},
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-        Card(Modifier.fillMaxWidth()) {
-            if (isEmpty) {
-                Text(
-                    emptyText ?: "No data",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(16.dp),
-                )
-            } else {
-                Column(Modifier.padding(16.dp)) {
-                    content()
-                }
             }
         }
     }

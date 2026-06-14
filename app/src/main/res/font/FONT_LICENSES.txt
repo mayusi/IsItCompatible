@@ -1,0 +1,22 @@
+Bundled fonts and their licenses
+=================================
+
+This directory bundles the following fonts, all under the SIL Open Font
+License 1.1 (OFL-1.1), which permits bundling and redistribution within
+applications:
+
+- Chakra Petch (chakra_petch_*.ttf)
+  Copyright 2019 The Chakra Petch Project Authors
+  (https://github.com/cadsondemak/chakra-petch)
+  Used for the app's HUD-style headings, titles, and UI labels.
+
+- Michroma (michroma_regular.ttf)
+  Copyright The Michroma Project Authors
+  (Vernon Adams), via Google Fonts.
+  Reserved for accent use.
+
+Full OFL-1.1 text: https://openfontlicense.org/open-font-license-official-text/
+
+The OFL permits bundling these fonts in the app binary and redistributing
+them as part of the application, including for commercial use, provided this
+license notice is retained (which this file satisfies).
