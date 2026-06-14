@@ -211,6 +211,7 @@ fun GameDetailScreen(
                         lastJournal = lastJournal,
                         emulatorsById = s.emulatorsById,
                         presetsById = s.presetsById,
+                        driversById = s.driversById,
                         userRamMb = s.fingerprint?.totalRamMb,
                         recommendedRamGb = game.recommendedRamGb,
                         isWindows = s.isWindowsGame,
@@ -454,6 +455,7 @@ fun GameDetailScreen(
                             AllReportsInline(
                                 reports = allReports,
                                 emusById = s.emulatorsById,
+                                presetsById = s.presetsById,
                             )
                         }
                         // Spec item 8: TextButton instead of always-visible SubmitYourOwnReportCard
@@ -762,24 +764,40 @@ private fun DeviceExpectCard(
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
 
+    // QW1: compute freshness label from newest report's submittedAt, if any real reports exist
+    val newestSubmittedAt = if (!isGenOnly) rec.reports.maxOfOrNull { it.submittedAt } else null
+    val freshnessLabel = newestSubmittedAt?.let { "Newest: ${reportAgeLabel(it)}" }
+
     Card(
         Modifier.fillMaxWidth(),
         shape = AppShapes.card,
         colors = CardDefaults.cardColors(containerColor = containerBg),
     ) {
-        Row(Modifier.padding(Spacing.md), verticalAlignment = Alignment.Top) {
-            Icon(
-                Icons.Outlined.Devices,
-                contentDescription = null,
-                tint = textColor.copy(alpha = 0.7f),
-                modifier = Modifier.size(16.dp).padding(top = 2.dp),
-            )
-            Spacer(Modifier.width(Spacing.sm))
-            Text(
-                mainSentence,
-                style = MaterialTheme.typography.bodySmall,
-                color = textColor,
-            )
+        Column(Modifier.padding(Spacing.md)) {
+            Row(verticalAlignment = Alignment.Top) {
+                Icon(
+                    Icons.Outlined.Devices,
+                    contentDescription = null,
+                    tint = textColor.copy(alpha = 0.7f),
+                    modifier = Modifier.size(16.dp).padding(top = 2.dp),
+                )
+                Spacer(Modifier.width(Spacing.sm))
+                Text(
+                    mainSentence,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = textColor,
+                )
+            }
+            // QW1: show how fresh the data is — users deserve to know if reports are stale
+            if (freshnessLabel != null) {
+                Spacer(Modifier.height(Spacing.xxs))
+                Text(
+                    freshnessLabel,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = textColor.copy(alpha = 0.65f),
+                    modifier = Modifier.padding(start = 24.dp), // align with text after icon
+                )
+            }
         }
     }
 }
@@ -846,6 +864,7 @@ private fun VerdictCard(
     lastJournal: JournalEntryEntity?,
     emulatorsById: Map<String, EmulatorEntity>,
     presetsById: Map<String, PresetEntity>,
+    driversById: Map<String, io.github.mayusi.isitcompatible.compatdb.room.DriverEntity> = emptyMap(),
     userRamMb: Int?,
     recommendedRamGb: Int?,
     isWindows: Boolean,
@@ -1044,7 +1063,7 @@ private fun VerdictCard(
             }
         }
 
-        // Compact journal row: "Your run: Xfps · emulator · date" + "Log another" TextButton
+        // Compact journal row: "Your run: Xfps · emulator · date" + peakTempC + driver
         if (lastJournal != null) {
             Spacer(Modifier.height(6.dp))
             Row(
@@ -1056,8 +1075,18 @@ private fun VerdictCard(
                 val emuName = lastJournal.emulatorId?.let(emulatorsById::get)?.name ?: ""
                 val fpsStr = lastJournal.avgFps?.let { "${it}fps" } ?: "no fps"
                 val dateStr = formatJournalDate(lastJournal.createdAt)
+                // QW4: surface peakTempC (the only thermal signal) and driver name
+                val tempPart = lastJournal.peakTempC?.let { "Peak ${it}°C" }
+                val driverPart = lastJournal.driverIdAtTimeOfRun?.let { driversById[it]?.name }
+                val runLabel = buildString {
+                    append("Your run: $fpsStr")
+                    if (emuName.isNotBlank()) append(" · $emuName")
+                    append(" · $dateStr")
+                    if (tempPart != null) append(" · $tempPart")
+                    if (driverPart != null) append(" · $driverPart")
+                }
                 Text(
-                    "Your run: $fpsStr${if (emuName.isNotBlank()) " · $emuName" else ""} · $dateStr",
+                    runLabel,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f),
@@ -1639,7 +1668,11 @@ private fun AlternativeRow(
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     rec.avgFps?.let {
-                        Text("~${it} fps",
+                        // QW3: only show tilde (~) when all reports are generated/heuristic.
+                        // Real report data should display as a plain number without implying estimation.
+                        val isGenOnly = rec.reports.isEmpty() || rec.reports.all { r -> r.source == "GENERATED_HEURISTIC" }
+                        val fpsLabel = if (isGenOnly) "~$it fps" else "$it fps"
+                        Text(fpsLabel,
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold,
                             color = PlatformColors.stability(rec.stability))
@@ -1650,6 +1683,9 @@ private fun AlternativeRow(
                     Text("${rec.reportCount} report${if (rec.reportCount == 1) "" else "s"}",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    // QW5: show confidence badge so user can compare alternatives at a glance
+                    Spacer(Modifier.width(8.dp))
+                    ConfidenceBadge(rec.effectiveConfidence)
                 }
             }
             TextButton(onClick = onApply) { Text("Apply") }
@@ -1718,6 +1754,14 @@ private fun PerformanceOverviewBody(reports: List<ReportEntity>) {
             Text("$count", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
         }
     }
+    // QW6: honest scope disclosure — Best/Avg/Worst are computed across ALL reports,
+    // not just same-device reports, so the user knows what they're looking at.
+    Spacer(Modifier.height(10.dp))
+    Text(
+        "Best / Avg / Worst across all ${reports.size} report${if (reports.size == 1) "" else "s"} — mixed devices",
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
 }
 
 @Composable
@@ -1756,6 +1800,7 @@ private fun Stat(label: String, value: String, color: Color) {
 private fun AllReportsInline(
     reports: List<ReportEntity>,
     emusById: Map<String, EmulatorEntity>,
+    presetsById: Map<String, PresetEntity> = emptyMap(),
 ) {
     val ctx = LocalContext.current
     Text(
@@ -1795,6 +1840,18 @@ private fun AllReportsInline(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Medium,
+                )
+                Spacer(Modifier.height(2.dp))
+            }
+            // QW2: preset name + Android API when available — real data currently dropped
+            val presetName = r.presetId?.let { presetsById[it]?.name }
+            val apiStr = if (r.androidApi > 0) "API ${r.androidApi}" else null
+            val metaParts = listOfNotNull(presetName?.let { "via $it" }, apiStr)
+            if (metaParts.isNotEmpty()) {
+                Text(
+                    metaParts.joinToString(" · "),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(2.dp))
             }

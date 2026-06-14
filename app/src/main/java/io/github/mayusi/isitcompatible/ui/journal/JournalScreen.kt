@@ -139,12 +139,15 @@ fun JournalScreen(
                 val gameTitle = s.gamesById[entry.gameId]?.title ?: entry.gameId
                 val gamePlatform = s.gamesById[entry.gameId]?.platform ?: "—"
                 val emulatorName = entry.emulatorId?.let { s.emulatorsById[it]?.name }
+                // QW4: resolve driver name for this run
+                val driverName = entry.driverIdAtTimeOfRun?.let { s.driversById[it]?.name }
 
                 JournalEntryRowCard(
                     entry = entry,
                     gameTitle = gameTitle,
                     gamePlatform = gamePlatform,
                     emulatorName = emulatorName,
+                    driverName = driverName,
                     onOpen = { onOpenGame(entry.gameId) },
                     onDelete = { pendingDelete = entry.id },
                 )
@@ -254,6 +257,7 @@ private fun JournalEntryRowCard(
     gameTitle: String,
     gamePlatform: String,
     emulatorName: String?,
+    driverName: String? = null,
     onOpen: () -> Unit,
     onDelete: () -> Unit,
 ) {
@@ -265,10 +269,14 @@ private fun JournalEntryRowCard(
         append(formatDate(entry.createdAt))
         entry.sessionMinutes?.takeIf { it > 0 }?.let { append("  ${it}m") }
         if (entry.shareWithCommunity) append("  shared")
+        // QW4: peak thermal reading if available
+        entry.peakTempC?.let { append("  · Peak ${it}°C") }
+        // QW4: driver name used at time of run
+        driverName?.let { append("  · $it") }
     }
 
     // Subtitle2: notes snippet when available
-    val subtitle2: String? = entry.notes?.takeIf { it.isNotBlank() }?.let { "“$it”" }
+    val subtitle2: String? = entry.notes?.takeIf { it.isNotBlank() }?.let { "\"$it\"" }
 
     GameRowCard(
         platform = gamePlatform,

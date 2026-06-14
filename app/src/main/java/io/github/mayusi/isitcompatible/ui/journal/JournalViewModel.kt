@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.mayusi.isitcompatible.compatdb.GuideResolver
+import io.github.mayusi.isitcompatible.compatdb.room.DriverDao
+import io.github.mayusi.isitcompatible.compatdb.room.DriverEntity
 import io.github.mayusi.isitcompatible.compatdb.room.EmulatorDao
 import io.github.mayusi.isitcompatible.compatdb.room.EmulatorEntity
 import io.github.mayusi.isitcompatible.compatdb.room.GameDao
@@ -32,6 +34,7 @@ class JournalViewModel @Inject constructor(
     private val journalDao: JournalDao,
     private val gameDao: GameDao,
     private val emulatorDao: EmulatorDao,
+    private val driverDao: DriverDao,
     private val guideDao: GuideDao,
     private val guideResolver: GuideResolver,
 ) : ViewModel() {
@@ -40,7 +43,7 @@ class JournalViewModel @Inject constructor(
     val state: StateFlow<JournalState> = _state.asStateFlow()
 
     init {
-        // Stream entries; hydrate game + emulator names on each change.
+        // Stream entries; hydrate game + emulator + driver names on each change.
         journalDao.observeAll()
             .onEach { entries ->
                 val gameIds = entries.map { it.gameId }.toSet()
@@ -49,6 +52,9 @@ class JournalViewModel @Inject constructor(
                 gameIds.forEach { id -> gameDao.byId(id)?.let { games[id] = it } }
                 val emusById = emulatorDao.all().associateBy { it.id }
                     .filterKeys { it in emuIds }
+                // QW4: hydrate driver names so journal rows can show which driver was active
+                val driverIds = entries.mapNotNull { it.driverIdAtTimeOfRun }.toSet()
+                val driversById = driverIds.mapNotNull { driverDao.byId(it) }.associateBy { it.id }
                 val stats = computeStats(entries)
                 _state.update {
                     it.copy(
@@ -56,6 +62,7 @@ class JournalViewModel @Inject constructor(
                         entries = entries,
                         gamesById = games,
                         emulatorsById = emusById,
+                        driversById = driversById,
                         stats = stats,
                     )
                 }
@@ -154,6 +161,8 @@ data class JournalState(
     val entries: List<JournalEntryEntity> = emptyList(),
     val gamesById: Map<String, GameEntity> = emptyMap(),
     val emulatorsById: Map<String, EmulatorEntity> = emptyMap(),
+    /** QW4: drivers referenced by journal entries — for showing driver name at run time. */
+    val driversById: Map<String, DriverEntity> = emptyMap(),
     val stats: JournalStats? = null,
     /**
      * Feature B: guides with 1+ done steps but not yet complete.
